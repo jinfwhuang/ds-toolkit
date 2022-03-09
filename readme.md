@@ -1,31 +1,7 @@
+## Decentralized Storage SDK
 
+### Status
+experimental
 
-
-
-
-
-
-
-# textile
-
-https://github.com/textileio
-
-
-- tableland
-
-# estuary
-
-https://estuary.tech/
-
-# web3 storage
-
-https://web3.storage/?utm_source=thenewstack&utm_medium=website&utm_campaign=platform
-
-
-
-
-
-
-
-
-
+### Goal
+This project seeks to create an SDK that could easily put and get data on decentralized storage networks.
