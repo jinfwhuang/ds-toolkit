@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package jinfwhuang.ds.identity;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/jinfwhuang/ds-sdk/proto/identity";
+
+// Services
+service Identity {
+  rpc RequestLogin(LoginMessage) returns (LoginMessage) {
+    option (google.api.http) = {
+      post: "/identity/login-req",
+    };
+  }
+  rpc Login(LoginMessage) returns (LoginResp) {
+    option (google.api.http) = {
+        post: "/identity/login"
+    };
+  }
+
+  rpc Debug(google.protobuf.Empty) returns (LoginMessage) {
+    option (google.api.http) = {
+      get: "/identity/login"
+    };
+  }
+
+}
+
+message LoginResp {
+  bytes pubKey = 1;
+  string status = 2;
+}
+
+message LoginMessage {
+  bytes pubKey = 1;
+  string unsignedMsg = 2;
+  string signedMsg = 3;
+}

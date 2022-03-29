@@ -1,0 +1,18 @@
+{
+  "name": "try-torus",
+  "version": "1.0.0",
+  "description": "testing out torus",
+  "main": "app.js",
+  "repository": {
+    "url": "https://example.com/your-username/my-new-project",
+    "type": "git"
+  },
+  "dependencies": {
+    "@toruslabs/openlogin": "^1.6.0",
+    "babel-runtime": "^6.26.0"
+  },
+  "type": "module",
+  "scripts": {
+    "app": "node app.js"
+  }
+}

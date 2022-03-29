@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/jinfwhuang/ds-sdk/pkg/ds"
 	tmplog "log"
 )
 
@@ -12,29 +13,9 @@ func init() {
 
  */
 func main() {
+	ds.Put()
 
-	ch := make(chan int, 5)
-
-	//go func() {
-	//	for {
-	//		select {
-	//		case msg := <-ch:
-	//			tmplog.Println(msg)
-	//		}
-	//	}
-	//}()
-
-	for i := 1; i < 3; i++ {
-		select {
-		case ch <- i: {
-			tmplog.Println("sent", i)
-		}
-		}
-		//ch <- i
-	}
-
-	tmplog.Println("fff")
-
+	tmplog.Println("finish debug main")
 }
 
 

@@ -1,0 +1,6 @@
+{
+    "type": "commonjs",
+    "dependencies": {
+        "smallest": "^1.0.1"
+    }
+}

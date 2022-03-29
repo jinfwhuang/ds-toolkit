@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hellonodejs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hellonodejs
+  template:
+    metadata:
+      labels:
+        app: hellonodejs
+    spec:
+      containers:
+      - name: hellonodejs
+        image: application_image
+        ports:
+        - containerPort: 8080
+          name: web
+        resources:
+          requests:
+            memory: 10Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
