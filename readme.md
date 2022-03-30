@@ -1,7 +1,9 @@
 ## Decentralized Storage Toolkit
 
+See [docs](docs/) for more information
+
 ### Status
-experimental
+EARLY EXPERIMENTAL!
 
 ### Goal
 This project seeks to create a set of tools that could be used to build dapps that allow users to store, manage, and share data on decentralized networks.
@@ -16,8 +18,7 @@ This project seeks to create a set of tools that could be used to build dapps th
 - Dapp could use centralized backend services to augment decentralized services
   - A dapp could use its internal services to provide search experiences
   - A dapp could use its internal database to augment the metadata and enrich the user interface
-
-
+  
 ### Components
 
 #### Identity
