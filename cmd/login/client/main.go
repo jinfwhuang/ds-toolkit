@@ -5,28 +5,22 @@ import (
 	"crypto/ecdsa"
 	"encoding/base64"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/crypto/secp256k1"
-	protoId "github.com/jinfwhuang/ds-sdk/proto/identity"
+	protoId "github.com/jinfwhuang/ds-toolkit/proto/identity"
 	"github.com/urfave/cli/v2"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	tmplog "log"
+	//logrus "log"
+  "github.com/sirupsen/logrus"
+	"github.com/jinfwhuang/ds-toolkit/pkg/cmd-utils"
 )
 
-func init() {
-	tmplog.SetFlags(tmplog.Llongfile)
-}
 
-var (
-	GrpcPort = &cli.IntFlag{
-		Name:  "grpc-port",
-		Usage: "TODO: xxx",
-		Value: 4000,
-	}
-)
 
 var AppFlags = []cli.Flag{
-	GrpcPort,
+	cmd_utils.GrpcPort,
+	cmd_utils.LogLevel,
 }
 
 const (
@@ -61,32 +55,34 @@ func RecoverPrivkey(s string)  *ecdsa.PrivateKey {
 	priv.PublicKey.X, priv.PublicKey.Y = curve.ScalarBaseMult(priv.D.Bytes())
 
 	// DEBUG MSG
-	//tmplog.Println("Private Key:", hexutil.Encode(crypto.FromECDSA(priv)))
-	//pub := priv.Public()
-	//publicKeyECDSA, ok := pub.(*ecdsa.PublicKey)
-	//if !ok {
-	//	tmplog.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
-	//}
-	//
-	//publicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
-	//tmplog.Println("Public Key:", hexutil.Encode(publicKeyBytes))
-	//
-	//address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
-	//tmplog.Println("Address:", address)
+	logrus.Println("Private Key:", hexutil.Encode(crypto.FromECDSA(priv)))
+	pub := priv.Public()
+	publicKeyECDSA, ok := pub.(*ecdsa.PublicKey)
+	if !ok {
+		logrus.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+	}
+
+	publicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
+	logrus.Println("Public Key:", hexutil.Encode(publicKeyBytes))
+
+	address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
+	logrus.Println("Address:", address)
 
 	return priv
 }
 
 func main() {
 
+	//// Test recover account from private key
+	//RecoverPrivkey(privkeyStr)
 
-
-	RecoverPrivkey(privkeyStr)
-
+	// Testing a login
+	loginFlow()
 
 
 
 }
+
 
 func loginFlow() {
 	ctx := context.Background()
@@ -95,7 +91,7 @@ func loginFlow() {
 		//grpc.WithInsecure(),
 	}
 	addr := "localhost:4000"
-	tmplog.Printf("connecting to grpc server: %s", addr)
+	logrus.Printf("connecting to grpc server: %s", addr)
 	conn, err := grpc.DialContext(ctx, "localhost:4000", dialOpts...)
 	if err != nil {
 		panic(err)
@@ -107,14 +103,14 @@ func loginFlow() {
 	loginMsg := &protoId.LoginMessage{
 		PubKey: pubKey,
 	}
-	tmplog.Println("step 1", loginMsg)
+	logrus.Println("step 1", loginMsg)
 
 	// Request a login
 	loginMsg, err = server.RequestLogin(ctx, loginMsg)
 	if err != nil {
 		panic(err)
 	}
-	tmplog.Println("step 2", loginMsg)
+	logrus.Println("step 2", loginMsg)
 
 	// Sign message
 }

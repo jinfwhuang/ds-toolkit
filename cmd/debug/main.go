@@ -1,21 +1,22 @@
 package main
 
 import (
-	"github.com/jinfwhuang/ds-sdk/pkg/ds"
-	tmplog "log"
+	"github.com/jinfwhuang/ds-toolkit/pkg/login"
+	log "log"
 )
 
 func init() {
-	tmplog.SetFlags(tmplog.Llongfile)
+	log.SetFlags(log.Llongfile)
 }
 
 /*
 
  */
 func main() {
-	ds.Put()
+	//ds.Put()
 
-	tmplog.Println("finish debug main")
+	login.GenPrivateKey()
+	log.Println("finish debug main")
 }
 
 

@@ -8,7 +8,6 @@ An example service that demonstrates how to implement a key signing login flow.
 ```bash
 go run ./cmd/login
 
-
 ```
 
 - grpcurl automatically convert byte into base64 string

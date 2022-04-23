@@ -4,57 +4,50 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"github.com/jinfwhuang/ds-sdk/pkg/bytesutil"
-	"github.com/jinfwhuang/ds-sdk/pkg/ds"
-	protoId "github.com/jinfwhuang/ds-sdk/proto/identity"
+	"github.com/jinfwhuang/ds-toolkit/pkg/bytesutil"
+	cmd_utils "github.com/jinfwhuang/ds-toolkit/pkg/cmd-utils"
+	protoId "github.com/jinfwhuang/ds-toolkit/proto/identity"
+	"github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
-	tmplog "log"
 	"net"
 	"os"
 	"time"
-	"github.com/urfave/cli/v2"
 )
 
-func init() {
-	tmplog.SetFlags(tmplog.Llongfile)
-}
-
-var (
-	GrpcPort = &cli.IntFlag{
-		Name:  "grpc-port",
-		Usage: "TODO: xxx",
-		Value: 4000,
-	}
-)
 
 var AppFlags = []cli.Flag{
-	GrpcPort,
+	cmd_utils.GrpcPort,
+	cmd_utils.LogLevel,
+	cmd_utils.LogCaller,
 }
 
 func main() {
 	app := cli.App{}
-	app.Name = "beacon-chain-light-client"
-	app.Usage = "Beacon Chain Light Client"
+	//app.Name = "xxx"
+	//app.Usage = "yyy"
 	app.Action = start
 
 	app.Flags = AppFlags
 
 	if err := app.Run(os.Args); err != nil {
-		tmplog.Println(err)
+		logrus.Println(err)
 	}
 }
 
-func main2() {
-	ds.Put()
 
-	//StartServer()
 
-	tmplog.Println("finish debug main")
+func testLogrus() {
+
+	logrus.Debug("debuge")
+	logrus.Info("abbc")
+	logrus.Warn("abbc")
 }
+
 
 //type MainApp struct {
 //	cliCtx   *cli.Context
@@ -67,11 +60,13 @@ func main2() {
 
 
 func start(cliCtx *cli.Context) error {
+	cmd_utils.SetupLogrus(cliCtx)
+
 	stop := make(chan struct{})
 
-	grpcPort := cliCtx.Int(GrpcPort.Name)
+	grpcPort := cliCtx.Int(cmd_utils.GrpcPort.Name)
 	address := fmt.Sprintf("%s:%d", "127.0.0.1", grpcPort)
-	tmplog.Printf("grpc addres: %s", address)
+	logrus.Info("grpc addres: %s", address)
 
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
@@ -91,17 +86,18 @@ func start(cliCtx *cli.Context) error {
 		}
 	}()
 
-	tmplog.Println("Wait for stop channel to be closed.")
+	logrus.Println("Wait for stop channel to be closed.")
 	<-stop
 	return nil
 }
 
 type Server struct {
 	protoId.UnsafeIdentityServer
+
 }
 
 func (s *Server) RequestLogin(ctx context.Context, loginMsg *protoId.LoginMessage) (*protoId.LoginMessage, error) {
-	tmplog.Println(loginMsg)
+	logrus.Println(loginMsg)
 
 	if loginMsg.PubKey == nil {
 		return nil, fmt.Errorf("pub key is not provided")
@@ -117,6 +113,8 @@ func (s *Server) RequestLogin(ctx context.Context, loginMsg *protoId.LoginMessag
 		"Timestamp: %d"
 	msg := fmt.Sprintf(msgFmt, b64, t)
 
+	// TODO: put this message into a db
+
 	return &protoId.LoginMessage{
 		PubKey: loginMsg.PubKey,
 		UnsignedMsg: msg,
@@ -124,6 +122,8 @@ func (s *Server) RequestLogin(ctx context.Context, loginMsg *protoId.LoginMessag
 }
 
 func (s *Server) Login(context.Context, *protoId.LoginMessage) (*protoId.LoginResp, error) {
+	// TODO: implement this service
+
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
 
@@ -133,7 +133,7 @@ func (s *Server) Debug(context.Context, *emptypb.Empty) (*protoId.LoginMessage, 
 	if err != nil {
 		panic(nil)
 	}
-	tmplog.Println(pubKey, len(pubKey))
+	logrus.Println(pubKey, len(pubKey))
 
 	return &protoId.LoginMessage{
 		PubKey: pubKey,

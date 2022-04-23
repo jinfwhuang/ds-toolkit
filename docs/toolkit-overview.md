@@ -1,5 +1,5 @@
 
-# High level 
+## High level 
 
 - Toolkit core
   - With respect to decentralized networks, "clients" side logic could be implemented in backend services or frontend applications
@@ -15,4 +15,11 @@
   - Part 1: Identity
   - Part 2: Encryption, permission, data model
   - Part 3: Byte storage
+
+## Demos 
+1. A login flow using private key signing
+  - Status: Half complete
+
+2. Implemented an identity system in smart contracts
+  - Status: Not started
 
