@@ -36,5 +36,5 @@ message LoginResp {
 message LoginMessage {
   bytes pubKey = 1;
   string unsignedMsg = 2;
-  string signedMsg = 3;
+  bytes signature = 3;
 }

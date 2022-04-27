@@ -4,18 +4,18 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/jinfwhuang/ds-toolkit/pkg/bytesutil"
 	cmd_utils "github.com/jinfwhuang/ds-toolkit/pkg/cmd-utils"
 	protoId "github.com/jinfwhuang/ds-toolkit/proto/identity"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"net"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -35,14 +35,13 @@ func main() {
 	app.Flags = AppFlags
 
 	if err := app.Run(os.Args); err != nil {
-		logrus.Println(err)
+		logrus.Info(err)
 	}
 }
 
 
 
 func testLogrus() {
-
 	logrus.Debug("debuge")
 	logrus.Info("abbc")
 	logrus.Warn("abbc")
@@ -76,7 +75,8 @@ func start(cliCtx *cli.Context) error {
 	// GRPC Server
 	grpcServer := grpc.NewServer([]grpc.ServerOption{}...)
 	// Register endpoints
-	protoId.RegisterIdentityServer(grpcServer, &Server{})
+	server := NewServer()
+	protoId.RegisterIdentityServer(grpcServer, server)
 
 	reflection.Register(grpcServer)
 
@@ -86,7 +86,7 @@ func start(cliCtx *cli.Context) error {
 		}
 	}()
 
-	logrus.Println("Wait for stop channel to be closed.")
+	logrus.Info("Wait for stop channel to be closed.")
 	<-stop
 	return nil
 }
@@ -94,26 +94,36 @@ func start(cliCtx *cli.Context) error {
 type Server struct {
 	protoId.UnsafeIdentityServer
 
+	// Store temporary login msg, key by address
+	// Login msg has to be invalidated as soon as it is used
+	loginMsgStore map[string]string
+
+	mutexLock sync.Mutex
+}
+
+func NewServer() *Server {
+	return &Server{
+		loginMsgStore: make(map[string]string),
+	}
 }
 
 func (s *Server) RequestLogin(ctx context.Context, loginMsg *protoId.LoginMessage) (*protoId.LoginMessage, error) {
-	logrus.Println(loginMsg)
-
+	logrus.Info(loginMsg)
 	if loginMsg.PubKey == nil {
 		return nil, fmt.Errorf("pub key is not provided")
 	}
 
-	b := bytesutil.RandBytes(17)
-	b64 := base64.StdEncoding.EncodeToString(b)
+	b64 := base64.StdEncoding.EncodeToString(bytesutil.RandBytes(17))
 	t := time.Now().UnixMilli()
-
-	msgFmt := "Sign this message to prove you have access to this wallet and we will sign you in. \n" +
-		"This won't cost you any crypto. \n " +
-		"Random string: %s" +
+	msgFmt := "Sign this message to prove you have access to the public key. \n" +
+		"Random string: %s \n" +
 		"Timestamp: %d"
 	msg := fmt.Sprintf(msgFmt, b64, t)
 
-	// TODO: put this message into a db
+	pubkey := base64.StdEncoding.EncodeToString(loginMsg.PubKey)
+	s.mutexLock.Lock()
+	s.loginMsgStore[pubkey] = msg
+	s.mutexLock.Unlock()
 
 	return &protoId.LoginMessage{
 		PubKey: loginMsg.PubKey,
@@ -121,10 +131,47 @@ func (s *Server) RequestLogin(ctx context.Context, loginMsg *protoId.LoginMessag
 	}, nil
 }
 
-func (s *Server) Login(context.Context, *protoId.LoginMessage) (*protoId.LoginResp, error) {
-	// TODO: implement this service
+//func validateMsg(msg *protoId.LoginMessage) (bool, error) {
+//	//curve := secp256k1.S256()
+//
+//	pubkey, err := crypto.UnmarshalPubkey(msg.PubKey)
+//	if err != nil {
+//		return false, err
+//	}
+//
+//
+//
+//
+//
+//}
 
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+const (
+	SignatureLength = 65
+)
+
+func (s *Server) Login(ctx context.Context, msg *protoId.LoginMessage) (*protoId.LoginResp, error) {
+	pubkey := msg.PubKey
+	pubkeyStr := base64.StdEncoding.EncodeToString(pubkey)
+
+	// Use unsigned msg stored on server
+	unSignMsg := []byte(s.loginMsgStore[pubkeyStr])
+	msgHash := crypto.Keccak256Hash(unSignMsg)
+	digestHash := msgHash.Bytes()
+
+	// Validate the signature
+	sigWithoutID := msg.Signature[:SignatureLength-1] // remove recovery id
+	validated := crypto.VerifySignature(pubkey, digestHash, sigWithoutID)
+	status := "failed"
+	if validated {
+		status = "ok"
+		// Remove the message from store
+		delete(s.loginMsgStore, pubkeyStr)
+	}
+
+	return &protoId.LoginResp{
+		PubKey: msg.PubKey,
+		Status: status,
+	}, nil
 }
 
 func (s *Server) Debug(context.Context, *emptypb.Empty) (*protoId.LoginMessage, error) {
@@ -133,7 +180,7 @@ func (s *Server) Debug(context.Context, *emptypb.Empty) (*protoId.LoginMessage, 
 	if err != nil {
 		panic(nil)
 	}
-	logrus.Println(pubKey, len(pubKey))
+	logrus.Info(pubKey, len(pubKey))
 
 	return &protoId.LoginMessage{
 		PubKey: pubKey,
