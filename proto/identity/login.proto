@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package jinfwhuang.ds.identity;
+package jinfwhuang.dstoolkit.identity;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/jinfwhuang/ds-sdk/proto/identity";
+option go_package = "github.com/jinfwhuang/ds-toolkit/proto/identity";
 
 // Services
 service Identity {
@@ -22,7 +22,7 @@ service Identity {
 
   rpc Debug(google.protobuf.Empty) returns (LoginMessage) {
     option (google.api.http) = {
-      get: "/identity/login"
+      get: "/identity/debug"
     };
   }
 

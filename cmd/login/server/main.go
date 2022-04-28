@@ -19,6 +19,12 @@ import (
 	"time"
 )
 
+const (
+	SignatureLength = 65
+	SignInMsgFmt = "Sign this message to prove you have access to the public key. " +
+		"pubkey=%s rand-string=%s timestamp= %d"
+
+)
 
 var AppFlags = []cli.Flag{
 	cmd_utils.GrpcPort,
@@ -28,70 +34,45 @@ var AppFlags = []cli.Flag{
 
 func main() {
 	app := cli.App{}
-	//app.Name = "xxx"
-	//app.Usage = "yyy"
-	app.Action = start
-
+	app.Name = "Identity-IdServer"
 	app.Flags = AppFlags
-
+	app.Action = start
 	if err := app.Run(os.Args); err != nil {
 		logrus.Info(err)
 	}
 }
-
-
-
-func testLogrus() {
-	logrus.Debug("debuge")
-	logrus.Info("abbc")
-	logrus.Warn("abbc")
-}
-
-
-//type MainApp struct {
-//	cliCtx   *cli.Context
-//	ctx      context.Context
-//	cancel   context.CancelFunc
-//	lock     sync.RWMutex
-//	stop     chan struct{} // Channel to wait for termination notifications.
-//	app *cli.App,
-//}
-
 
 func start(cliCtx *cli.Context) error {
 	cmd_utils.SetupLogrus(cliCtx)
 
 	stop := make(chan struct{})
 
-	grpcPort := cliCtx.Int(cmd_utils.GrpcPort.Name)
-	address := fmt.Sprintf("%s:%d", "127.0.0.1", grpcPort)
-	logrus.Info("grpc addres: %s", address)
 
+	// Tcp Listener
+	grpcPort := cliCtx.Int(cmd_utils.GrpcPort.Name)
+	address := fmt.Sprintf("%s:%d", "0.0.0.0", grpcPort)
+	logrus.Infof("grpc address: %s", address)
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
-		panic(fmt.Errorf("could not listen to port in Start() %s: %v", address, err))
+		logrus.Fatalf("could not listen to port in Start() %s: %v", address, err)
 	}
-
-	// GRPC Server
+	// GRPC
 	grpcServer := grpc.NewServer([]grpc.ServerOption{}...)
-	// Register endpoints
-	server := NewServer()
+	server := NewIdServer()
 	protoId.RegisterIdentityServer(grpcServer, server)
-
-	reflection.Register(grpcServer)
-
+	reflection.Register(grpcServer)  // Enable reflection
 	go func() {
 		if err := grpcServer.Serve(lis); err != nil {
-			panic(fmt.Errorf("could not serve gRPC: %v", err))
+			logrus.Fatalf("could not serve gRPC: %v", err)
 		}
 	}()
 
-	logrus.Info("Wait for stop channel to be closed.")
+	logrus.Info("wait for stop channel to be closed.")
 	<-stop
 	return nil
 }
 
-type Server struct {
+type IdServer struct {
 	protoId.UnsafeIdentityServer
 
 	// Store temporary login msg, key by address
@@ -101,59 +82,42 @@ type Server struct {
 	mutexLock sync.Mutex
 }
 
-func NewServer() *Server {
-	return &Server{
+func NewIdServer() *IdServer {
+	return &IdServer{
 		loginMsgStore: make(map[string]string),
 	}
 }
 
-func (s *Server) RequestLogin(ctx context.Context, loginMsg *protoId.LoginMessage) (*protoId.LoginMessage, error) {
-	logrus.Info(loginMsg)
+func GenerateSignInMessage(key []byte) string {
+	keyB16 := base64.StdEncoding.EncodeToString(key)
+	randStr := base64.StdEncoding.EncodeToString(bytesutil.RandBytes(17))
+	t := time.Now().UnixMilli()
+	return fmt.Sprintf(SignInMsgFmt, keyB16, randStr, t)
+}
+
+func (s *IdServer) RequestLogin(ctx context.Context, loginMsg *protoId.LoginMessage) (*protoId.LoginMessage, error) {
 	if loginMsg.PubKey == nil {
 		return nil, fmt.Errorf("pub key is not provided")
 	}
-
-	b64 := base64.StdEncoding.EncodeToString(bytesutil.RandBytes(17))
-	t := time.Now().UnixMilli()
-	msgFmt := "Sign this message to prove you have access to the public key. \n" +
-		"Random string: %s \n" +
-		"Timestamp: %d"
-	msg := fmt.Sprintf(msgFmt, b64, t)
-
+	signInMsg := GenerateSignInMessage(loginMsg.PubKey)
 	pubkey := base64.StdEncoding.EncodeToString(loginMsg.PubKey)
+
+	// Keep the unsigned message
 	s.mutexLock.Lock()
-	s.loginMsgStore[pubkey] = msg
+	s.loginMsgStore[pubkey] = signInMsg
 	s.mutexLock.Unlock()
 
 	return &protoId.LoginMessage{
-		PubKey: loginMsg.PubKey,
-		UnsignedMsg: msg,
+		PubKey:      loginMsg.PubKey,
+		UnsignedMsg: signInMsg,
 	}, nil
 }
 
-//func validateMsg(msg *protoId.LoginMessage) (bool, error) {
-//	//curve := secp256k1.S256()
-//
-//	pubkey, err := crypto.UnmarshalPubkey(msg.PubKey)
-//	if err != nil {
-//		return false, err
-//	}
-//
-//
-//
-//
-//
-//}
-
-const (
-	SignatureLength = 65
-)
-
-func (s *Server) Login(ctx context.Context, msg *protoId.LoginMessage) (*protoId.LoginResp, error) {
+func (s *IdServer) Login(ctx context.Context, msg *protoId.LoginMessage) (*protoId.LoginResp, error) {
 	pubkey := msg.PubKey
 	pubkeyStr := base64.StdEncoding.EncodeToString(pubkey)
 
-	// Use unsigned msg stored on server
+	// Retrieve the unsigned message
 	unSignMsg := []byte(s.loginMsgStore[pubkeyStr])
 	msgHash := crypto.Keccak256Hash(unSignMsg)
 	digestHash := msgHash.Bytes()
@@ -174,17 +138,19 @@ func (s *Server) Login(ctx context.Context, msg *protoId.LoginMessage) (*protoId
 	}, nil
 }
 
-func (s *Server) Debug(context.Context, *emptypb.Empty) (*protoId.LoginMessage, error) {
+func (s *IdServer) Debug(context.Context, *emptypb.Empty) (*protoId.LoginMessage, error) {
 	pubKeyStr := "4E6B0228A5bc0Ca7f2a8bfaC93B13aA9cc506F12"
 	pubKey, err := base64.StdEncoding.DecodeString(pubKeyStr)
 	if err != nil {
-		panic(nil)
+		logrus.Fatal(err)
 	}
-	logrus.Info(pubKey, len(pubKey))
+	signInMsg := GenerateSignInMessage(pubKey)
+
+	logrus.Info("pubkey=", pubKey, "len=", len(pubKey))
+	logrus.Info("sign-in-message=", signInMsg)
 
 	return &protoId.LoginMessage{
 		PubKey: pubKey,
+		UnsignedMsg: signInMsg,
 	}, nil
 }
-
-

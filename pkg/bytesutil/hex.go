@@ -2,6 +2,7 @@ package bytesutil
 
 import (
 	"fmt"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
 // Errors
@@ -42,4 +43,12 @@ func CheckNumber(input string) (raw string, err error) {
 
 func has0xPrefix(input string) bool {
 	return len(input) >= 2 && input[0] == '0' && (input[1] == 'x' || input[1] == 'X')
+}
+
+func ZeroXToByte(s string) []byte {
+	b, err := hexutil.Decode(s)
+	if err != nil {
+		panic(err)
+	}
+	return b
 }

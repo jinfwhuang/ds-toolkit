@@ -38,7 +38,7 @@ func NewIdentityClient(cc grpc.ClientConnInterface) IdentityClient {
 
 func (c *identityClient) RequestLogin(ctx context.Context, in *LoginMessage, opts ...grpc.CallOption) (*LoginMessage, error) {
 	out := new(LoginMessage)
-	err := c.cc.Invoke(ctx, "/jinfwhuang.ds.identity.Identity/RequestLogin", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/jinfwhuang.dstoolkit.identity.Identity/RequestLogin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (c *identityClient) RequestLogin(ctx context.Context, in *LoginMessage, opt
 
 func (c *identityClient) Login(ctx context.Context, in *LoginMessage, opts ...grpc.CallOption) (*LoginResp, error) {
 	out := new(LoginResp)
-	err := c.cc.Invoke(ctx, "/jinfwhuang.ds.identity.Identity/Login", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/jinfwhuang.dstoolkit.identity.Identity/Login", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (c *identityClient) Login(ctx context.Context, in *LoginMessage, opts ...gr
 
 func (c *identityClient) Debug(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*LoginMessage, error) {
 	out := new(LoginMessage)
-	err := c.cc.Invoke(ctx, "/jinfwhuang.ds.identity.Identity/Debug", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/jinfwhuang.dstoolkit.identity.Identity/Debug", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func _Identity_RequestLogin_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/jinfwhuang.ds.identity.Identity/RequestLogin",
+		FullMethod: "/jinfwhuang.dstoolkit.identity.Identity/RequestLogin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IdentityServer).RequestLogin(ctx, req.(*LoginMessage))
@@ -127,7 +127,7 @@ func _Identity_Login_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/jinfwhuang.ds.identity.Identity/Login",
+		FullMethod: "/jinfwhuang.dstoolkit.identity.Identity/Login",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IdentityServer).Login(ctx, req.(*LoginMessage))
@@ -145,7 +145,7 @@ func _Identity_Debug_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/jinfwhuang.ds.identity.Identity/Debug",
+		FullMethod: "/jinfwhuang.dstoolkit.identity.Identity/Debug",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IdentityServer).Debug(ctx, req.(*emptypb.Empty))
@@ -157,7 +157,7 @@ func _Identity_Debug_Handler(srv interface{}, ctx context.Context, dec func(inte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Identity_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "jinfwhuang.ds.identity.Identity",
+	ServiceName: "jinfwhuang.dstoolkit.identity.Identity",
 	HandlerType: (*IdentityServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
