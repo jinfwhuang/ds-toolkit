@@ -1,0 +1,2 @@
+# Fix github syntax highlight for solidity
+*.sol linguist-language=Solidity

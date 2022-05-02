@@ -1,0 +1,13 @@
+---
+# All
+id: '0x3523d88c73abC394A204b06c99Ef9958BbA33E73'
+owner_addr:
+  - '0x8be849e6cAe9b4021BBA4E73006d2F1550A41F5E'
+  - '0xE23e9A31BD2263DF0A59C5B23c2Bb56e4e5ad566'
+  - '0x8abc6f0e78342D63466b496b72DE529108f6fc0a'
+publicKeys:
+  - type: secp256k1
+    key: '0x044a34ac7e8a49e22ad12a848174fc084be81dc61260575c9b7eb53aef6aca5e934e4f59ac359c032badecffba128e62b79782780dfc943aff65c6b598c4c608c5'
+  - type: bls-12-381
+    key: 0xxxxxxxxx
+profile_link: ipfs/link/containing-public-information
