@@ -118,6 +118,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@ds-toolkit/my-controls@workspace:experimental/my-controls":
+  version: 0.0.0-use.local
+  resolution: "@ds-toolkit/my-controls@workspace:experimental/my-controls"
+  dependencies:
+    "@ds-toolkit/config": "workspace:*"
+    typescript: 4.6.3
+  languageName: unknown
+  linkType: soft
+
 "@ensdomains/ens@npm:^0.4.4":
   version: 0.4.5
   resolution: "@ensdomains/ens@npm:0.4.5"

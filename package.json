@@ -10,7 +10,8 @@
   },
   "workspaces": [
     "npm-pkg/config",
-    "npm-pkg/contracts-identity"
+    "npm-pkg/contracts-identity",
+    "experimental/my-controls"
   ],
   "packageManager": "yarn@3.2.0",
   "devDependencies": {

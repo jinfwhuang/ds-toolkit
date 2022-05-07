@@ -1,0 +1,15 @@
+{
+  "extends": "@ds-toolkit/config/typescript/tsconfig.global.json",
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "composite": true,
+    "noEmit": false
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
