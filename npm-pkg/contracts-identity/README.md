@@ -25,5 +25,8 @@ yarn lint:sol
 NETWORK=ropsten npx hardhat run scripts/deploy.ts
 
 # verify: publish the source code and make the contracts verifiable.
-npx hardhat verify 0x6B66f47D14ED039D6C0492b85a18c1cd85762Ac5
+npx hardhat verify 0xe0822c07B9513B2bDC9bd0780f4AED4452dAc8c4
 ```
+
+## References:
+- Ropsten faucet: https://faucet.metamask.io/
