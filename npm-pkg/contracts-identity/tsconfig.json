@@ -1,0 +1,19 @@
+{
+  "extends": "@ds-toolkit/config/typescript/tsconfig.global.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "strict": false,
+    "isolatedModules": false,
+  "composite": true
+  },
+  "include": [
+    "./scripts", 
+    "./test", 
+    "./typechain"
+  ],
+  "files": [
+    "./hardhat.config.ts"
+  ]
+}

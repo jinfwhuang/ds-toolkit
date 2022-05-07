@@ -1,0 +1,38 @@
+{
+  "name": "@ds-toolkit/contracts-identity",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "echo 'contracts-identity: no-op'",
+    "lint:es": "npx eslint '**/*.{js,ts}'",
+    "lint:es:fix": "npx eslint --fix '**/*.{js,ts}'",
+    "lint:sol": "npx solhint -f table 'contracts/**/*.sol'"
+  },
+  "keywords": [],
+  "author": "",
+  "devDependencies": {
+    "@ds-toolkit/config": "workspace:*",
+    "@nomiclabs/hardhat-ethers": "^2.0.5",
+    "@nomiclabs/hardhat-etherscan": "^3.0.3",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@typechain/ethers-v5": "^7.2.0",
+    "@typechain/hardhat": "^2.3.1",
+    "@types/chai": "^4.3.1",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^12.20.50",
+    "chai": "^4.3.6",
+    "dotenv": "^10.0.0",
+    "ethereum-waffle": "^3.4.4",
+    "ethers": "^5.6.4",
+    "hardhat": "^2.9.3",
+    "hardhat-abi-exporter": "^2.9.0",
+    "hardhat-gas-reporter": "^1.0.8",
+    "prettier": "^2.6.2",
+    "prettier-plugin-solidity": "^1.0.0-beta.13",
+    "solhint": "^3.3.7",
+    "solidity-coverage": "^0.7.21",
+    "ts-node": "^10.7.0",
+    "typechain": "^5.2.0",
+    "typescript": "^4.6.4"
+  }
+}

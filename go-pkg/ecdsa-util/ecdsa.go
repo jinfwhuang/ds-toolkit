@@ -2,9 +2,10 @@ package ecdsa_util
 
 import (
 	"crypto/ecdsa"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/jinfwhuang/ds-toolkit/pkg/bytesutil"
+	"github.com/jinfwhuang/ds-toolkit/go-pkg/bytesutil"
 )
 
 func ZeroXToByte(s string) []byte {
@@ -35,15 +36,22 @@ func RecoverPubkey(s string) (*ecdsa.PublicKey, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err != nil {
-		return nil, err
-	}
 	pubkey, err := crypto.UnmarshalPubkey(b)
 	if err != nil {
 		return nil, err
 	}
 	return pubkey, nil
 }
+
+
+func ToAddress(pub []byte) (common.Address, error) {
+	pubkey, err := crypto.UnmarshalPubkey(pub)
+	if err != nil {
+		return common.Address{}, err
+	}
+	return crypto.PubkeyToAddress(*pubkey), nil
+}
+
 
 
 

@@ -1,0 +1,36 @@
+{
+  "name": "funding-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "yarn workspaces foreach run build",
+    "lint": "eslint . --ignore-path .gitignore --ext .ts,.tsx,.js",
+    "lint:ts:check": "eslint --fix . --ignore-path .gitignore --ext .ts,.tsx,.js",
+    "lint:fix": "yarn lint --fix"
+  },
+  "workspaces": [
+    "npm-pkg/config",
+    "npm-pkg/contracts-identity"
+  ],
+  "packageManager": "yarn@3.2.0",
+  "devDependencies": {
+    "@goldstack/utils-typescript-references": "^0.1.10",
+    "@next/eslint-plugin-next": "^12.1.5",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsdoc": "^39.2.9",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "eslint-plugin-unicorn": "latest",
+    "eslint-utils": "^3.0.0",
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.3"
+  }
+}

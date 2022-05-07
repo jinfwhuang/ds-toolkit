@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/hex"
 	"flag"
-	"github.com/jinfwhuang/ds-toolkit/pkg/ecdsa-util"
+	"github.com/jinfwhuang/ds-toolkit/go-pkg/ecdsa-util"
 	"os"
 
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/jinfwhuang/ds-toolkit/pkg/cmd-utils"
+	"github.com/jinfwhuang/ds-toolkit/go-pkg/cmd-utils"
 	protoId "github.com/jinfwhuang/ds-toolkit/proto/identity"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"

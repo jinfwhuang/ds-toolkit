@@ -5,14 +5,14 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/crypto/secp256k1"
-	"github.com/jinfwhuang/ds-toolkit/pkg/login"
+	"github.com/jinfwhuang/ds-toolkit/go-pkg/login"
 	"github.com/sirupsen/logrus"
-	log "log"
 )
 
 func init() {
-	log.SetFlags(log.Llongfile)
+	logrus.SetReportCaller(true)
 }
+
 
 /*
 
@@ -21,7 +21,7 @@ func main() {
 	//ds.Put()
 
 	login.GenPrivateKey()
-	log.Println("finish debug main")
+	logrus.Println("finish debug main")
 }
 
 

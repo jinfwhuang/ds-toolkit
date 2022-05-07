@@ -5,8 +5,9 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/jinfwhuang/ds-toolkit/pkg/bytesutil"
-	cmd_utils "github.com/jinfwhuang/ds-toolkit/pkg/cmd-utils"
+	"github.com/jinfwhuang/ds-toolkit/go-pkg/bytesutil"
+	cmd_utils "github.com/jinfwhuang/ds-toolkit/go-pkg/cmd-utils"
+	ecdsa_util "github.com/jinfwhuang/ds-toolkit/go-pkg/ecdsa-util"
 	protoId "github.com/jinfwhuang/ds-toolkit/proto/identity"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -115,6 +116,10 @@ func (s *IdServer) RequestLogin(ctx context.Context, loginMsg *protoId.LoginMess
 
 func (s *IdServer) Login(ctx context.Context, msg *protoId.LoginMessage) (*protoId.LoginResp, error) {
 	pubkey := msg.PubKey
+	addr, err := ecdsa_util.ToAddress(pubkey)
+	if err != nil {
+		return nil, err
+	}
 	pubkeyStr := base64.StdEncoding.EncodeToString(pubkey)
 
 	// Retrieve the unsigned message
@@ -128,8 +133,9 @@ func (s *IdServer) Login(ctx context.Context, msg *protoId.LoginMessage) (*proto
 	status := "failed"
 	if validated {
 		status = "ok"
-		// Remove the message from store
-		delete(s.loginMsgStore, pubkeyStr)
+		delete(s.loginMsgStore, pubkeyStr) // Remove the message from store
+
+		logrus.Infof("login successful: address=%s", addr.Hex())
 	}
 
 	return &protoId.LoginResp{

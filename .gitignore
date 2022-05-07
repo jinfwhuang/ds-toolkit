@@ -1,3 +1,63 @@
-*tmp*
+# Logs
+*.log
+npm-debug.*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Test output
+apps/**/output
+apps/**/web/output
+tools/output
+
+# Build
+dist/
 build/
+node_modules
 node_modules/
+jspm_packages/
+**/dist/
+**/dist-cjs/
+**/.tmp/
+
+# Dot files
+.DS_Store
+.npm
+.eslintcache
+.node_repl_history
+*.tgz
+.yarn-integrity
+
+# Keys
+*.jks
+*.p8
+*.p12
+
+# Mac
+*.key
+
+# XCode
+*.mobileprovision
+
+# Backups
+*.orig.*
+
+# Terraform
+.terraform
+.terraform.lock.hcl
+
+# Yarn
+.yarn/cache/
+.yarn/install-state.gz
+.yarn/
+
+# Expo
+.expo/
+web-build/
+
+# Env
+*.env
