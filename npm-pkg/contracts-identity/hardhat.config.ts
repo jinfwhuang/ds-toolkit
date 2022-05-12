@@ -27,7 +27,7 @@ const url = process.env.URL || ``;
 const privateKey = process.env.PRIVATE_KEY || `0x${`11`.repeat(32)}`; // this is to avoid hardhat error
 
 const config: HardhatUserConfig = {
-  solidity: `0.8.4`,
+  solidity: `0.8.8`,
   defaultNetwork: network,
   networks: {
     mainnet: {

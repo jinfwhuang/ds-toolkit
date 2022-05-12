@@ -21,6 +21,9 @@ yarn lint:sol
 
 ## Deploy
 ```bash
+# export abi
+npx hardhat export-abi
+
 # deploy
 NETWORK=ropsten npx hardhat run scripts/deploy.ts
 

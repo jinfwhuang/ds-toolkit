@@ -21,6 +21,7 @@ func main() {
 	//ds.Put()
 
 	login.GenPrivateKey()
+
 	logrus.Println("finish debug main")
 }
 
@@ -46,6 +47,7 @@ func RecoverPrivkey(s string)  *ecdsa.PrivateKey {
 
 	publicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
 	logrus.Println("Public Key:", hexutil.Encode(publicKeyBytes))
+	logrus.Println("Public Key, compressed form:", secp256k1.CompressPubkey(publicKeyECDSA.X, publicKeyECDSA.Y))
 
 	address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
 	logrus.Println("Address:", address)
