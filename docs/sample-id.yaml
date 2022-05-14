@@ -1,13 +1,30 @@
 ---
-# All
-id: '0x3523d88c73abC394A204b06c99Ef9958BbA33E73'
-owner_addr:
-  - '0x8be849e6cAe9b4021BBA4E73006d2F1550A41F5E'
-  - '0xE23e9A31BD2263DF0A59C5B23c2Bb56e4e5ad566'
-  - '0x8abc6f0e78342D63466b496b72DE529108f6fc0a'
+# Immutable
+# Matches the first entry in pubkeys: the last 20 bytes of the Keccak-256 hash of public key
+id: '0x48B7872500c5BefDBb7BBe9dB9070CeEC66bdD4b'
+
+# Immutable, optional
+# lower case alphanumeric, [.-_] # immutable, optional
+name: 'jin.digitalgreen'
+
+# pubkey:
+#  - secp256k1 public key
+#  - compressed
+#  - hex
+#  - prefixed with 0x
+
+# Entries are append-only
+# "status" field could be modified
+# All 'admin' pubkeys has permission to perform update
 publicKeys:
   - type: secp256k1
-    key: '0x044a34ac7e8a49e22ad12a848174fc084be81dc61260575c9b7eb53aef6aca5e934e4f59ac359c032badecffba128e62b79782780dfc943aff65c6b598c4c608c5'
+    key: '0x0233085d6674c5629673e9d0fb01ff9b41c3b2accb1cdb7e94516b0a29c0b399b5'
+    status: 'admin' # admin, active, canceled
+  - type: secp256k1
+    key: '0x02a5ca0d04213b2c044dc636887c0eabf904c31c679f46ad30110f05eb7f093e95'
+    status: 'active'
   - type: bls-12-381
     key: 0xxxxxxxxx
-profile_link: ipfs/link/containing-public-information
+    status: 'active'
+
+metadata_url: ipfs/link/containing-public-information

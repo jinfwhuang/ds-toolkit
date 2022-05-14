@@ -2,9 +2,10 @@ package login
 
 import (
 	"crypto/ecdsa"
-	"fmt"
+	"crypto/elliptic"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/crypto/secp256k1"
 	log "log"
 )
 
@@ -19,7 +20,7 @@ func GenPrivateKey() {
 	}
 
 	privateKeyBytes := crypto.FromECDSA(privateKey)
-	fmt.Println("SAVE BUT DO NOT SHARE THIS (Private Key):", hexutil.Encode(privateKeyBytes))
+	log.Println("SAVE BUT DO NOT SHARE THIS (Private Key):", hexutil.Encode(privateKeyBytes))
 
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
@@ -28,10 +29,25 @@ func GenPrivateKey() {
 	}
 
 	publicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
-	fmt.Println("Public Key:", hexutil.Encode(publicKeyBytes))
+	publicKeyBytesCompressed := secp256k1.CompressPubkey(publicKeyECDSA.X, publicKeyECDSA.Y)
+
+	log.Println("Public Key:", hexutil.Encode(publicKeyBytes))
+	log.Println("Public Key, compressed form:", hexutil.Encode(publicKeyBytesCompressed))
+
+	x, y := secp256k1.DecompressPubkey(publicKeyBytesCompressed)
+	_key := &ecdsa.PublicKey {
+		Curve: elliptic.P256(),
+		X: x,
+		Y: y,
+	}
+	log.Println(x, y)
+	log.Println(publicKeyECDSA.X, publicKeyECDSA.Y)
+	log.Println(hexutil.Encode(crypto.FromECDSAPub(_key)))
+	log.Println(hexutil.Encode(crypto.FromECDSAPub(publicKeyECDSA)))
+
 
 	address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
-	fmt.Println("Address:", address)
+	log.Println("Address:", address)
 }
 
 
