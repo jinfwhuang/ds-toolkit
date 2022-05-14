@@ -45,7 +45,7 @@ metadata_url: ipfs/link/containing-public-information
 
 
 struct Pubkey {
-    KeyType keytype;
+    KeyType keytype; // 1=secp256k1, 2=bls-12-381
     KeyStatus status; // 1=admin, 2=active, 3=canceled
     bytes key;
 }
@@ -65,20 +65,19 @@ contract UserRegistry {
     // // A mapping is a key/value map. Here we store each account balance.
     // mapping(address => uint256) balances;
 
-    // Each user is uniquely identified by an ID, which is a 20 bytes integer
-    mapping(address => string) usernames;
+    address[] users;
 
-    mapping(string => address) users;
+    // Each user is uniquely identified by an ID, which is a 20 bytes integer
+    mapping(address => string) lookupNames;
+    mapping(string => address) lookupUsers;
 
     // Each user has many public address
     mapping(address => Pubkey[]) pubkeys;
 
-    // Each user has many public address
-    mapping(address => uint8[]) pubkeyType;
-    mapping(address => bytes[]) pubkeyByte;
+    // // Each user has many public address
+    // mapping(address => uint8[]) pubkeyType;
+    // mapping(address => bytes[]) pubkeyByte;
 
-    // // Each user has many address that it could receive funds
-    // mapping(address => address[]) addresses;
 
     /**
      * Contract initialization.
@@ -92,26 +91,65 @@ contract UserRegistry {
         // owner = msg.sender;
     }
 
+    function newUser(address user, string memory name, KeyType keytype, KeyStatus status, bytes memory key) public returns (string memory) {
+        // TODO: require a signed message
+        if (pubkeys[user].length >= 1) {
+            return "id alreay exist";
+        }
+
+        users.push(user);
+        lookupNames[user] = name;
+        lookupUsers[name] = user;
+        pubkeys[user].push(Pubkey(keytype, status, key));
+        return "created";
+    }
+
     /**
      */
-    function addPubkey(address id, string memory name, KeyType keytype, KeyStatus status, bytes memory key) public {
+    function addPubkey(address user, KeyType keytype, KeyStatus status, bytes memory key) public returns (string memory) {
         // TODO: require a signed message
-        usernames[id] = name;
-        users[name] = id;
-        // pubkeyByte[id].push(key);
+        if (pubkeys[user].length < 1) {
+            return "id does not exist";
+        }
         
-        pubkeys[id].push(Pubkey(keytype, status, key));
+        pubkeys[user].push(Pubkey(keytype, status, key));
+        return "added new key";
     }
 
-    function updateKeyStatus(address id, uint8 keypos, KeyStatus status) public {
+    function updateKeyStatus(address user, uint8 keypos, KeyStatus status) public {
         // TODO: require proof of private key ownership
-        pubkeys[id][keypos].status = status;
+        pubkeys[user][keypos].status = status;
     }
 
-    function getKey(address id, uint8 keypos) external view returns (Pubkey memory) {
-        // TODO: require proof of private key ownership
-        return pubkeys[id][keypos];
+    function getName(address user) external view returns (string memory) {
+        return lookupNames[user];
     }
+
+    function getUser(string memory name) external view returns (address) {
+        return lookupUsers[name];
+    }
+
+    function getKeys(address user) external view returns (Pubkey[] memory) {
+        return pubkeys[user];
+    }
+
+    function getKey(address user, uint8 keypos) external view returns (Pubkey memory) {
+        return pubkeys[user][keypos];
+    }
+
+    function getKeyLen(address user) external view returns (uint256) {
+        return pubkeys[user].length;
+    }
+
+    function getAllUsers() external view returns (address[] memory) {
+        return users;
+    }
+
+    // function getAllIds() external view returns (string[] memory) {
+    //     names 
+    //     usernames
+    //     return usernames;
+    // }
 
     // /**
     //  * Read only function to retrieve the token balance of a given account.

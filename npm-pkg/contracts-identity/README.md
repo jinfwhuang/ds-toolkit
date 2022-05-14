@@ -25,7 +25,7 @@ yarn lint:sol
 npx hardhat export-abi
 
 # deploy
-NETWORK=ropsten npx hardhat run scripts/deploy.ts
+NETWORK=ropsten npx hardhat run scripts/deploy/user-registry.ts
 
 # verify: publish the source code and make the contracts verifiable.
 npx hardhat verify 0xe0822c07B9513B2bDC9bd0780f4AED4452dAc8c4
