@@ -23,16 +23,24 @@ const (
 	OwnerUsername = "jin.huang003"
 	OwnerPrivkey = "0x8b88ac23aa273fb6c8b4c6783f883d157ad01d425abee25df014d7528c5c6452"
 	RandAddr          = "0x4E6B0228A5bc0Ca7f2a8bfaC93B13aA9cc506F12"
-	RpcAddr           = "https://ropsten.infura.io/v3/f05e591322b64bdba3ee32673817254f"
 )
 
 const (
 	//UserRegistryContractAddr = "0xd52C607197467c4200d3cd02BFe667A42e05aa1d" // v1
 	//UserRegistryContractAddr = "0x75B1BaB85bF717FbDAaeBfCaba6a2AeBd7f292Aa" // v2
-	UserRegistryContractAddr = "0xc9091eA0d76C760Aa080Af1E6aAfC127C373a563" // v3
+	//UserRegistryContractAddr = "0xc9091eA0d76C760Aa080Af1E6aAfC127C373a563" // v3
+
+	// Ropsten
+	//RpcAddr           = "https://ropsten.infura.io/v3/f05e591322b64bdba3ee32673817254f"
+	//UserRegistryContractAddr = "0x2925076a3f606BEaE300905632C2C4d92D32C610" // ropsten v4
+	//ChainID = 3 // ropsten
+
+	// hardhast
+	RpcAddr           = "http://127.0.0.1:8545"
+	UserRegistryContractAddr = "0x66e513FA7b40baCB7C1B0391FDE0af3232b1579E"
+	ChainID = 1337 // hardhat
 
 
-	ChainID = 3 // ropsten
 )
 
 //KeyType keytype; // 1=secp256k1, 2=bls-12-381

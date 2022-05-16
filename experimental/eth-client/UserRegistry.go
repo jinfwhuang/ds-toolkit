@@ -37,7 +37,7 @@ type Pubkey struct {
 
 // UserRegistryMetaData contains all meta data concerning the UserRegistry contract.
 var UserRegistryMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"KeyType\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"KeyStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"name\":\"addPubkey\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllUsers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"}],\"name\":\"getKey\",\"outputs\":[{\"components\":[{\"internalType\":\"KeyType\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"KeyStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"internalType\":\"structPubkey\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getKeyLen\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getKeys\",\"outputs\":[{\"components\":[{\"internalType\":\"KeyType\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"KeyStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"internalType\":\"structPubkey[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getName\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"name\":\"getUser\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"KeyType\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"KeyStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"name\":\"newUser\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"},{\"internalType\":\"KeyStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"name\":\"updateKeyStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"name\":\"addPubkey\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"name\":\"computeAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"messageHash\",\"type\":\"bytes32\"}],\"name\":\"ethSignedHash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllUsers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"}],\"name\":\"getImpliedAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"}],\"name\":\"getKey\",\"outputs\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"internalType\":\"structPubkey\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getKeyLen\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getKeys\",\"outputs\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"internalType\":\"structPubkey[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getName\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"name\":\"getUser\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getUserNonce\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"name\":\"newUser\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"hash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"recover\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"rndHash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"}],\"name\":\"updateKeyStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"msgHash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"verifyUser\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"isValid\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 }
 
 // UserRegistryABI is the input ABI used to generate the binding from.
@@ -186,6 +186,68 @@ func (_UserRegistry *UserRegistryTransactorRaw) Transact(opts *bind.TransactOpts
 	return _UserRegistry.Contract.contract.Transact(opts, method, params...)
 }
 
+// ComputeAddr is a free data retrieval call binding the contract method 0x28da9254.
+//
+// Solidity: function computeAddr(bytes key) view returns(address)
+func (_UserRegistry *UserRegistryCaller) ComputeAddr(opts *bind.CallOpts, key []byte) (common.Address, error) {
+	var out []interface{}
+	err := _UserRegistry.contract.Call(opts, &out, "computeAddr", key)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// ComputeAddr is a free data retrieval call binding the contract method 0x28da9254.
+//
+// Solidity: function computeAddr(bytes key) view returns(address)
+func (_UserRegistry *UserRegistrySession) ComputeAddr(key []byte) (common.Address, error) {
+	return _UserRegistry.Contract.ComputeAddr(&_UserRegistry.CallOpts, key)
+}
+
+// ComputeAddr is a free data retrieval call binding the contract method 0x28da9254.
+//
+// Solidity: function computeAddr(bytes key) view returns(address)
+func (_UserRegistry *UserRegistryCallerSession) ComputeAddr(key []byte) (common.Address, error) {
+	return _UserRegistry.Contract.ComputeAddr(&_UserRegistry.CallOpts, key)
+}
+
+// EthSignedHash is a free data retrieval call binding the contract method 0xf1520932.
+//
+// Solidity: function ethSignedHash(bytes32 messageHash) pure returns(bytes32)
+func (_UserRegistry *UserRegistryCaller) EthSignedHash(opts *bind.CallOpts, messageHash [32]byte) ([32]byte, error) {
+	var out []interface{}
+	err := _UserRegistry.contract.Call(opts, &out, "ethSignedHash", messageHash)
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
+}
+
+// EthSignedHash is a free data retrieval call binding the contract method 0xf1520932.
+//
+// Solidity: function ethSignedHash(bytes32 messageHash) pure returns(bytes32)
+func (_UserRegistry *UserRegistrySession) EthSignedHash(messageHash [32]byte) ([32]byte, error) {
+	return _UserRegistry.Contract.EthSignedHash(&_UserRegistry.CallOpts, messageHash)
+}
+
+// EthSignedHash is a free data retrieval call binding the contract method 0xf1520932.
+//
+// Solidity: function ethSignedHash(bytes32 messageHash) pure returns(bytes32)
+func (_UserRegistry *UserRegistryCallerSession) EthSignedHash(messageHash [32]byte) ([32]byte, error) {
+	return _UserRegistry.Contract.EthSignedHash(&_UserRegistry.CallOpts, messageHash)
+}
+
 // GetAllUsers is a free data retrieval call binding the contract method 0xe2842d79.
 //
 // Solidity: function getAllUsers() view returns(address[])
@@ -215,6 +277,37 @@ func (_UserRegistry *UserRegistrySession) GetAllUsers() ([]common.Address, error
 // Solidity: function getAllUsers() view returns(address[])
 func (_UserRegistry *UserRegistryCallerSession) GetAllUsers() ([]common.Address, error) {
 	return _UserRegistry.Contract.GetAllUsers(&_UserRegistry.CallOpts)
+}
+
+// GetImpliedAddr is a free data retrieval call binding the contract method 0x2c0b062c.
+//
+// Solidity: function getImpliedAddr(address user, uint8 keypos) view returns(address)
+func (_UserRegistry *UserRegistryCaller) GetImpliedAddr(opts *bind.CallOpts, user common.Address, keypos uint8) (common.Address, error) {
+	var out []interface{}
+	err := _UserRegistry.contract.Call(opts, &out, "getImpliedAddr", user, keypos)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// GetImpliedAddr is a free data retrieval call binding the contract method 0x2c0b062c.
+//
+// Solidity: function getImpliedAddr(address user, uint8 keypos) view returns(address)
+func (_UserRegistry *UserRegistrySession) GetImpliedAddr(user common.Address, keypos uint8) (common.Address, error) {
+	return _UserRegistry.Contract.GetImpliedAddr(&_UserRegistry.CallOpts, user, keypos)
+}
+
+// GetImpliedAddr is a free data retrieval call binding the contract method 0x2c0b062c.
+//
+// Solidity: function getImpliedAddr(address user, uint8 keypos) view returns(address)
+func (_UserRegistry *UserRegistryCallerSession) GetImpliedAddr(user common.Address, keypos uint8) (common.Address, error) {
+	return _UserRegistry.Contract.GetImpliedAddr(&_UserRegistry.CallOpts, user, keypos)
 }
 
 // GetKey is a free data retrieval call binding the contract method 0xb6e1a1e2.
@@ -370,6 +463,130 @@ func (_UserRegistry *UserRegistrySession) GetUser(name string) (common.Address, 
 // Solidity: function getUser(string name) view returns(address)
 func (_UserRegistry *UserRegistryCallerSession) GetUser(name string) (common.Address, error) {
 	return _UserRegistry.Contract.GetUser(&_UserRegistry.CallOpts, name)
+}
+
+// GetUserNonce is a free data retrieval call binding the contract method 0x6834e3a8.
+//
+// Solidity: function getUserNonce(address user) view returns(uint16)
+func (_UserRegistry *UserRegistryCaller) GetUserNonce(opts *bind.CallOpts, user common.Address) (uint16, error) {
+	var out []interface{}
+	err := _UserRegistry.contract.Call(opts, &out, "getUserNonce", user)
+
+	if err != nil {
+		return *new(uint16), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(uint16)).(*uint16)
+
+	return out0, err
+
+}
+
+// GetUserNonce is a free data retrieval call binding the contract method 0x6834e3a8.
+//
+// Solidity: function getUserNonce(address user) view returns(uint16)
+func (_UserRegistry *UserRegistrySession) GetUserNonce(user common.Address) (uint16, error) {
+	return _UserRegistry.Contract.GetUserNonce(&_UserRegistry.CallOpts, user)
+}
+
+// GetUserNonce is a free data retrieval call binding the contract method 0x6834e3a8.
+//
+// Solidity: function getUserNonce(address user) view returns(uint16)
+func (_UserRegistry *UserRegistryCallerSession) GetUserNonce(user common.Address) (uint16, error) {
+	return _UserRegistry.Contract.GetUserNonce(&_UserRegistry.CallOpts, user)
+}
+
+// Recover is a free data retrieval call binding the contract method 0x19045a25.
+//
+// Solidity: function recover(bytes32 hash, bytes signature) pure returns(address)
+func (_UserRegistry *UserRegistryCaller) Recover(opts *bind.CallOpts, hash [32]byte, signature []byte) (common.Address, error) {
+	var out []interface{}
+	err := _UserRegistry.contract.Call(opts, &out, "recover", hash, signature)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// Recover is a free data retrieval call binding the contract method 0x19045a25.
+//
+// Solidity: function recover(bytes32 hash, bytes signature) pure returns(address)
+func (_UserRegistry *UserRegistrySession) Recover(hash [32]byte, signature []byte) (common.Address, error) {
+	return _UserRegistry.Contract.Recover(&_UserRegistry.CallOpts, hash, signature)
+}
+
+// Recover is a free data retrieval call binding the contract method 0x19045a25.
+//
+// Solidity: function recover(bytes32 hash, bytes signature) pure returns(address)
+func (_UserRegistry *UserRegistryCallerSession) Recover(hash [32]byte, signature []byte) (common.Address, error) {
+	return _UserRegistry.Contract.Recover(&_UserRegistry.CallOpts, hash, signature)
+}
+
+// RndHash is a free data retrieval call binding the contract method 0x2abd5908.
+//
+// Solidity: function rndHash() view returns(bytes32)
+func (_UserRegistry *UserRegistryCaller) RndHash(opts *bind.CallOpts) ([32]byte, error) {
+	var out []interface{}
+	err := _UserRegistry.contract.Call(opts, &out, "rndHash")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
+}
+
+// RndHash is a free data retrieval call binding the contract method 0x2abd5908.
+//
+// Solidity: function rndHash() view returns(bytes32)
+func (_UserRegistry *UserRegistrySession) RndHash() ([32]byte, error) {
+	return _UserRegistry.Contract.RndHash(&_UserRegistry.CallOpts)
+}
+
+// RndHash is a free data retrieval call binding the contract method 0x2abd5908.
+//
+// Solidity: function rndHash() view returns(bytes32)
+func (_UserRegistry *UserRegistryCallerSession) RndHash() ([32]byte, error) {
+	return _UserRegistry.Contract.RndHash(&_UserRegistry.CallOpts)
+}
+
+// VerifyUser is a free data retrieval call binding the contract method 0x1b5aadf7.
+//
+// Solidity: function verifyUser(address user, bytes32 msgHash, bytes signature) view returns(bool isValid)
+func (_UserRegistry *UserRegistryCaller) VerifyUser(opts *bind.CallOpts, user common.Address, msgHash [32]byte, signature []byte) (bool, error) {
+	var out []interface{}
+	err := _UserRegistry.contract.Call(opts, &out, "verifyUser", user, msgHash, signature)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// VerifyUser is a free data retrieval call binding the contract method 0x1b5aadf7.
+//
+// Solidity: function verifyUser(address user, bytes32 msgHash, bytes signature) view returns(bool isValid)
+func (_UserRegistry *UserRegistrySession) VerifyUser(user common.Address, msgHash [32]byte, signature []byte) (bool, error) {
+	return _UserRegistry.Contract.VerifyUser(&_UserRegistry.CallOpts, user, msgHash, signature)
+}
+
+// VerifyUser is a free data retrieval call binding the contract method 0x1b5aadf7.
+//
+// Solidity: function verifyUser(address user, bytes32 msgHash, bytes signature) view returns(bool isValid)
+func (_UserRegistry *UserRegistryCallerSession) VerifyUser(user common.Address, msgHash [32]byte, signature []byte) (bool, error) {
+	return _UserRegistry.Contract.VerifyUser(&_UserRegistry.CallOpts, user, msgHash, signature)
 }
 
 // AddPubkey is a paid mutator transaction binding the contract method 0xbf5fc61d.

@@ -17,11 +17,11 @@ dotenv.config({
   path: `${__dirname}/envs/${network}.conf`,
 });
 
-console.log('-----ENV-----');
-console.log('pwd:', __dirname);
-console.log('network:', process.env.NETWORK);
-console.log('url', process.env.URL);
-console.log('--------------');
+console.log("-----ENV-----");
+console.log("pwd:", __dirname);
+console.log("network:", process.env.NETWORK);
+console.log("url", process.env.URL);
+console.log("--------------");
 
 const url = process.env.URL || ``;
 const privateKey = process.env.PRIVATE_KEY || `0x${`11`.repeat(32)}`; // this is to avoid hardhat error
@@ -32,6 +32,14 @@ const config: HardhatUserConfig = {
   networks: {
     mainnet: {
       // chainId: 1,
+      url,
+      accounts: [privateKey],
+    },
+    hardhat: {
+      chainId: 1337,
+    },
+    localhost: {
+      chainId: 1337,
       url,
       accounts: [privateKey],
     },
@@ -52,17 +60,17 @@ const config: HardhatUserConfig = {
     apiKey: process.env.ETHERSCAN_API_KEY,
   },
   abiExporter: {
-    path: './artifacts/abi',
+    path: "./artifacts/abi",
     clear: true,
     flat: true,
     // only: [':ERC20$'],
-    spacing: 2
-  }  
+    spacing: 2,
+  },
 };
 
 // https://hardhat.org/guides/create-task.html
 // @ts-ignore
-task('fast', 'Prints the list of accounts', async (taskArgs, hre) => {
+task("fast", "Prints the list of accounts", async (taskArgs, hre) => {
   console.log("task arguments:", taskArgs);
   const accounts = await hre.ethers.getSigners();
 
@@ -74,7 +82,7 @@ task('fast', 'Prints the list of accounts', async (taskArgs, hre) => {
     // Look up the balance
     if (account.provider) {
       const balance = await account.provider.getBalance(account.address);
-      console.log('balance:', balance);
+      console.log("balance:", balance);
     }
   }
 });

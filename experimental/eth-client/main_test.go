@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
+	"encoding/binary"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -12,7 +13,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/jinfwhuang/ds-toolkit/go-pkg/bytesutil"
 	ecdsa_util "github.com/jinfwhuang/ds-toolkit/go-pkg/ecdsa-util"
-	"github.com/sirupsen/logrus"
+	//"github.com/sirupsen/logrus"
 	"log"
 	"math/big"
 	"testing"
@@ -20,8 +21,13 @@ import (
 
 func init() {
 	log.SetFlags(log.Llongfile)
-	//logrus.SetReportCaller(true)
+	//log.SetReportCaller(true)
 }
+
+var (
+	ethconn, _ = ethclient.Dial(RpcAddr)
+
+)
 
 func TestGenPrivateKey(t *testing.T) {
 	privateKey, err := crypto.GenerateKey()
@@ -72,7 +78,7 @@ func addUser(_user User) {
 	ctx := context.Background()
 	ethconn, err := ethclient.Dial(RpcAddr)
 	if err != nil {
-		logrus.Fatalf("Failed to connect to the Ethereum client: %v", err)
+		log.Fatalf("Failed to connect to the Ethereum client: %v", err)
 	}
 
 	privkey, err := ecdsa_util.RecoverPrivkey(_user.privkey)
@@ -85,7 +91,7 @@ func addUser(_user User) {
 	// Instantiate the contract and display its name
 	userRegistry, err := NewUserRegistry(common.HexToAddress(UserRegistryContractAddr), ethconn)
 	if err != nil {
-		logrus.Fatalf("Failed to instantiate a Token contract: %v", err)
+		log.Fatalf("Failed to instantiate a Token contract: %v", err)
 	}
 
 	name := _user.name
@@ -104,7 +110,7 @@ func addUser(_user User) {
 	log.Println(txOpt)
 	tx, err := userRegistry.NewUser(txOpt, userAddr, name, Secp25661, Admin, pubkey)
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal(err)
 	}
 	log.Println("nonce=", tx.Nonce())
 	log.Println("type=", tx.Type())
@@ -139,14 +145,14 @@ func Test_GetAllUsers(t *testing.T) {
 	//ctx := context.Background()
 	ethconn, err := ethclient.Dial(RpcAddr)
 	if err != nil {
-		logrus.Fatalf("Failed to connect to the Ethereum client: %v", err)
+		log.Fatalf("Failed to connect to the Ethereum client: %v", err)
 	}
 
 	// Instantiate the contract and display its name
 	userRegistryAcc := common.HexToAddress(UserRegistryContractAddr)
 	userRegistry, err := NewUserRegistry(userRegistryAcc, ethconn)
 	if err != nil {
-		logrus.Fatalf("Failed to instantiate a Token contract: %v", err)
+		log.Fatalf("Failed to instantiate a Token contract: %v", err)
 	}
 
 	callOpt := &bind.CallOpts{
@@ -161,4 +167,197 @@ func Test_GetAllUsers(t *testing.T) {
 	}
 	log.Println("-------")
 	// https://ropsten.etherscan.io/address/0xd52C607197467c4200d3cd02BFe667A42e05aa1d
+}
+
+func Test_SolidityComputeAddr(t *testing.T) {
+	privkey, err := ecdsa_util.RecoverPrivkey(OwnerPrivkey)
+	if err != nil {
+		panic(err)
+	}
+	pubkey := &privkey.PublicKey
+	pubkeyBytes := crypto.FromECDSAPub(pubkey)
+	addr := crypto.PubkeyToAddress(privkey.PublicKey)
+
+	callOpt := &bind.CallOpts{
+		Pending: true,
+	}
+	userRegistryAcc := common.HexToAddress(UserRegistryContractAddr)
+	userRegistry, err := NewUserRegistry(userRegistryAcc, ethconn)
+	if err != nil {
+		log.Fatalf("Failed to instantiate a Token contract: %v", err)
+	}
+
+	solidityAddr, err := userRegistry.ComputeAddr(callOpt, pubkeyBytes)
+
+	log.Println("Address      :", addr)
+	log.Println("Solidity addr:", solidityAddr)
+}
+
+func Test_AddressFromKey(t *testing.T) {
+	privkey, err := ecdsa_util.RecoverPrivkey(OwnerPrivkey)
+	if err != nil {
+		panic(err)
+	}
+	pubkey := &privkey.PublicKey
+	pubkeyBytes := crypto.FromECDSAPub(&privkey.PublicKey)
+	addr := crypto.PubkeyToAddress(privkey.PublicKey)
+
+	log.Println("Address:", addr)
+	log.Println("Public Key:", hexutil.Encode(pubkeyBytes))
+	log.Println("Public Key:", pubkeyBytes)
+	log.Println("Public Key:", len(pubkeyBytes))
+	log.Println("compressed form:", hexutil.Encode(secp256k1.CompressPubkey(pubkey.X, pubkey.Y)))
+
+	_fromFull := crypto.Keccak256(pubkeyBytes)
+	addrFull := common.BytesToAddress(_fromFull[12:])
+
+	_fromComp := crypto.Keccak256(secp256k1.CompressPubkey(pubkey.X, pubkey.Y))
+	addrComp := common.BytesToAddress(_fromComp[12:])
+
+	log.Println("From Full", addrFull.Hex())
+	log.Println("From comp", addrComp.Hex())
+	log.Println("From func", PubkeyToAddress(*pubkey).Hex())
+
+}
+
+func PubkeyToAddress(p ecdsa.PublicKey) common.Address {
+	pubBytes := crypto.FromECDSAPub(&p)
+	return common.BytesToAddress(crypto.Keccak256(pubBytes[1:])[12:])
+}
+
+
+
+func Test_Sign_Recover(t *testing.T) {
+	privkey, err := ecdsa_util.RecoverPrivkey(OwnerPrivkey)
+	if err != nil {
+		panic(err)
+	}
+	pubkey := &privkey.PublicKey
+	pubkeyBytes := crypto.FromECDSAPub(&privkey.PublicKey)
+	addr := crypto.PubkeyToAddress(privkey.PublicKey)
+
+
+	log.Println("Address:", addr)
+	log.Println("Public Key:", hexutil.Encode(pubkeyBytes))
+	log.Println("compressed form:", hexutil.Encode(secp256k1.CompressPubkey(pubkey.X, pubkey.Y)))
+
+	msg := []byte("random message")
+	msgHash := crypto.Keccak256Hash(msg)
+	//userRegistry.VerifyUser(callOpt, addr, )
+
+	var nonce uint16 = 0
+	nonceByte := make([]byte, 2)
+	binary.LittleEndian.PutUint16(nonceByte, nonce)
+	concatMsg := append(nonceByte, msgHash.Bytes()...) // nonce, message
+
+	hashToSign := crypto.Keccak256Hash(concatMsg).Bytes()
+
+	// 961562c9f1d50aba6a58ad744ac2b4efc7aa00df2538f78132c5dbf8e3796112
+	log.Println("concat message", hexutil.Encode(concatMsg))
+	log.Println("hashToSign", hexutil.Encode(hashToSign))
+
+	sig, err := crypto.Sign(hashToSign, privkey)
+	if err != nil {
+		panic(err)
+	}
+
+	//SignatureLength := 65
+	//sigWithoutID := sig[:len(sig)-1] // remove recovery id
+
+	log.Println("signature length", len(sig))
+
+	pubeyBytesRecovered, err := crypto.Ecrecover(hashToSign, sig)
+	if err != nil {
+		panic(err)
+	}
+	log.Println("Public Key:", hexutil.Encode(pubkeyBytes))
+	log.Println("Public Key:", hexutil.Encode(pubeyBytesRecovered))
+}
+
+
+func Test_VerifyUser(t *testing.T) {
+	// Create an IPC based RPC connection to a remote node
+	//ctx := context.Background()
+	ethconn, err := ethclient.Dial(RpcAddr)
+	if err != nil {
+		log.Fatalf("Failed to connect to the Ethereum client: %v", err)
+	}
+	privkey, err := ecdsa_util.RecoverPrivkey(OwnerPrivkey)
+	if err != nil {
+		panic(err)
+	}
+	pubkey := &privkey.PublicKey
+	pubkeyBytes := crypto.FromECDSAPub(&privkey.PublicKey)
+	addr := crypto.PubkeyToAddress(privkey.PublicKey)
+
+
+	log.Println("Address:", addr)
+	log.Println("Public Key:", hexutil.Encode(pubkeyBytes))
+	log.Println("compressed form:", hexutil.Encode(secp256k1.CompressPubkey(pubkey.X, pubkey.Y)))
+
+	msg := []byte("random message")
+	msgHash := crypto.Keccak256Hash(msg)
+
+	var nonce uint16 = 0
+	nonceByte := make([]byte, 2)
+	binary.LittleEndian.PutUint16(nonceByte, nonce)
+	concatMsg := append(nonceByte, msgHash.Bytes()...) // nonce, message
+
+	log.Println(concatMsg)
+	log.Println(hexutil.Encode(concatMsg))
+
+	hashToSign := crypto.Keccak256Hash(concatMsg).Bytes()
+
+	sig, err := crypto.Sign(hashToSign, privkey)
+	if err != nil {
+		panic(err)
+	}
+
+
+
+	// Instantiate the contract and display its name
+	userRegistryAcc := common.HexToAddress(UserRegistryContractAddr)
+	userRegistry, err := NewUserRegistry(userRegistryAcc, ethconn)
+	if err != nil {
+		log.Fatalf("Failed to instantiate a Token contract: %v", err)
+	}
+
+	callOpt := &bind.CallOpts{
+		Pending: true,
+	}
+
+	// How many users
+	log.Println("-------")
+	_addrs, err := userRegistry.GetAllUsers(callOpt)
+	for i, _addr := range _addrs {
+		log.Println(i, _addr.Hex())
+	}
+	log.Println("-------")
+
+	// Lookup user nonce
+	//addr := common.HexToAddress(OwnerAddr)
+	nonce, err = userRegistry.GetUserNonce(callOpt, addr)
+	if err != nil {
+		panic(err)
+	}
+	log.Println("nonce from the server", nonce)
+
+	// Call Verify function
+	verified, err := userRegistry.VerifyUser(callOpt, addr, msgHash, sig[:len(sig)-1])
+	log.Println(verified)
+
+
+
+	// https://ropsten.etherscan.io/address/0xd52C607197467c4200d3cd02BFe667A42e05aa1d
+}
+
+func Test_AddMainUser(t *testing.T) {
+	user := User {
+		privkey: OwnerPrivkey,
+		name: hexutil.Encode(bytesutil.RandBytes(13)),
+		keyType: Secp25661,
+		keyStatus: Admin,
+	}
+
+	addUser(user)
 }
