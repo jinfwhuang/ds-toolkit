@@ -32,18 +32,18 @@ name: 'jin.digitalgreen'
 #  - prefixed with 0x
 
 # Entries are append-only
-# "status" field could be modified
+# "keystatus" field could be modified
 # All 'admin' pubkeys has permission to perform update
 publicKeys:
   - type: secp256k1
     key: '0x0233085d6674c5629673e9d0fb01ff9b41c3b2accb1cdb7e94516b0a29c0b399b5'
-    status: 'admin' # admin, active, canceled
+    keystatus: 'admin' # admin, active, canceled
   - type: secp256k1
     key: '0x02a5ca0d04213b2c044dc636887c0eabf904c31c679f46ad30110f05eb7f093e95'
-    status: 'active'
+    keystatus: 'active'
   - type: bls-12-381
     key: 0xxxxxxxxx
-    status: 'active'
+    keystatus: 'active'
 
 metadata_url: ipfs/link/containing-public-information
 
@@ -52,7 +52,7 @@ metadata_url: ipfs/link/containing-public-information
 
 struct Pubkey {
     uint8 keytype; // 1=secp256k1, 2=bls-12-381
-    uint8 status; // 1=admin, 2=active, 3=canceled
+    uint8 keystatus; // 1=admin, 2=active, 3=canceled
     bytes key;
 }
 
@@ -118,60 +118,73 @@ contract UserRegistry {
 
     function getImpliedAddr(address user, uint8 keypos) public view returns (address) {
         Pubkey storage pubkey = pubkeys[user][keypos];
-        assert(uint8(1) == uint8(1)); // TODO: Expand support beyond 1=secp256k1
+        assert(uint8(1) == pubkey.keytype); // TODO: Expand support beyond 1=secp256k1
 
         return computeAddr(pubkey.key);
     }
 
-    function computeAddr(bytes memory key) public pure returns (address) {
+    function computeAddr(bytes memory pubkey) public pure returns (address) {
         // The first byte indicates that it is an uncompressed point
         // See: section 4.3.6 of ANSI X9.62.
-        bytes32 _hash = keccak256(key.slice(1, 64));
+        bytes32 _hash = keccak256(pubkey.slice(1, 64));
+
+        // The last 20 bytes of the keccak256 hash
         bytes memory addr = abi.encodePacked(_hash).slice(12, 20);
-        address a = address(bytes20(addr));
-        return a;
+
+        return address(bytes20(addr));
     }
 
 
-    function newUser(address user, string memory name, uint8 keytype, uint8 keystatus, bytes memory key) public {
-        // TODO: require proof of private key ownership
+    // Anyone could create a user without verification.
+    // Having access to the privatekey that matches "pubkey" is equivalent to owning the user identity.
+    function newUser(address user, string memory name, uint8 keytype, uint8 keykeystatus, bytes memory pubkey) public {
         require(pubkeys[user].length == 0, "id already exist");
-        // if (pubkeys[user].length >= 1) {
-        //     console.log("id already exist");
-        //     // return "id alreay exist";
-        //     throw;
-        // }
 
         users.push(user);
         lookupNames[user] = name;
         lookupUsers[name] = user;
         userNonce[user] = 0;
-        pubkeys[user].push(Pubkey(keytype, keystatus, key));
+        pubkeys[user].push(Pubkey(keytype, keykeystatus, pubkey));
 
-        console.log("user");
+        console.log(user);
         console.log(name);
         console.log(keytype);
-        console.log(keystatus);
-        console.logBytes(key);
+        console.log(keykeystatus);
+        console.logBytes(pubkey);
     }
-
-
 
     /**
      */
-    function addPubkey(address user, uint8 keytype, uint8 status, bytes memory key) public returns (string memory) {
-        // TODO: require proof of private key ownership
-        if (pubkeys[user].length < 1) {
-            return "id does not exist";
-        }
-        
-        pubkeys[user].push(Pubkey(keytype, status, key));
-        return "added new key";
+    function addPubkey(address user, uint8 keytype, uint8 keystatus, bytes memory pubkey, bytes memory sig) public {
+        console.log(user);
+        console.log(pubkeys[user].length);
+        require(pubkeys[user].length > 0, "id does not exist");
+
+        // Get signature pubkey
+        bytes memory msgToKeccak = abi.encodePacked(user, keytype, keystatus, pubkey);
+        bytes32 msgToSign = keccak256(msgToKeccak);
+        address signAddr = msgToSign.recover(sig);
+
+        console.logBytes(msgToKeccak);
+        console.logBytes32(msgToSign);
+        console.log(signAddr);
+
+        // Get existing pubkey
+        Pubkey storage oPubkey = pubkeys[user][0]; // TODO: add support for all keys
+        require(uint8(1) == oPubkey.keytype); // TODO: Expand support beyond 1=secp256k1
+        require(uint8(1) == oPubkey.keystatus); // Only admin key can modify
+        address allowedAddr = computeAddr(oPubkey.key);
+
+        // Proof of private key ownership
+        require(signAddr == allowedAddr, "sig is not valid");
+        console.log("verify signature");
+
+        pubkeys[user].push(Pubkey(keytype, keystatus, pubkey));
     }
 
-    function updateKeyStatus(address user, uint8 keypos, uint8 status) public {
+    function updateKeykeystatus(address user, uint8 keypos, uint8 keystatus) public {
         // TODO: require proof of private key ownership
-        pubkeys[user][keypos].status = status;
+        pubkeys[user][keypos].keystatus = keystatus;
     }
 
     function getName(address user) external view returns (string memory) {

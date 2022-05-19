@@ -37,7 +37,7 @@ const (
 
 	// hardhast
 	RpcAddr           = "http://127.0.0.1:8545"
-	UserRegistryContractAddr = "0x0890bbdeB519e73C2a26Ff62e6CfD418bDab409e"
+	UserRegistryContractAddr = "0x37cA1410cB7704697aE550bA6e63B16179F28098"
 	ChainID = 1337 // hardhat
 
 
@@ -171,47 +171,47 @@ func newUser() {
 }
 
 
-func updateUserStatus() {
-	ethconn, err := ethclient.Dial(RpcAddr)
-	if err != nil {
-		logrus.Fatalf("Failed to connect to the Ethereum client: %v", err)
-	}
-	userRegistry, err := NewUserRegistry(common.HexToAddress(UserRegistryContractAddr), ethconn)
-	if err != nil {
-		logrus.Fatalf("Failed to instantiate a Token contract: %v", err)
-	}
-
-	// Lookup name
-	callOpt := &bind.CallOpts{
-		Pending: true,
-	}
-	name, _ := userRegistry.GetName(callOpt, common.HexToAddress(OwnerAddr))
-	logrus.Info(name)
-
-	ctx := context.Background()
-	userId := common.HexToAddress(OwnerAddr)
-	nonce := getNonce(ctx, ethconn, common.HexToAddress(OwnerAddr))
-	logrus.Info(nonce)
-
-	gasPrice, err := ethconn.SuggestGasPrice(context.Background())
-	logrus.Info(gasPrice)
-
-	txOpt := &bind.TransactOpts{
-		From: userId,
-		Nonce: big.NewInt(int64(nonce + 1)),
-		Signer: signer,
-		GasPrice: gasPrice.Mul(gasPrice, big.NewInt(25)),
-	}
-	logrus.Info(txOpt)
-	tx, err := userRegistry.UpdateKeyStatus(txOpt, userId, 0, 3) // Update to "Cancel"
-	if err != nil {
-		logrus.Fatal(err)
-	}
-	logrus.Info("nonce=", tx.Nonce())
-	logrus.Info("type=", tx.Type())
-	logrus.Info("to=", tx.To())
-	logrus.Info("hash=", tx.Hash())
-}
+//func updateUserStatus() {
+//	ethconn, err := ethclient.Dial(RpcAddr)
+//	if err != nil {
+//		logrus.Fatalf("Failed to connect to the Ethereum client: %v", err)
+//	}
+//	userRegistry, err := NewUserRegistry(common.HexToAddress(UserRegistryContractAddr), ethconn)
+//	if err != nil {
+//		logrus.Fatalf("Failed to instantiate a Token contract: %v", err)
+//	}
+//
+//	// Lookup name
+//	callOpt := &bind.CallOpts{
+//		Pending: true,
+//	}
+//	name, _ := userRegistry.GetName(callOpt, common.HexToAddress(OwnerAddr))
+//	logrus.Info(name)
+//
+//	ctx := context.Background()
+//	userId := common.HexToAddress(OwnerAddr)
+//	nonce := getNonce(ctx, ethconn, common.HexToAddress(OwnerAddr))
+//	logrus.Info(nonce)
+//
+//	gasPrice, err := ethconn.SuggestGasPrice(context.Background())
+//	logrus.Info(gasPrice)
+//
+//	txOpt := &bind.TransactOpts{
+//		From: userId,
+//		Nonce: big.NewInt(int64(nonce + 1)),
+//		Signer: signer,
+//		GasPrice: gasPrice.Mul(gasPrice, big.NewInt(25)),
+//	}
+//	logrus.Info(txOpt)
+//	tx, err := userRegistry.UpdateKeyStatus(txOpt, userId, 0, 3) // Update to "Cancel"
+//	if err != nil {
+//		logrus.Fatal(err)
+//	}
+//	logrus.Info("nonce=", tx.Nonce())
+//	logrus.Info("type=", tx.Type())
+//	logrus.Info("to=", tx.To())
+//	logrus.Info("hash=", tx.Hash())
+//}
 
 
 func inspectUserRegistry() {
@@ -260,14 +260,14 @@ func inspectUserRegistry() {
 	id, _ := userRegistry.GetUser(callOpt, name)
 	logrus.Info(id)
 
-	howmanyKeys, err := userRegistry.GetKeyLen(callOpt, common.HexToAddress(OwnerAddr))
+	howmanyKeys, err := userRegistry.GetLenKeys(callOpt, common.HexToAddress(OwnerAddr))
 	logrus.Info("how many keys:", howmanyKeys)
 
 	// Lookup key
 	tx, err := userRegistry.GetKey(callOpt, common.HexToAddress(OwnerAddr), 0)
 	logrus.Println("admin=", Admin)
 	logrus.Println("Cancel=", Cancel)
-	logrus.Println("status=", KeyStatus(tx.Status))
+	logrus.Println("status=", KeyStatus(tx.Keystatus))
 	logrus.Println("type=", KeyType(tx.Keytype))
 
 	pubkey, err := crypto.UnmarshalPubkey(tx.Key)

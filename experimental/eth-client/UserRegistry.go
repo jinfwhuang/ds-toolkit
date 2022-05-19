@@ -30,14 +30,14 @@ var (
 
 // Pubkey is an auto generated low-level Go binding around an user-defined struct.
 type Pubkey struct {
-	Keytype uint8
-	Status  uint8
-	Key     []byte
+	Keytype   uint8
+	Keystatus uint8
+	Key       []byte
 }
 
 // UserRegistryMetaData contains all meta data concerning the UserRegistry contract.
 var UserRegistryMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"name\":\"addPubkey\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"name\":\"computeAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"messageHash\",\"type\":\"bytes32\"}],\"name\":\"ethSignedHash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllUsers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"}],\"name\":\"getImpliedAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"}],\"name\":\"getKey\",\"outputs\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"internalType\":\"structPubkey\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getKeyLen\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getKeys\",\"outputs\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"internalType\":\"structPubkey[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getName\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"name\":\"getUser\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getUserNonce\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"name\":\"newUser\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"hash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"recover\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"rndHash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"}],\"name\":\"updateKeyStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"msgHash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"verifyUser\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"isValid\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"keystatus\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"pubkey\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"name\":\"addPubkey\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"pubkey\",\"type\":\"bytes\"}],\"name\":\"computeAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"messageHash\",\"type\":\"bytes32\"}],\"name\":\"ethSignedHash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllUsers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"}],\"name\":\"getImpliedAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"}],\"name\":\"getKey\",\"outputs\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"keystatus\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"internalType\":\"structPubkey\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getKeys\",\"outputs\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"keystatus\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"}],\"internalType\":\"structPubkey[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getLenKeys\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getName\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"name\":\"getUser\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getUserNonce\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint8\",\"name\":\"keytype\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"keykeystatus\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"pubkey\",\"type\":\"bytes\"}],\"name\":\"newUser\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"hash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"recover\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"rndHash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"keypos\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"keystatus\",\"type\":\"uint8\"}],\"name\":\"updateKeykeystatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"msgHash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"verifyUser\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"isValid\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 }
 
 // UserRegistryABI is the input ABI used to generate the binding from.
@@ -188,10 +188,10 @@ func (_UserRegistry *UserRegistryTransactorRaw) Transact(opts *bind.TransactOpts
 
 // ComputeAddr is a free data retrieval call binding the contract method 0x28da9254.
 //
-// Solidity: function computeAddr(bytes key) view returns(address)
-func (_UserRegistry *UserRegistryCaller) ComputeAddr(opts *bind.CallOpts, key []byte) (common.Address, error) {
+// Solidity: function computeAddr(bytes pubkey) pure returns(address)
+func (_UserRegistry *UserRegistryCaller) ComputeAddr(opts *bind.CallOpts, pubkey []byte) (common.Address, error) {
 	var out []interface{}
-	err := _UserRegistry.contract.Call(opts, &out, "computeAddr", key)
+	err := _UserRegistry.contract.Call(opts, &out, "computeAddr", pubkey)
 
 	if err != nil {
 		return *new(common.Address), err
@@ -205,16 +205,16 @@ func (_UserRegistry *UserRegistryCaller) ComputeAddr(opts *bind.CallOpts, key []
 
 // ComputeAddr is a free data retrieval call binding the contract method 0x28da9254.
 //
-// Solidity: function computeAddr(bytes key) view returns(address)
-func (_UserRegistry *UserRegistrySession) ComputeAddr(key []byte) (common.Address, error) {
-	return _UserRegistry.Contract.ComputeAddr(&_UserRegistry.CallOpts, key)
+// Solidity: function computeAddr(bytes pubkey) pure returns(address)
+func (_UserRegistry *UserRegistrySession) ComputeAddr(pubkey []byte) (common.Address, error) {
+	return _UserRegistry.Contract.ComputeAddr(&_UserRegistry.CallOpts, pubkey)
 }
 
 // ComputeAddr is a free data retrieval call binding the contract method 0x28da9254.
 //
-// Solidity: function computeAddr(bytes key) view returns(address)
-func (_UserRegistry *UserRegistryCallerSession) ComputeAddr(key []byte) (common.Address, error) {
-	return _UserRegistry.Contract.ComputeAddr(&_UserRegistry.CallOpts, key)
+// Solidity: function computeAddr(bytes pubkey) pure returns(address)
+func (_UserRegistry *UserRegistryCallerSession) ComputeAddr(pubkey []byte) (common.Address, error) {
+	return _UserRegistry.Contract.ComputeAddr(&_UserRegistry.CallOpts, pubkey)
 }
 
 // EthSignedHash is a free data retrieval call binding the contract method 0xf1520932.
@@ -341,37 +341,6 @@ func (_UserRegistry *UserRegistryCallerSession) GetKey(user common.Address, keyp
 	return _UserRegistry.Contract.GetKey(&_UserRegistry.CallOpts, user, keypos)
 }
 
-// GetKeyLen is a free data retrieval call binding the contract method 0x5c666e54.
-//
-// Solidity: function getKeyLen(address user) view returns(uint256)
-func (_UserRegistry *UserRegistryCaller) GetKeyLen(opts *bind.CallOpts, user common.Address) (*big.Int, error) {
-	var out []interface{}
-	err := _UserRegistry.contract.Call(opts, &out, "getKeyLen", user)
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// GetKeyLen is a free data retrieval call binding the contract method 0x5c666e54.
-//
-// Solidity: function getKeyLen(address user) view returns(uint256)
-func (_UserRegistry *UserRegistrySession) GetKeyLen(user common.Address) (*big.Int, error) {
-	return _UserRegistry.Contract.GetKeyLen(&_UserRegistry.CallOpts, user)
-}
-
-// GetKeyLen is a free data retrieval call binding the contract method 0x5c666e54.
-//
-// Solidity: function getKeyLen(address user) view returns(uint256)
-func (_UserRegistry *UserRegistryCallerSession) GetKeyLen(user common.Address) (*big.Int, error) {
-	return _UserRegistry.Contract.GetKeyLen(&_UserRegistry.CallOpts, user)
-}
-
 // GetKeys is a free data retrieval call binding the contract method 0x34e80c34.
 //
 // Solidity: function getKeys(address user) view returns((uint8,uint8,bytes)[])
@@ -401,6 +370,37 @@ func (_UserRegistry *UserRegistrySession) GetKeys(user common.Address) ([]Pubkey
 // Solidity: function getKeys(address user) view returns((uint8,uint8,bytes)[])
 func (_UserRegistry *UserRegistryCallerSession) GetKeys(user common.Address) ([]Pubkey, error) {
 	return _UserRegistry.Contract.GetKeys(&_UserRegistry.CallOpts, user)
+}
+
+// GetLenKeys is a free data retrieval call binding the contract method 0x3f11639f.
+//
+// Solidity: function getLenKeys(address user) view returns(uint256)
+func (_UserRegistry *UserRegistryCaller) GetLenKeys(opts *bind.CallOpts, user common.Address) (*big.Int, error) {
+	var out []interface{}
+	err := _UserRegistry.contract.Call(opts, &out, "getLenKeys", user)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetLenKeys is a free data retrieval call binding the contract method 0x3f11639f.
+//
+// Solidity: function getLenKeys(address user) view returns(uint256)
+func (_UserRegistry *UserRegistrySession) GetLenKeys(user common.Address) (*big.Int, error) {
+	return _UserRegistry.Contract.GetLenKeys(&_UserRegistry.CallOpts, user)
+}
+
+// GetLenKeys is a free data retrieval call binding the contract method 0x3f11639f.
+//
+// Solidity: function getLenKeys(address user) view returns(uint256)
+func (_UserRegistry *UserRegistryCallerSession) GetLenKeys(user common.Address) (*big.Int, error) {
+	return _UserRegistry.Contract.GetLenKeys(&_UserRegistry.CallOpts, user)
 }
 
 // GetName is a free data retrieval call binding the contract method 0x5fd4b08a.
@@ -589,65 +589,65 @@ func (_UserRegistry *UserRegistryCallerSession) VerifyUser(user common.Address, 
 	return _UserRegistry.Contract.VerifyUser(&_UserRegistry.CallOpts, user, msgHash, signature)
 }
 
-// AddPubkey is a paid mutator transaction binding the contract method 0xbf5fc61d.
+// AddPubkey is a paid mutator transaction binding the contract method 0xdc6f6edb.
 //
-// Solidity: function addPubkey(address user, uint8 keytype, uint8 status, bytes key) returns(string)
-func (_UserRegistry *UserRegistryTransactor) AddPubkey(opts *bind.TransactOpts, user common.Address, keytype uint8, status uint8, key []byte) (*types.Transaction, error) {
-	return _UserRegistry.contract.Transact(opts, "addPubkey", user, keytype, status, key)
+// Solidity: function addPubkey(address user, uint8 keytype, uint8 keystatus, bytes pubkey, bytes sig) returns()
+func (_UserRegistry *UserRegistryTransactor) AddPubkey(opts *bind.TransactOpts, user common.Address, keytype uint8, keystatus uint8, pubkey []byte, sig []byte) (*types.Transaction, error) {
+	return _UserRegistry.contract.Transact(opts, "addPubkey", user, keytype, keystatus, pubkey, sig)
 }
 
-// AddPubkey is a paid mutator transaction binding the contract method 0xbf5fc61d.
+// AddPubkey is a paid mutator transaction binding the contract method 0xdc6f6edb.
 //
-// Solidity: function addPubkey(address user, uint8 keytype, uint8 status, bytes key) returns(string)
-func (_UserRegistry *UserRegistrySession) AddPubkey(user common.Address, keytype uint8, status uint8, key []byte) (*types.Transaction, error) {
-	return _UserRegistry.Contract.AddPubkey(&_UserRegistry.TransactOpts, user, keytype, status, key)
+// Solidity: function addPubkey(address user, uint8 keytype, uint8 keystatus, bytes pubkey, bytes sig) returns()
+func (_UserRegistry *UserRegistrySession) AddPubkey(user common.Address, keytype uint8, keystatus uint8, pubkey []byte, sig []byte) (*types.Transaction, error) {
+	return _UserRegistry.Contract.AddPubkey(&_UserRegistry.TransactOpts, user, keytype, keystatus, pubkey, sig)
 }
 
-// AddPubkey is a paid mutator transaction binding the contract method 0xbf5fc61d.
+// AddPubkey is a paid mutator transaction binding the contract method 0xdc6f6edb.
 //
-// Solidity: function addPubkey(address user, uint8 keytype, uint8 status, bytes key) returns(string)
-func (_UserRegistry *UserRegistryTransactorSession) AddPubkey(user common.Address, keytype uint8, status uint8, key []byte) (*types.Transaction, error) {
-	return _UserRegistry.Contract.AddPubkey(&_UserRegistry.TransactOpts, user, keytype, status, key)
-}
-
-// NewUser is a paid mutator transaction binding the contract method 0xaba0caae.
-//
-// Solidity: function newUser(address user, string name, uint8 keytype, uint8 status, bytes key) returns(string)
-func (_UserRegistry *UserRegistryTransactor) NewUser(opts *bind.TransactOpts, user common.Address, name string, keytype uint8, status uint8, key []byte) (*types.Transaction, error) {
-	return _UserRegistry.contract.Transact(opts, "newUser", user, name, keytype, status, key)
+// Solidity: function addPubkey(address user, uint8 keytype, uint8 keystatus, bytes pubkey, bytes sig) returns()
+func (_UserRegistry *UserRegistryTransactorSession) AddPubkey(user common.Address, keytype uint8, keystatus uint8, pubkey []byte, sig []byte) (*types.Transaction, error) {
+	return _UserRegistry.Contract.AddPubkey(&_UserRegistry.TransactOpts, user, keytype, keystatus, pubkey, sig)
 }
 
 // NewUser is a paid mutator transaction binding the contract method 0xaba0caae.
 //
-// Solidity: function newUser(address user, string name, uint8 keytype, uint8 status, bytes key) returns(string)
-func (_UserRegistry *UserRegistrySession) NewUser(user common.Address, name string, keytype uint8, status uint8, key []byte) (*types.Transaction, error) {
-	return _UserRegistry.Contract.NewUser(&_UserRegistry.TransactOpts, user, name, keytype, status, key)
+// Solidity: function newUser(address user, string name, uint8 keytype, uint8 keykeystatus, bytes pubkey) returns()
+func (_UserRegistry *UserRegistryTransactor) NewUser(opts *bind.TransactOpts, user common.Address, name string, keytype uint8, keykeystatus uint8, pubkey []byte) (*types.Transaction, error) {
+	return _UserRegistry.contract.Transact(opts, "newUser", user, name, keytype, keykeystatus, pubkey)
 }
 
 // NewUser is a paid mutator transaction binding the contract method 0xaba0caae.
 //
-// Solidity: function newUser(address user, string name, uint8 keytype, uint8 status, bytes key) returns(string)
-func (_UserRegistry *UserRegistryTransactorSession) NewUser(user common.Address, name string, keytype uint8, status uint8, key []byte) (*types.Transaction, error) {
-	return _UserRegistry.Contract.NewUser(&_UserRegistry.TransactOpts, user, name, keytype, status, key)
+// Solidity: function newUser(address user, string name, uint8 keytype, uint8 keykeystatus, bytes pubkey) returns()
+func (_UserRegistry *UserRegistrySession) NewUser(user common.Address, name string, keytype uint8, keykeystatus uint8, pubkey []byte) (*types.Transaction, error) {
+	return _UserRegistry.Contract.NewUser(&_UserRegistry.TransactOpts, user, name, keytype, keykeystatus, pubkey)
 }
 
-// UpdateKeyStatus is a paid mutator transaction binding the contract method 0x1dd98477.
+// NewUser is a paid mutator transaction binding the contract method 0xaba0caae.
 //
-// Solidity: function updateKeyStatus(address user, uint8 keypos, uint8 status) returns()
-func (_UserRegistry *UserRegistryTransactor) UpdateKeyStatus(opts *bind.TransactOpts, user common.Address, keypos uint8, status uint8) (*types.Transaction, error) {
-	return _UserRegistry.contract.Transact(opts, "updateKeyStatus", user, keypos, status)
+// Solidity: function newUser(address user, string name, uint8 keytype, uint8 keykeystatus, bytes pubkey) returns()
+func (_UserRegistry *UserRegistryTransactorSession) NewUser(user common.Address, name string, keytype uint8, keykeystatus uint8, pubkey []byte) (*types.Transaction, error) {
+	return _UserRegistry.Contract.NewUser(&_UserRegistry.TransactOpts, user, name, keytype, keykeystatus, pubkey)
 }
 
-// UpdateKeyStatus is a paid mutator transaction binding the contract method 0x1dd98477.
+// UpdateKeykeystatus is a paid mutator transaction binding the contract method 0xf37f48a4.
 //
-// Solidity: function updateKeyStatus(address user, uint8 keypos, uint8 status) returns()
-func (_UserRegistry *UserRegistrySession) UpdateKeyStatus(user common.Address, keypos uint8, status uint8) (*types.Transaction, error) {
-	return _UserRegistry.Contract.UpdateKeyStatus(&_UserRegistry.TransactOpts, user, keypos, status)
+// Solidity: function updateKeykeystatus(address user, uint8 keypos, uint8 keystatus) returns()
+func (_UserRegistry *UserRegistryTransactor) UpdateKeykeystatus(opts *bind.TransactOpts, user common.Address, keypos uint8, keystatus uint8) (*types.Transaction, error) {
+	return _UserRegistry.contract.Transact(opts, "updateKeykeystatus", user, keypos, keystatus)
 }
 
-// UpdateKeyStatus is a paid mutator transaction binding the contract method 0x1dd98477.
+// UpdateKeykeystatus is a paid mutator transaction binding the contract method 0xf37f48a4.
 //
-// Solidity: function updateKeyStatus(address user, uint8 keypos, uint8 status) returns()
-func (_UserRegistry *UserRegistryTransactorSession) UpdateKeyStatus(user common.Address, keypos uint8, status uint8) (*types.Transaction, error) {
-	return _UserRegistry.Contract.UpdateKeyStatus(&_UserRegistry.TransactOpts, user, keypos, status)
+// Solidity: function updateKeykeystatus(address user, uint8 keypos, uint8 keystatus) returns()
+func (_UserRegistry *UserRegistrySession) UpdateKeykeystatus(user common.Address, keypos uint8, keystatus uint8) (*types.Transaction, error) {
+	return _UserRegistry.Contract.UpdateKeykeystatus(&_UserRegistry.TransactOpts, user, keypos, keystatus)
+}
+
+// UpdateKeykeystatus is a paid mutator transaction binding the contract method 0xf37f48a4.
+//
+// Solidity: function updateKeykeystatus(address user, uint8 keypos, uint8 keystatus) returns()
+func (_UserRegistry *UserRegistryTransactorSession) UpdateKeykeystatus(user common.Address, keypos uint8, keystatus uint8) (*types.Transaction, error) {
+	return _UserRegistry.Contract.UpdateKeykeystatus(&_UserRegistry.TransactOpts, user, keypos, keystatus)
 }

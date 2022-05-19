@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
@@ -26,6 +27,17 @@ func init() {
 
 var (
 	ethconn, _ = ethclient.Dial(RpcAddr)
+	privkey, _ = ecdsa_util.RecoverPrivkey(OwnerPrivkey)
+
+	// Instantiate the contract and display its name
+	userRegistryAcc = common.HexToAddress(UserRegistryContractAddr)
+	userRegistry, _ = NewUserRegistry(userRegistryAcc, ethconn)
+
+	callOpt = bind.CallOpts{
+		Pending: true,
+	}
+
+	ctx = context.Background()
 
 )
 
@@ -237,7 +249,13 @@ func PubkeyToAddress(p ecdsa.PublicKey) common.Address {
 	return common.BytesToAddress(crypto.Keccak256(pubBytes[1:])[12:])
 }
 
+func packByte() {
+	// https://gist.github.com/miguelmota/bc4304bb21a8f4cc0a37a0f9347b8bbb
+}
 
+func encodePacked(input ...[]byte) []byte {
+	return bytes.Join(input, nil)
+}
 
 func Test_Sign_Recover(t *testing.T) {
 	privkey, err := ecdsa_util.RecoverPrivkey(OwnerPrivkey)
@@ -358,6 +376,48 @@ func Test_VerifyUser(t *testing.T) {
 	verified, err := userRegistry.VerifyUser(callOpt, addr, msgHash, sig[:len(sig)-1])
 	log.Println(verified)
 
+
+
+	// https://ropsten.etherscan.io/address/0xd52C607197467c4200d3cd02BFe667A42e05aa1d
+}
+
+func Test_AddPubkey(t *testing.T) {
+	//pubkey := &privkey.PublicKey
+	pubkeyBytes := crypto.FromECDSAPub(&privkey.PublicKey)
+	addr := crypto.PubkeyToAddress(privkey.PublicKey)
+
+	//bytes memory msgToKeccak = abi.encodePacked(user, keytype, keystatus, pubkey);
+	//bytes32 msgToSign = keccak256(msgToKeccak);
+	//address signAddr = msgToSign.recover(sig);
+
+	//const msgToKeccak = ethers.utils.solidityPack(
+	//["address", "uint8", "uint8", "bytes"],
+	//[owner.address, 1, 1, randomPubkeyHex]);
+	//let msgToSign = ethers.utils.keccak256(msgToKeccak);
+
+
+	msgToKeccak := encodePacked(addr.Bytes(), []byte{1}, []byte{1}, pubkeyBytes);
+	msgToSign := crypto.Keccak256(msgToKeccak)
+	sig, err := crypto.Sign(msgToSign, privkey)
+
+	log.Println("addr", addr.Hex())
+	log.Println("msgToKeccak", hexutil.Encode(msgToKeccak))
+	log.Println("msgToSign", hexutil.Encode(msgToSign))
+
+	nonce := getNonce(ctx, ethconn, common.HexToAddress(OwnerAddr))
+	gasPrice, err := ethconn.SuggestGasPrice(context.Background())
+	txOpt := bind.TransactOpts{
+		From: common.HexToAddress(OwnerAddr),
+		Nonce: big.NewInt(int64(nonce)),
+		Signer: signer,
+		GasPrice: gasPrice.Mul(gasPrice, big.NewInt(2)),
+	}
+
+	//_, err = userRegistry.AddPubkey(&txOpt, addr, 1, 1, pubkeyBytes, sig[:len(sig)-1])
+	_, err = userRegistry.AddPubkey(&txOpt, addr, 1, 1, pubkeyBytes, sig)
+	if err != nil {
+		panic(err)
+	}
 
 
 	// https://ropsten.etherscan.io/address/0xd52C607197467c4200d3cd02BFe667A42e05aa1d

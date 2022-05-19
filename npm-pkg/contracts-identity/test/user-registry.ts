@@ -9,6 +9,8 @@ import { solidity } from "ethereum-waffle";
 import { UserRegistry } from "../typechain";
 
 import { BytesLike, Bytes } from "@ethersproject/bytes";
+import { AbiCoder } from "@ethersproject/abi";
+import { abort } from "process";
 
 chai.use(solidity);
 
@@ -134,6 +136,61 @@ describe(`UserRegistry`, function () {
       pubkeyHex
     );
     console.log("computed address", addr)
+  });
+
+  it.only(`modify existing user`, async function () {
+    // console.log("computed address", addr)
+
+    const [owner] = await ethers.getSigners();
+
+    const randomPubkeyHex = "0x04353d6646c071374ff0ee65ce058be0803054c424f8b4cf41472dd42854e2ebd581bd5f061978c2990f5a8dfccaa227ff024cd079aca62311ab5121949535ae29";
+    // user: string,
+    // keytype: BigNumberish,
+    // keystatus: BigNumberish,
+    // pubkey: BytesLike,
+    // sig: BytesLike,
+    // utils.solidityPack([ "int16", "uint48" ], [ -1, 12 ])
+    const msgToKeccak = ethers.utils.solidityPack(
+        ["address", "uint8", "uint8", "bytes"],
+        [owner.address, 1, 1, randomPubkeyHex]);
+    let msgToSign = ethers.utils.keccak256(msgToKeccak);
+    let msgToSignBytes = ethers.utils.arrayify(msgToSign)
+
+    let sig = await owner.signMessage(msgToSignBytes);
+    // let sig = ethers.utils.splitSignature(_sig);
+    // const sig = await owner.signMessage(sig.slice(0, sig.length-2));
+
+    // const pk = ethers.utils.recoverPublicKey(msgToSign, sig.slice(0, sig.length-2));
+    // const recoveredAddress = ethers.utils.computeAddress(ethers.utils.arrayify(pk));
+
+    const recoveredAddress = ethers.utils.recoverAddress(msgToSign, sig)
+
+    console.log("owner.address     ", owner.address);
+    console.log("recoveredAddress  ", recoveredAddress);
+    console.log("-------")
+    console.log("msgToKeccak", msgToKeccak);
+    console.log("msgToSign", msgToSign);
+    console.log("msgToSign", msgToSignBytes);
+    // console.log("sig", sig.length, sig);
+    // console.log("sig -1", sig.slice(0, sig.length-2).length, sig.slice(0, sig.length-2));
+
+
+
+
+    // ethers.utils.keccak256();
+    // web3.utils.keccak256("Hello World!")
+
+            // // Get signature pubkey
+            // bytes memory msgToKeccak = abi.encodePacked(user, keytype, keystatus, pubkey);
+            // bytes32 msgToSign = keccak256(msgToKeccak);
+            // address signAddr = recover(msgToSign, sig);
+
+    
+    
+
+    // await userRegistry.addPubkey(owner.address, 1, 1, randomPubkeyHex, sig.slice(0, sig.length-2));
+    // await userRegistry.addPubkey(owner.address, 1, 1, randomPubkeyHex, sig);
+
   });
 
 });
