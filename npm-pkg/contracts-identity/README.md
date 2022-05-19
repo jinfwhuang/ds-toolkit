@@ -31,5 +31,17 @@ NETWORK=ropsten npx hardhat run scripts/deploy/user-registry.ts
 npx hardhat verify 0xe0822c07B9513B2bDC9bd0780f4AED4452dAc8c4
 ```
 
+## Local dev
+```bash
+# Start a local chain
+npx hardhat node
+
+# Setup the accounts
+NETWORK=localhost npx hardhat run scripts/hardhat-setup.ts
+
+# Test
+NETWORK=localhost npx hardhat test
+```
+
 ## References:
 - Ropsten faucet: https://faucet.metamask.io/

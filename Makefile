@@ -11,5 +11,9 @@ generate-eth-code:
 	cp -r npm-pkg/contracts-identity/artifacts/abi experimental/eth-client/
 	go run github.com/ethereum/go-ethereum/cmd/abigen --abi "experimental/eth-client/abi/${name}.json" --pkg main --type "${name}" --out "experimental/eth-client/${name}.go"
 
+hardhat-setup:
+	cd npm-pkg/contracts-identity
+	NETWORK=hardhat npx hardhat run scripts/hardhat-setup.ts
+
 # Targets that are not associated with explicit filename or filedir
-.PHONY: clean proto generate-eth-code
+.PHONY: clean proto generate-eth-code hardhat-setup

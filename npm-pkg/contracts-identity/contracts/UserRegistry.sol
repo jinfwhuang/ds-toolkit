@@ -50,10 +50,6 @@ metadata_url: ipfs/link/containing-public-information
 
 */
 
-// type KeyStatus is uint8; // 1=admin, 2=active, 3=canceled
-
-// type KeyType is uint8; // 1=secp256k1 2=bls-12-381
-
 struct Pubkey {
     uint8 keytype; // 1=secp256k1, 2=bls-12-381
     uint8 status; // 1=admin, 2=active, 3=canceled
@@ -65,50 +61,24 @@ contract UserRegistry {
     using ECDSA for bytes32;
     using BytesLib for bytes;
 
-
-    // string public name = "Dstoolkit-Testing-Token";
-    // string public symbol = "DST";
-
-    // // The fixed amount of tokens stored in an unsigned integer type variable.
-    // uint256 public totalSupply = 4529;
-
-    // // An address type variable is used to store ethereum accounts.
-    // address public owner;
-
-    // // A mapping is a key/value map. Here we store each account balance.
-    // mapping(address => uint256) balances;
-
-    address[] users;
-
     // Each user is uniquely identified by an ID, which is a 20 bytes integer
+    // - 
+    address[] users; // Append only; address is immutale
+    mapping(string => address) lookupUsers;  // Name is immutable
+
     mapping(address => string) lookupNames;
-    mapping(string => address) lookupUsers;
+    mapping(address => uint16) userNonce;
 
     // Each user has many public address
     mapping(address => Pubkey[]) pubkeys;
 
-    // // Each user has many public address
-    // mapping(address => uint8[]) pubkeyType;
-    // mapping(address => bytes[]) pubkeyByte;
-
-    address fakeAddr;
-
     /**
      * Contract initialization.
-     *
-     * The `constructor` is executed only once when the contract is created.
      */
     constructor() {
-        // // The totalSupply is assigned to transaction sender, which is the account
-        // // that is deploying the contract.
-        // balances[msg.sender] = totalSupply;
-        // owner = msg.sender;
     }
 
-
     
-    mapping(address => uint16) userNonce;
-
     function getUserNonce(address user) public view returns (uint16) {
         return userNonce[user];
     }
@@ -116,8 +86,6 @@ contract UserRegistry {
     function updateUserNonce(address user) private {
         userNonce[user] += 1;
     }
-
-
 
     function rndHash() public view returns(bytes32) {
         return keccak256(abi.encodePacked(block.number));
@@ -131,22 +99,8 @@ contract UserRegistry {
         return hash.recover(signature);
     }
 
-    /*
-    ECRecovery
-    toEthSignedMessageHash
-
-https://ethereum.stackexchange.com/questions/76810/sign-message-with-web3-and-verify-with-openzeppelin-solidity-ecdsa-sol
-
-https://ethereum.stackexchange.com/questions/91826/why-are-there-two-methods-encoding-arguments-abi-encode-and-abi-encodepacked
-    */
-
     function verifyUser(address user, bytes32 msgHash, bytes memory signature) public view returns (bool isValid) {
         uint16 nonce = userNonce[user];
-
-        // abi.encode(_text, _num, _addr)
-        // bytes32 signedHash = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash));
-
-        // bytes memory concatMsg = abi.encode(nonce, msgHash);
         bytes memory concatMsg = abi.encodePacked(nonce, msgHash);
         bytes32 hashToSign = keccak256(concatMsg);
 
@@ -169,8 +123,9 @@ https://ethereum.stackexchange.com/questions/91826/why-are-there-two-methods-enc
         return computeAddr(pubkey.key);
     }
 
-    // https://github.com/OpenZeppelin/openzeppelin-contracts/tree/master/contracts/utils
     function computeAddr(bytes memory key) public pure returns (address) {
+        // The first byte indicates that it is an uncompressed point
+        // See: section 4.3.6 of ANSI X9.62.
         bytes32 _hash = keccak256(key.slice(1, 64));
         bytes memory addr = abi.encodePacked(_hash).slice(12, 20);
         address a = address(bytes20(addr));
@@ -178,19 +133,29 @@ https://ethereum.stackexchange.com/questions/91826/why-are-there-two-methods-enc
     }
 
 
-    function newUser(address user, string memory name, uint8 keytype, uint8 status, bytes memory key) public returns (string memory) {
+    function newUser(address user, string memory name, uint8 keytype, uint8 keystatus, bytes memory key) public {
         // TODO: require proof of private key ownership
-        if (pubkeys[user].length >= 1) {
-            return "id alreay exist";
-        }
+        require(pubkeys[user].length == 0, "id already exist");
+        // if (pubkeys[user].length >= 1) {
+        //     console.log("id already exist");
+        //     // return "id alreay exist";
+        //     throw;
+        // }
 
         users.push(user);
         lookupNames[user] = name;
         lookupUsers[name] = user;
         userNonce[user] = 0;
-        pubkeys[user].push(Pubkey(keytype, status, key));
-        return "created";
+        pubkeys[user].push(Pubkey(keytype, keystatus, key));
+
+        console.log("user");
+        console.log(name);
+        console.log(keytype);
+        console.log(keystatus);
+        console.logBytes(key);
     }
+
+
 
     /**
      */
@@ -217,6 +182,10 @@ https://ethereum.stackexchange.com/questions/91826/why-are-there-two-methods-enc
         return lookupUsers[name];
     }
 
+    function getLenKeys(address user) external view returns (uint256) {
+        return pubkeys[user].length;
+    }
+
     function getKeys(address user) external view returns (Pubkey[] memory) {
         return pubkeys[user];
     }
@@ -225,30 +194,8 @@ https://ethereum.stackexchange.com/questions/91826/why-are-there-two-methods-enc
         return pubkeys[user][keypos];
     }
 
-    function getKeyLen(address user) external view returns (uint256) {
-        return pubkeys[user].length;
-    }
-
     function getAllUsers() external view returns (address[] memory) {
         return users;
     }
 
-    // function getAllIds() external view returns (string[] memory) {
-    //     names 
-    //     usernames
-    //     return usernames;
-    // }
-
-    // /**
-    //  * Read only function to retrieve the token balance of a given account.
-    //  *
-    //  * The `view` modifier indicates that it doesn't modify the contract's
-    //  * state, which allows us to call it without executing a transaction.
-    //  */
-    // function balanceOf(address account) external view returns (uint256) {
-    //     console.log("address", account);
-    //     console.log("address2", account);
-    //     console.log("balance", balances[account]);
-    //     return balances[account];
-    // }
 }

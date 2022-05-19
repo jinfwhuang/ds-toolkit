@@ -101,14 +101,24 @@ func addUser(_user User) {
 	gasPrice, err := ethconn.SuggestGasPrice(context.Background())
 	log.Println("gas price=", gasPrice)
 
-	txOpt := &bind.TransactOpts{
+	callOpt := bind.CallOpts{
+		Pending: true,
+	}
+	txOpt := bind.TransactOpts{
 		From: common.HexToAddress(OwnerAddr),
 		Nonce: big.NewInt(int64(nonce)),
 		Signer: signer,
 		GasPrice: gasPrice.Mul(gasPrice, big.NewInt(2)),
 	}
+
+	sess := UserRegistrySession {
+		Contract: userRegistry,
+		CallOpts: callOpt,
+		TransactOpts: txOpt,
+	}
 	log.Println(txOpt)
-	tx, err := userRegistry.NewUser(txOpt, userAddr, name, Secp25661, Admin, pubkey)
+	//tx, err := userRegistry.NewUser(txOpt, userAddr, name, Secp25661, Admin, pubkey)
+	tx, err := sess.NewUser(userAddr, name, Secp25661, Admin, pubkey)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -116,6 +126,8 @@ func addUser(_user User) {
 	log.Println("type=", tx.Type())
 	log.Println("to=", tx.To())
 	log.Println("hash=", tx.Hash())
+	log.Println("dfdf", string(tx.Data()))
+	log.Println("pubkey bytes", hexutil.Encode(pubkey))
 }
 
 func getRandPrivkey() string {

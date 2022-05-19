@@ -5,7 +5,8 @@ import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 
-const network = process.env.NETWORK || `ropsten`;
+// const network = process.env.NETWORK || `ropsten`;
+const network = process.env.NETWORK || `localhost`;
 
 // import "dotenv";
 // import 'dotenv/config'

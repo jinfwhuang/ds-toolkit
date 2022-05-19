@@ -10,7 +10,7 @@ export async function deployContract() {
   console.log(`Deploying contracts with the account:`, deployer.address);
   console.log(`Account balance:`, (await deployer.getBalance()).toString());
 
-  const contractName = 'UserRegistry'
+  const contractName = "UserRegistry";
   const Token = await ethers.getContractFactory(contractName);
   const token = await Token.deploy();
 
