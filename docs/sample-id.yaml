@@ -14,17 +14,17 @@ name: 'jin.digitalgreen'
 #  - prefixed with 0x
 
 # Entries are append-only
-# "status" field could be modified
+# "keystatus" field could be modified
 # All 'admin' pubkeys has permission to perform update
 publicKeys:
   - type: secp256k1
     key: '0x0233085d6674c5629673e9d0fb01ff9b41c3b2accb1cdb7e94516b0a29c0b399b5'
-    status: 'admin' # admin, active, canceled
+    keystatus: 'admin' # admin, active, canceled
   - type: secp256k1
     key: '0x02a5ca0d04213b2c044dc636887c0eabf904c31c679f46ad30110f05eb7f093e95'
-    status: 'active'
+    keystatus: 'active'
   - type: bls-12-381
     key: 0xxxxxxxxx
-    status: 'active'
+    keystatus: 'active'
 
 metadata_url: ipfs/link/containing-public-information

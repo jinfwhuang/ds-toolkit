@@ -413,12 +413,14 @@ func Test_AddPubkey(t *testing.T) {
 		GasPrice: gasPrice.Mul(gasPrice, big.NewInt(2)),
 	}
 
-	//_, err = userRegistry.AddPubkey(&txOpt, addr, 1, 1, pubkeyBytes, sig[:len(sig)-1])
-	_, err = userRegistry.AddPubkey(&txOpt, addr, 1, 1, pubkeyBytes, sig)
+	_, err = userRegistry.AddPubkey(&txOpt, addr, 1, 1, pubkeyBytes, sig[:len(sig)-1])
+	//_, err = userRegistry.AddPubkey(&txOpt, addr, 1, 1, pubkeyBytes, sig)
 	if err != nil {
 		panic(err)
 	}
 
+	lenKeys, _ := userRegistry.GetLenKeys(&callOpt, addr)
+	log.Println(lenKeys)
 
 	// https://ropsten.etherscan.io/address/0xd52C607197467c4200d3cd02BFe667A42e05aa1d
 }

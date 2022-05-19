@@ -1,54 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.8;
 
-
 // dev only
 import "hardhat/console.sol";
-
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-// import "solidity-bytes-utils/BytesLib.sol";
 import "solidity-bytes-utils/contracts/BytesLib.sol";
-
-
-// using ECDSA for bytes32;
-
-
-
-/*
-
----
-# Immutable
-# Matches the first entry in pubkeys: the last 20 bytes of the Keccak-256 hash of public key
-id: '0x48B7872500c5BefDBb7BBe9dB9070CeEC66bdD4b'
-
-# Immutable, optional
-# lower case alphanumeric, [.-_] # immutable, optional
-name: 'jin.digitalgreen'
-
-# pubkey:
-#  - secp256k1 public key
-#  - compressed
-#  - hex
-#  - prefixed with 0x
-
-# Entries are append-only
-# "keystatus" field could be modified
-# All 'admin' pubkeys has permission to perform update
-publicKeys:
-  - type: secp256k1
-    key: '0x0233085d6674c5629673e9d0fb01ff9b41c3b2accb1cdb7e94516b0a29c0b399b5'
-    keystatus: 'admin' # admin, active, canceled
-  - type: secp256k1
-    key: '0x02a5ca0d04213b2c044dc636887c0eabf904c31c679f46ad30110f05eb7f093e95'
-    keystatus: 'active'
-  - type: bls-12-381
-    key: 0xxxxxxxxx
-    keystatus: 'active'
-
-metadata_url: ipfs/link/containing-public-information
-
-
-*/
 
 struct Pubkey {
     uint8 keytype; // 1=secp256k1, 2=bls-12-381
@@ -62,7 +18,6 @@ contract UserRegistry {
     using BytesLib for bytes;
 
     // Each user is uniquely identified by an ID, which is a 20 bytes integer
-    // - 
     address[] users; // Append only; address is immutale
     mapping(string => address) lookupUsers;  // Name is immutable
 
@@ -78,7 +33,6 @@ contract UserRegistry {
     constructor() {
     }
 
-    
     function getUserNonce(address user) public view returns (uint16) {
         return userNonce[user];
     }
@@ -104,14 +58,14 @@ contract UserRegistry {
         bytes memory concatMsg = abi.encodePacked(nonce, msgHash);
         bytes32 hashToSign = keccak256(concatMsg);
 
-        // Debugging only
-        // https://github.com/NomicFoundation/hardhat/blob/master/packages/hardhat-core/console.sol
-        console.log("concat message");
-        console.logBytes(concatMsg);
-        console.log("hashToSign");
-        console.logBytes32(hashToSign);
-        console.log("recovering address");
-        console.logAddress(hashToSign.recover(signature));
+        // // Debugging only
+        // // https://github.com/NomicFoundation/hardhat/blob/master/packages/hardhat-core/console.sol
+        // console.log("concat message");
+        // console.logBytes(concatMsg);
+        // console.log("hashToSign");
+        // console.logBytes32(hashToSign);
+        // console.log("recovering address");
+        // console.logAddress(hashToSign.recover(signature));
 
         return hashToSign.recover(signature) == user;
     }
@@ -154,6 +108,10 @@ contract UserRegistry {
     }
 
     /**
+      TODO: Allow other kinds of user managements
+        1. Update keytype
+        2. Update keystatus
+        3. Use different keypos to perform verification
      */
     function addPubkey(address user, uint8 keytype, uint8 keystatus, bytes memory pubkey, bytes memory sig) public {
         console.log(user);
@@ -182,10 +140,8 @@ contract UserRegistry {
         pubkeys[user].push(Pubkey(keytype, keystatus, pubkey));
     }
 
-    function updateKeykeystatus(address user, uint8 keypos, uint8 keystatus) public {
-        // TODO: require proof of private key ownership
-        pubkeys[user][keypos].keystatus = keystatus;
-    }
+    // function updateKeystatus(address user, uint8 keypos, uint8 keystatus) public {
+    // }
 
     function getName(address user) external view returns (string memory) {
         return lookupNames[user];
