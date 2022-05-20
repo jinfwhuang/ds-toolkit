@@ -7,8 +7,8 @@ proto:
 	cp build/github.com/jinfwhuang/ds-toolkit/proto/identity/*  proto/identity/
 
 generate-eth-code:
-	cp -r npm-pkg/contracts-identity/artifacts/abi experimental/eth-client/
-	go run github.com/ethereum/go-ethereum/cmd/abigen --abi "experimental/eth-client/abi/UserRegistry.json" --pkg main --type UserRegistry --out "experimental/eth-client/UserRegistry.go"
+	cp -r npm-pkg/contracts-identity/artifacts/abi go-pkg/user
+	go run github.com/ethereum/go-ethereum/cmd/abigen --abi "go-pkg/user/abi/UserRegistry.json" --pkg user --type UserRegistry --out "go-pkg/user/user-registry.go"
 
 hardhat-setup:
 	cd npm-pkg/contracts-identity
