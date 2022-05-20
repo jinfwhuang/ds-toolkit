@@ -1,11 +1,5 @@
 package user
 
-import (
-	"crypto/ecdsa"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
-)
-
 /**
 
 
@@ -30,18 +24,31 @@ type UserKey struct {
 	encryptedAesKey []byte // Be able to recover aes_key
 
 }
+func (u *DsData) unmarshall() []byte {
+	panic("not implemented")
+}
+
+func (u *DsData) marshall([]byte) {
+	panic("not implemented")
+}
 
 
-func (u *User) Encrypt(data []byte, sig []byte) bool {
-	// Keccak hash
-	dataDigest :=  crypto.Keccak256(data)
+// Do I have permission to the DsMata
+func (u *User) checkPerm(data *DsData) bool {
+	panic("not implemented")
+}
 
-	// Verify
-	crypto.VerifySignature(pubkey, digestHash, sigWithoutID)
+func (u *User) extractRawData(data *DsData) []byte {
+	panic("not implemented")
+}
 
-	// Keccak hash
-	// Sign
-	//crypto.Keccak256()
-	//crypto.Sign(digestHash, privateKey)
+func (u *User) addKey(data *DsData, owner, user User) {
+	panic("not implemented")
+}
 
+// 1. Create an AES-key
+// 2. Add itself to the Userkeys
+// 3. Encrypt data with AES key
+func (u *User) createDsData(data []byte) *DsData {
+	panic("not implemented")
 }
