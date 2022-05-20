@@ -5,15 +5,17 @@ import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 
-// const network = process.env.NETWORK || `ropsten`;
-const network = process.env.NETWORK || `localhost`;
+import {
+  HardhatNetworkAccountsUserConfig,
+  HardhatNetworkAccountUserConfig,
+} from "hardhat/types";
 
-// import "dotenv";
-// import 'dotenv/config'
-import * as dotenv from "dotenv";
+// const network = process.env.NETWORK || `ropsten`;
+const network = process.env.NETWORK || `hardhat`;
 
 import "hardhat-abi-exporter";
 
+import * as dotenv from "dotenv";
 dotenv.config({
   path: `${__dirname}/envs/${network}.conf`,
 });
@@ -25,7 +27,24 @@ console.log("url", process.env.URL);
 console.log("--------------");
 
 const url = process.env.URL || ``;
-const privateKey = process.env.PRIVATE_KEY || `0x${`11`.repeat(32)}`; // this is to avoid hardhat error
+const privateKey1 = process.env.PRIVATE_KEY1 || `0x${`11`.repeat(32)}`; // void hardhat error
+const privateKey2 = process.env.PRIVATE_KEY2 || `0x${`11`.repeat(32)}`;
+const privateKey3 = process.env.PRIVATE_KEY3 || `0x${`11`.repeat(32)}`;
+
+const hardhatAccounts: HardhatNetworkAccountUserConfig[] = [
+  {
+    privateKey: privateKey1,
+    balance: "19999900" + "0".repeat(18),
+  },
+  {
+    privateKey: privateKey2,
+    balance: "29999900" + "0".repeat(18),
+  },
+  {
+    privateKey: privateKey3,
+    balance: "39999900" + "0".repeat(18),
+  },
+];
 
 const config: HardhatUserConfig = {
   solidity: `0.8.8`,
@@ -34,23 +53,24 @@ const config: HardhatUserConfig = {
     mainnet: {
       // chainId: 1,
       url,
-      accounts: [privateKey],
+      accounts: [privateKey1, privateKey1, privateKey3],
     },
     hardhat: {
       chainId: 1337,
+      accounts: hardhatAccounts,
     },
     localhost: {
       chainId: 1337,
       url,
-      accounts: [privateKey],
+      accounts: [privateKey1, privateKey1, privateKey3],
     },
     ropsten: {
       url,
-      accounts: [privateKey],
+      accounts: [privateKey1, privateKey1, privateKey3],
     },
     rinkeby: {
       url,
-      accounts: [privateKey],
+      accounts: [privateKey1, privateKey1, privateKey3],
     },
   },
   gasReporter: {

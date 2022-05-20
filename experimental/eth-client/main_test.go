@@ -420,9 +420,7 @@ func Test_AddPubkey(t *testing.T) {
 	}
 
 	lenKeys, _ := userRegistry.GetLenKeys(&callOpt, addr)
-	log.Println(lenKeys)
-
-	// https://ropsten.etherscan.io/address/0xd52C607197467c4200d3cd02BFe667A42e05aa1d
+	log.Println("How many keys", lenKeys)
 }
 
 func Test_AddMainUser(t *testing.T) {

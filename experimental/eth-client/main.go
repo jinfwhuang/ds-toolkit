@@ -37,7 +37,7 @@ const (
 
 	// hardhast
 	RpcAddr           = "http://127.0.0.1:8545"
-	UserRegistryContractAddr = "0x37cA1410cB7704697aE550bA6e63B16179F28098"
+	UserRegistryContractAddr = "0x1fE63e58DDf35f207BF7D9AB2E3aa51D0D3361cC"
 	ChainID = 1337 // hardhat
 
 
