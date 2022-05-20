@@ -13,16 +13,14 @@ struct Pubkey {
 }
 
 contract UserRegistry {
-
     using ECDSA for bytes32;
     using BytesLib for bytes;
 
     // Each user is uniquely identified by an ID, which is a 20 bytes integer
     address[] users; // Append only; address is immutale
-    mapping(string => address) lookupUsers;  // Name is immutable
+    mapping(string => address) lookupUsers; // Name is immutable
 
     mapping(address => string) lookupNames;
-    mapping(address => uint16) userNonce;
 
     // Each user has many public address
     mapping(address => Pubkey[]) pubkeys;
@@ -30,49 +28,31 @@ contract UserRegistry {
     /**
      * Contract initialization.
      */
-    constructor() {
-    }
+    constructor() {}
 
-    function getUserNonce(address user) public view returns (uint16) {
-        return userNonce[user];
-    }
-
-    function updateUserNonce(address user) private {
-        userNonce[user] += 1;
-    }
-
-    function rndHash() public view returns(bytes32) {
+    function rndHash() public view returns (bytes32) {
         return keccak256(abi.encodePacked(block.number));
     }
 
-    function ethSignedHash(bytes32 messageHash) public pure returns(bytes32) {
+    function ethSignedHash(bytes32 messageHash) public pure returns (bytes32) {
         return messageHash.toEthSignedMessageHash();
     }
 
-    function recover(bytes32 hash, bytes memory signature) public pure returns(address) {
+    function recover(bytes32 hash, bytes memory signature)
+        public
+        pure
+        returns (address)
+    {
         return hash.recover(signature);
     }
 
-    function verifyUser(address user, bytes32 msgHash, bytes memory signature) public view returns (bool isValid) {
-        uint16 nonce = userNonce[user];
-        bytes memory concatMsg = abi.encodePacked(nonce, msgHash);
-        bytes32 hashToSign = keccak256(concatMsg);
-
-        // // Debugging only
-        // // https://github.com/NomicFoundation/hardhat/blob/master/packages/hardhat-core/console.sol
-        // console.log("concat message");
-        // console.logBytes(concatMsg);
-        // console.log("hashToSign");
-        // console.logBytes32(hashToSign);
-        // console.log("recovering address");
-        // console.logAddress(hashToSign.recover(signature));
-
-        return hashToSign.recover(signature) == user;
-    }
-
-    function getImpliedAddr(address user, uint8 keypos) public view returns (address) {
+    function getImpliedAddr(address user, uint8 keypos)
+        public
+        view
+        returns (address)
+    {
         Pubkey storage pubkey = pubkeys[user][keypos];
-        assert(uint8(1) == pubkey.keytype); // TODO: Expand support beyond 1=secp256k1
+        require(uint8(1) == pubkey.keytype, "keytype support not implemented"); // TODO: Expand support beyond 1=secp256k1
 
         return computeAddr(pubkey.key);
     }
@@ -88,23 +68,25 @@ contract UserRegistry {
         return address(bytes20(addr));
     }
 
-
     // Anyone could create a user without verification.
     // Having access to the privatekey that matches "pubkey" is equivalent to owning the user identity.
-    function newUser(address user, string memory name, uint8 keytype, uint8 keykeystatus, bytes memory pubkey) public {
+    function newUser(
+        address user,
+        string memory name,
+        uint8 keytype,
+        uint8 keystatus,
+        bytes memory pubkey
+    ) public {
         require(pubkeys[user].length == 0, "id already exist");
 
         users.push(user);
         lookupNames[user] = name;
         lookupUsers[name] = user;
-        userNonce[user] = 0;
-        pubkeys[user].push(Pubkey(keytype, keykeystatus, pubkey));
+        pubkeys[user].push(Pubkey(keytype, keystatus, pubkey));
 
-        console.log(user);
-        console.log(name);
-        console.log(keytype);
-        console.log(keykeystatus);
-        console.logBytes(pubkey);
+        // console.log(user);
+        // console.log(name);
+        // console.logBytes(pubkey);
     }
 
     /**
@@ -113,13 +95,22 @@ contract UserRegistry {
         2. Update keystatus
         3. Use different keypos to perform verification
      */
-    function addPubkey(address user, uint8 keytype, uint8 keystatus, bytes memory pubkey, bytes memory sig) public {
-        console.log(user);
-        console.log(pubkeys[user].length);
+    function addPubkey(
+        address user,
+        uint8 keytype,
+        uint8 keystatus,
+        bytes memory pubkey,
+        bytes memory sig
+    ) public {
         require(pubkeys[user].length > 0, "id does not exist");
 
         // Get signature pubkey
-        bytes memory msgToKeccak = abi.encodePacked(user, keytype, keystatus, pubkey);
+        bytes memory msgToKeccak = abi.encodePacked(
+            user,
+            keytype,
+            keystatus,
+            pubkey
+        );
         bytes32 msgToSign = keccak256(msgToKeccak);
         address signAddr = msgToSign.recover(sig);
 
@@ -135,13 +126,13 @@ contract UserRegistry {
 
         // Proof of private key ownership
         require(signAddr == allowedAddr, "sig is not valid");
-        console.log("verify signature");
 
         pubkeys[user].push(Pubkey(keytype, keystatus, pubkey));
-    }
 
-    // function updateKeystatus(address user, uint8 keypos, uint8 keystatus) public {
-    // }
+        console.log(user);
+        console.log(lookupNames[user]);
+        console.log(pubkeys[user].length);
+    }
 
     function getName(address user) external view returns (string memory) {
         return lookupNames[user];
@@ -159,12 +150,15 @@ contract UserRegistry {
         return pubkeys[user];
     }
 
-    function getKey(address user, uint8 keypos) external view returns (Pubkey memory) {
+    function getKey(address user, uint8 keypos)
+        external
+        view
+        returns (Pubkey memory)
+    {
         return pubkeys[user][keypos];
     }
 
     function getAllUsers() external view returns (address[] memory) {
         return users;
     }
-
 }
