@@ -83,10 +83,6 @@ contract UserRegistry {
         lookupNames[user] = name;
         lookupUsers[name] = user;
         pubkeys[user].push(Pubkey(keytype, keystatus, pubkey));
-
-        // console.log(user);
-        // console.log(name);
-        // console.logBytes(pubkey);
     }
 
     /**
@@ -94,6 +90,9 @@ contract UserRegistry {
         1. Update keytype
         2. Update keystatus
         3. Use different keypos to perform verification
+
+      TODO:
+        1. How to prevent signature reuse
      */
     function addPubkey(
         address user,
@@ -114,9 +113,13 @@ contract UserRegistry {
         bytes32 msgToSign = keccak256(msgToKeccak);
         address signAddr = msgToSign.recover(sig);
 
-        console.logBytes(msgToKeccak);
-        console.logBytes32(msgToSign);
-        console.log(signAddr);
+        // console.log("----");
+        // console.log("msgToKeccak");
+        // console.logBytes(msgToKeccak);
+        // console.log("msgToSign");
+        // console.logBytes32(msgToSign);
+        // console.log("signAddr");
+        // console.log(signAddr);
 
         // Get existing pubkey
         Pubkey storage oPubkey = pubkeys[user][0]; // TODO: add support for all keys
@@ -128,10 +131,6 @@ contract UserRegistry {
         require(signAddr == allowedAddr, "sig is not valid");
 
         pubkeys[user].push(Pubkey(keytype, keystatus, pubkey));
-
-        console.log(user);
-        console.log(lookupNames[user]);
-        console.log(pubkeys[user].length);
     }
 
     function getName(address user) external view returns (string memory) {

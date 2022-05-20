@@ -74,4 +74,47 @@ describe(`UserRegistry`, function () {
     const addr = await userRegistry.computeAddr(pubkey);
     console.log("computed address", addr);
   });
+
+  it.only(`add more pubkey`, async function () {
+    const key = new ethers.utils.SigningKey(privateKey1);
+    let wallet = new ethers.Wallet(key.privateKey);
+    wallet = wallet.connect(ethers.getDefaultProvider());
+
+    const user = wallet.address;
+    const pubkey = key.publicKey;
+
+    // msgToKeccak := encodePacked(addr.Bytes(), []byte{1}, []byte{1}, pubkeyBytes);
+    // msgToSign := crypto.Keccak256(msgToKeccak)
+    // sig, err := crypto.Sign(msgToSign, privkey)
+    const msgToKeccak = ethers.utils.solidityPack(
+      ["address", "uint8", "uint8", "bytes"],
+      [user, keytype, keystatus, pubkey]
+    );
+    const msgToSign = ethers.utils.solidityKeccak256(
+      ["address", "uint8", "uint8", "bytes"],
+      [user, keytype, keystatus, pubkey]
+    );
+    const sig = key.signDigest(msgToSign);
+    const sigFlat = ethers.utils.joinSignature(sig);
+
+    console.log("msgToKeccak=", msgToKeccak);
+    console.log("msgToSign=", msgToSign);
+
+    await userRegistry.addPubkey(user, keytype, keystatus, pubkey, sigFlat);
+    await userRegistry.addPubkey(user, keytype, keystatus, pubkey, sigFlat);
+
+    // user: string,
+    // keytype: BigNumberish,
+    // keystatus: BigNumberish,
+    // pubkey: BytesLike,
+    // sig: BytesLike,
+    // overrides?: CallOverrides
+
+    // address user,
+    // uint8 keytype,
+    // uint8 keystatus,
+    // bytes memory pubkey,
+    // bytes memory sig
+
+  });
 });

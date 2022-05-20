@@ -4,10 +4,11 @@
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc",
     "lint:es": "npx eslint '**/*.{js,ts}'",
     "lint:es:fix": "npx eslint --fix '**/*.{js,ts}'",
-    "lint:sol": "npx solhint -f table 'contracts/**/*.sol'"
+    "lint:sol": "npx solhint -f table 'contracts/**/*.sol'",
+    "lint:sol:fix": "npx prettier --write 'contracts/**/*.sol",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
