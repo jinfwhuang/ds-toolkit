@@ -21,13 +21,6 @@ This project seeks to create a set of tools that could be used to build dapps th
   
 ### Components
 
-#### Identity
-
-- A dapp could implement login
-- Allow users to interact on a peer to peer data network
-
-#### Encryption, Permission, and Sharing
-- To be added
-
-#### Byte Storage
-- To be added
+- [Identity](docs/identity.md)
+- [Data Permission](docs/data-permission.md)
+- [Byte Storage](docs/decentralized-storage-networks.md) 

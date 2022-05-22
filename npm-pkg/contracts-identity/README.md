@@ -48,3 +48,8 @@ NETWORK=localhost npx hardhat test
 ## References:
 
 - Ropsten faucet: https://faucet.metamask.io/
+- https://docs.near.org/docs/concepts/account
+
+## TODOs:
+- verified accounts
+- Implicit accounts

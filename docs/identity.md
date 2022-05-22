@@ -1,13 +1,14 @@
 
 
 
-- verified accounts
-- human-readable name
-- key rotation
-- https://docs.near.org/docs/concepts/account
+## UserRegistry contract
 
+See [smart contract](npm-pkg/contracts-identity)
 
+- All users are registered in UserRegistry
+- Each user is uniquely identified by a 20 bytes ID
+- Key rotation
+- Human-readable name
 
-- Implicit accounts
-
-- 
+## Go library
+- go-pkg/ds/user
