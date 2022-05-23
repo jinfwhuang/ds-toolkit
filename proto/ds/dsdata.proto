@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package jinfwhuang.dstoolkit.ds;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/jinfwhuang/ds-toolkit/proto/ds";
+
+/*
+type DsData struct {
+	// Header
+	DataKey []byte          // AES128, the data-key itself is encrypted
+	userKeys []SharedSecret // Each entry could be used to recover AES_key
+
+	// Data
+	EncryptedData []byte  // Encrypted by AES_key
+}
+
+ */
+message DsData {
+  bytes pubKey = 1;
+  string status = 2;
+}
+
+//message LoginMessage {
+//  bytes pubKey = 1;
+//  string unsignedMsg = 2;
+//  bytes signature = 3;
+//}

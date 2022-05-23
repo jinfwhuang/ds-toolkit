@@ -7,15 +7,9 @@ id: '0x48B7872500c5BefDBb7BBe9dB9070CeEC66bdD4b'
 # lower case alphanumeric, [.-_] # immutable, optional
 name: 'jin.digitalgreen'
 
-# pubkey:
-#  - secp256k1 public key
-#  - compressed
-#  - hex
-#  - prefixed with 0x
-
 # Entries are append-only
 # "keystatus" field could be modified
-# All 'admin' pubkeys has permission to perform update
+# All 'admin' pubkeys has permission to append new entries
 publicKeys:
   - type: secp256k1
     key: '0x0233085d6674c5629673e9d0fb01ff9b41c3b2accb1cdb7e94516b0a29c0b399b5'
@@ -24,7 +18,8 @@ publicKeys:
     key: '0x02a5ca0d04213b2c044dc636887c0eabf904c31c679f46ad30110f05eb7f093e95'
     keystatus: 'active'
   - type: bls-12-381
-    key: 0xxxxxxxxx
+    key: "0x60fbafbdb10ebb6818893e8c7f57e4c02013455d5432468e5bf3edc766ea7bf9613588fe996069641638edbe6df3c1ed1ec5c13dda24d708fb87b39271a43362"
     keystatus: 'active'
 
+# Contain any additional information
 metadata_url: ipfs/link/containing-public-information

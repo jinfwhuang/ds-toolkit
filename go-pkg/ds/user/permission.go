@@ -2,6 +2,7 @@ package user
 
 /**
 
+TODO: Use protobuf so we get data serialization and deserialization
 
 
  */
@@ -14,6 +15,7 @@ type DsData struct {
 	EncryptedData []byte  // Encrypted by AES_key
 }
 
+// TODO: use protobuf
 type SharedSecret struct {
 	counterPartyPubkey []byte  // This should be ephemeral; H_b, p_b
 	pubkey []byte  // H_a, private key is p_a

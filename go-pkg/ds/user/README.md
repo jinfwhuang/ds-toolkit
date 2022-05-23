@@ -1,50 +1,13 @@
-## Quick Commands
+# Work in progress
 
-```bash
-# Use different networks
-NETWORK=mainnet npx hardhat fast
-NETWORK=ropsten npx hardhat fast
 
-# compile
-npx hardhat compile
+## User
 
-# export abi
-npx hardhat export-abi
+- See `docs/identity.md`
+- See `npm-pkg/contracts-identity/`
+- See an example yaml representation in `docs/yam-examples/dsdata-example.yaml`.
 
-# Test
-npx hardhat test
+## DsData
 
-# Solidity Linting
-yarn lint:sol
-```
+A `DsData` is a data representation of encrypted data. See an example in yaml representation in `docs/yam-examples/dsdata-example.yaml`.
 
-## Deploy
-
-```bash
-# export abi
-npx hardhat export-abi
-
-# deploy
-NETWORK=ropsten npx hardhat run scripts/deploy/user-registry.ts
-
-# verify: publish the source code and make the contracts verifiable.
-npx hardhat verify 0xe0822c07B9513B2bDC9bd0780f4AED4452dAc8c4
-```
-
-## Local dev
-
-```bash
-# Start a local chain
-npx hardhat node
-
-# Setup the accounts
-NETWORK=localhost npx hardhat run scripts/hardhat-setup.ts
-
-# Test
-npx hardhat test
-NETWORK=localhost npx hardhat test
-```
-
-## References:
-
-- Ropsten faucet: https://faucet.metamask.io/

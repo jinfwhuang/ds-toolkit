@@ -44,7 +44,9 @@ func main() {
 	log.Println(hexutil.Encode(b))
 	log.Println(base64.StdEncoding.EncodeToString(b))
 
-	log.Println(base64.StdEncoding.EncodeToString(bytesutil.RandBytes(128/8)))
+	log.Println(hexutil.Encode(bytesutil.RandBytes(64)))
+	log.Println(base64.StdEncoding.EncodeToString(bytesutil.RandBytes(64)))
+
 }
 
 
