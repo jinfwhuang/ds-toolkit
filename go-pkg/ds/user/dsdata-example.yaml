@@ -1,0 +1,65 @@
+---
+# Raw data that are needed to construct a basic DsData object
+
+# 128 bit AES encryption key
+data-key: "t9Qu8QeT24Vdj4ghva/VJg=="
+
+# Any arbitrary data
+data: |
+  b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABFwAAAAdzc2gtcn
+  NhAAAAAwEAAQAAAQEArE2FWfpEuBH0Ph0n6yFgttxdvTBuHdCAnZ7lkPSqDKA8R4MG/mny
+  /nnSnzO7Tn+l148Kl4oVuC7TrEfYmYqGl5evzLRDQybODLzmCnm22U1JfYOceS1uikGOsA
+  34LGH0gFwVllGUBQmrc/zcQ0Ekm5a+gDsprV/VOwDkfMwC0p3iy/vrAb2HU12eSjbgKRLH
+  qPymU/AODVSL4xR+7cHAt1xm72ulcpmUhP+6eqZMBP8HRUw3y+sez1f6Cp2HjhojEt0rTx
+  Vqe2K6tCCDdxcj/UAAzD5vjaVTIzkoSekabBzPVGGwNsJ2CIz/nlwVDOI0ZkkbbAOW9Jap
+  ne0bihJz2QAAA8h7dgkKe3YJCgAAAAdzc2gtcnNhAAABAQCsTYVZ+kS4EfQ+HSfrIWC23F
+  A2wnYIjP+eXBUM4jRmSRtsA5b0lqmd7RuKEnPZAAAAAwEAAQAAAQB5usb0m7DDDsQswfJ6
+
+# public key of user1
+pubkey_user1: "Wvlm4CQ6tar+Ilon/bCpZetWZzmH+PSagRuLyEVlYvAa1h9rchIJPck3HA0UVDYKkXVftEbIBvVDO9vl9mJELA=="
+
+shared-secret:
+  # H_a
+  pubkey: "Wvlm4CQ6tar+Ilon/bCpZetWZzmH+PSagRuLyEVlYvAa1h9rchIJPck3HA0UVDYKkXVftEbIBvVDO9vl9mJELA=="
+  # H_b
+  pubkey-ephemeral: "KgbtwX0vd4utjpODHQqebLZqXGcZpeSBWR4LJpf00NNOJF/n5km9iYd0Obph6QqSx8z9TfHzkdtC1T92TntDjg=="
+
+#  # derived data: s = p_a * p_b * G = p_a * H_b
+#  secret: ""
+
+  # Encrypted data-key, encrypted with "secret"
+  encrypted-data-key: "t9Qu8QeT24Vdj4ghva/VJg=="
+
+---
+description:  "description of what this data table is used for"
+
+encrypted-data: |
+  8PLGwj+q3b3qXPKYy8pBBD4K6Np+4EwTeJS/DdYDaKfMBaiHz/vSTAgrm2KxEINnTArZxSJqAr
+  /TeTebq3mVn/jFx4uMlc8FHScc7GpKESA4TOtKf0f+lOoruQQyHs4x9PH2kCTDbvTmS0VR9BuY
+  /1tSAmZFee6gCJoh+56oKqqS3+Ka10bvMVN+j02HPaJnwQyYnpD+yjUP5GvQB3jC0qWbojac/U
+  Kcu3BoEbCCLL/Rr5K+Ktx8amUd0mMEPwA4JzkAYwLLwq8ddypRDwxzHBa2T7F4HVt+d1sdmZW6
+  mwOVy/zdYe7Etur4aX5rJeHYtCubef2lpTNhxWTfsP9WdI/kYWbOUa5uwo2mxyNp2c/r1oOgGG
+  YawJ5g2Ba9F2IxT0h3Ng+t83UDgF+76whpVKFB4JQQ8katqRGEMvb0ig34WG7mbzLX3fJ9g94j
+  QYRGBLibSPbeXPHsxpSG5gGhdiNAVLnzZKoVR7S41BHdeYrYsr7lKjWJYszN41yUSCHljphCJO
+  3DeN21P6FiVwILSWaGAexslXGRB50wIgG+9eDs5AZDnxUv9ZDvPaIkQmjal4qrkQNszDHo6kx1
+  0JuDDny1Fr8wKLtZonrG5fnnCmWBlSo+Uxj3ngzWMETdXGvbGTnL1zvEkK0nJg4KpfRSl/3d4k
+  pPJ0eO69ZAAfI0WIlWfJ7o/HSxZBj/54ZYpVbxNVVpxZ31szVFqzZcOAfmZbRsjWsdcQWpVj4I
+  hnr75Ml6rnR9hOD6uRj7QzLnBVSG4bPtsF8yazsznlFkKJKiwE0jrLgEmFwJgarGccXOh15HRz
+  3KHckqqytGh6z/HlvVlqeF758K8hsTtXQFQOLb/Z0+DzwlCgaAEMTEwU0mIMM9LscnfN9i6nec
+  cO0kYIrmJuHHZvdNq8oCYKgap8KZIt/QOsLarKbnuMuwwBWQmzk+1OdYXCd/HnDL9KT5mvE/+3
+  bHqB5w+LDZE8oE+Ix0qIx4fXwE3n6Sr9i5AL9aBt7w4++sZJVj4M1NB+kIT11X0PhUDpEwlZLk
+  HTye7qgnurVlLeQYlWLSyQpCTEmq1m3IOJ/HD/sRZFSm5SK3hGYEP9ZCDV0ydTQtBkbhnilFtx
+  hUbAmRopeZ5mmwNIpKsxZhrbjnsoddIOJkqi+mxvg1BeK0FucQ7gIX7UGS+e9DHyzFCDK6kbY8
+
+shared-secrets:
+  # pubkey belongs to user 1
+  - pubkey: "Wvlm4CQ6tar+Ilon/bCpZetWZzmH+PSagRuLyEVlYvAa1h9rchIJPck3HA0UVDYKkXVftEbIBvVDO9vl9mJELA=="
+    pubkey-ephemeral: "KgbtwX0vd4utjpODHQqebLZqXGcZpeSBWR4LJpf00NNOJF/n5km9iYd0Obph6QqSx8z9TfHzkdtC1T92TntDjg=="
+    # Encrypted data-key, encrypted with "secret"
+    # pubkey-ephemeral and private key could be used to recover "secret", which is used to recover data-key
+    encrypted-data-key: "t9Qu8QeT24Vdj4ghva/VJg=="
+
+  # pubkey belongs to user 2
+  - pubkey: "VY8KshhvpeELy2cgktLGAqzQqCxmbXsL303emoqaNGyqwbHd1GiE7rwc0IhfNBMII5LaUO7dCD9FTyPfSCf6fA=="
+    pubkey-ephemeral: "/VYKQCE268VjGPt7HeCpoAGBHSp4+lC5/2J3QgOXJ7lZqkagajYA3/qJoBdSTyvZL7+63Fmshju88rE0hAz0MQ=="
+    encrypted-data-key: " M+ngB063KwmistlihsQECQ=="

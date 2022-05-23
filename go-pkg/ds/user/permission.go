@@ -7,14 +7,14 @@ package user
  */
 type DsData struct {
 	// Header
-	EncryptionKey []byte  // AES128, the key itself is encrypted
-	userKeys []UserKey // Each entry could be used to recover AES_key
+	DataKey []byte          // AES128, the data-key itself is encrypted
+	userKeys []SharedSecret // Each entry could be used to recover AES_key
 
 	// Data
 	EncryptedData []byte  // Encrypted by AES_key
 }
 
-type UserKey struct {
+type SharedSecret struct {
 	counterPartyPubkey []byte  // This should be ephemeral; H_b, p_b
 	pubkey []byte  // H_a, private key is p_a
 
