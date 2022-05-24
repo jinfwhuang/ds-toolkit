@@ -7,24 +7,22 @@ import "google/protobuf/empty.proto";
 
 option go_package = "github.com/jinfwhuang/ds-toolkit/proto/ds";
 
-/*
-type DsData struct {
-	// Header
-	DataKey []byte          // AES128, the data-key itself is encrypted
-	userKeys []SharedSecret // Each entry could be used to recover AES_key
+message DsDataBlob {
+  repeated SharedKey secrets = 1;
 
-	// Data
-	EncryptedData []byte  // Encrypted by AES_key
+  uint64 dataLen = 10; // EncryptedData might be padded
+  bytes iv = 12; // 16 bytes
+  bytes encryptedDataHash = 11;  // To check data integrity
+  bytes encryptedData = 20;
 }
 
- */
-message DsData {
-  bytes pubKey = 1;
-  string status = 2;
+message SharedKey {
+  bytes pubkey = 1;
+  bytes ephemeralPubkey = 2;
+
+  // SharedSecret = privkey * ephemeral_privkey * Generator = privkey * ephemeralPubkey
+  // encryptedKey = AES_ENCRYPT(key=sha256(SharedSecret)[:128], iv=iv, data=data_key)
+  bytes encryptedKey = 10; // AES_128 encryption
+  bytes iv = 11; // 16 bytes
 }
 
-//message LoginMessage {
-//  bytes pubKey = 1;
-//  string unsignedMsg = 2;
-//  bytes signature = 3;
-//}

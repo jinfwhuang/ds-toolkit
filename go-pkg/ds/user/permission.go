@@ -26,6 +26,7 @@ type SharedSecret struct {
 	encryptedAesKey []byte // Be able to recover aes_key
 
 }
+
 func (u *DsData) unmarshall() []byte {
 	panic("not implemented")
 }

@@ -2,9 +2,13 @@ clean-proto:
 	rm -rf build/github.com
 
 proto:
-	rm -rf build/github.com/jinfwhuang/ds-toolkit/proto
-	protoc -I=./third_party/googleapis -I=./proto/identity --go_out=build --go-grpc_out=build proto/identity/login.proto
-	cp build/github.com/jinfwhuang/ds-toolkit/proto/identity/*  proto/identity/
+	rm -rf build/github.com/jinfwhuang/ds-toolkit/proto/
+	protoc -I=./third_party/googleapis -I=./proto --go_out=build --go-grpc_out=build proto/**/*.proto
+	cp -r build/github.com/jinfwhuang/ds-toolkit/proto/  proto
+
+#	rm -rf build/github.com/jinfwhuang/ds-toolkit/proto
+#	protoc -I=./third_party/googleapis -I=./proto/identity --go_out=build --go-grpc_out=build proto/identity/login.proto
+#	cp build/github.com/jinfwhuang/ds-toolkit/proto/identity/*  proto/identity/
 
 generate-eth-code:
 	cp -r npm-pkg/contracts-identity/artifacts/abi go-pkg/user

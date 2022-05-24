@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.14.0
-// source: login.proto
+// source: identity/login.proto
 
 package identity
 
@@ -174,5 +174,5 @@ var Identity_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "login.proto",
+	Metadata: "identity/login.proto",
 }

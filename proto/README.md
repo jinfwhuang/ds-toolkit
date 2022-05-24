@@ -1,17 +1,12 @@
 
-
-
-
-
-
+## Manual Build
 ```bash
-rm -rf /Users/jin/code/repos/ds-sdk/build/github.com/jinfwhuang/ds-sdk/proto
+rm -rf build/github.com/jinfwhuang/ds-toolkit/proto/
 
 protoc \
--I=./third_party/googleapis -I=./proto/identity \
+-I=./third_party/googleapis -I=./proto \
 --go_out=build --go-grpc_out=build \
-proto/identity/login.proto
+proto/**/*.proto
 
-cp build/github.com/jinfwhuang/ds-sdk/proto/identity/*  proto/identity/
-
+cp -r build/github.com/jinfwhuang/ds-toolkit/proto/  proto
 ```

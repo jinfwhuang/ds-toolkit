@@ -7,7 +7,7 @@
 - Key rotation
 - Human-readable name
 
-- A [yaml example](yam-examples/sample-id.yaml) of information contained in entry that describes a user 
+- A [yaml example](yaml-examples/sample-id.yaml) of information contained in entry that describes a user 
 - Implemented in [smart contract](../npm-pkg/contracts-identity)
 
 /Users/jin/code/repos/ds-toolkit/go-pkg/ds/user/sample-id.yaml
