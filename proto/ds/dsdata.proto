@@ -7,7 +7,7 @@ import "google/protobuf/empty.proto";
 
 option go_package = "github.com/jinfwhuang/ds-toolkit/proto/ds";
 
-message DsDataBlob {
+message DataBlob {
   repeated SharedKey secrets = 1;
 
   uint64 dataLen = 10; // EncryptedData might be padded

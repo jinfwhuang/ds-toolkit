@@ -1,17 +1,15 @@
-package user
+package ds
 
 import (
 	"crypto/ecdsa"
-	"crypto/elliptic"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/crypto/secp256k1"
 	"github.com/sirupsen/logrus"
-	log "log"
 )
 
-
+const (
+	NotImplemented = "not implemented"
+)
 
 type User struct {
 	Userid common.Address
@@ -49,21 +47,24 @@ func (u *User) Sign(data []byte) (sig []byte, err error) {
 	// Keccak hash
 	// Sign
 	//crypto.Keccak256()
-	crypto.Sign(digestHash, privateKey)
+	//crypto.Sign(digestHash, privateKey)
 
+	panic(NotImplemented)
 }
 
 func (u *User) VerifySignature(data []byte, sig []byte) bool {
 	// Keccak hash
-	dataDigest :=  crypto.Keccak256(data)
+	//dataDigest :=  crypto.Keccak256(data)
 
-	// Verify
-	crypto.VerifySignature(pubkey, digestHash, sigWithoutID)
+	//// Verify
+	//crypto.VerifySignature(pubkey, digestHash, sigWithoutID)
 
 	// Keccak hash
 	// Sign
 	//crypto.Keccak256()
 	//crypto.Sign(digestHash, privateKey)
+
+	panic(NotImplemented)
 
 }
 
