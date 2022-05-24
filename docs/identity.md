@@ -1,7 +1,7 @@
 
 ## Identity Management
 
-The identity system does not require a centralized database. Users are registered in a decentralized network. The registry is implemented as an EVM smart contract. It could have been any smart contract system, or it could be implemented its own purpose built state machine. EVM smart contract is chosen purely for convenience. Once the contract is deployed, everyone has equal access to the identity system. Anyone can register an entry in UserRegistry. Each entry is equivalent to a user. No one other than the user owner could make changes to their entry. The identity system is the foundation that many other applications could build on top.
+The identity system does not require a centralized database. Users are registered in a decentralized network. The registry is implemented as an EVM smart contract. It could have been any smart contract system, or it could be implemented its own purpose built state machine. EVM smart contract is chosen purely for convenience. Once the contract is deployed, everyone has equal access to the identity system. Anyone can register an entry in the UserRegistry contract. Each entry is equivalent to a user. No one other than the user owner could make changes to their entry. The identity system is the foundation that many other applications could build on top.
 
 
 
@@ -14,7 +14,7 @@ describes a user
   - User could add more keys to their entry
   - User could rotate keys out of service
   - Each user has a human-readable name
-- See [examples](../experimental/eth-client) on how to interact with the smart contract in golang
+- See [examples](../experimental/eth-client) on how to register and modify user entries
 
 ## Examples of What the Identity System Could be Used For
 
