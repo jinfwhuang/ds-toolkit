@@ -8,21 +8,24 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/jinfwhuang/ds-toolkit/proto/ds";
 
 message DataBlob {
-  repeated SharedKey secrets = 1;
+  repeated HiddenKey keys  = 1;
 
   uint64 dataLen = 10; // EncryptedData might be padded
   bytes iv = 12; // 16 bytes
   bytes encryptedDataHash = 11;  // To check data integrity
+
+  // The data is encrypted by a single hidden key.
+  // The hidden is encrypted by secrets that are only retrievable by corresponding pubkey-privkey pair owner.
   bytes encryptedData = 20;
 }
 
-message SharedKey {
+message HiddenKey {
   bytes pubkey = 1;
   bytes ephemeralPubkey = 2;
 
   // SharedSecret = privkey * ephemeral_privkey * Generator = privkey * ephemeralPubkey
   // encryptedKey = AES_ENCRYPT(key=sha256(SharedSecret)[:128], iv=iv, data=data_key)
-  bytes encryptedKey = 10; // AES_128 encryption
+  bytes encryptedHiddenKey = 10; // AES_128 encryption
   bytes iv = 11; // 16 bytes
 }
 
