@@ -3,11 +3,10 @@
 
 The identity system does not require a centralized database. Users are registered in a decentralized network. The registry is implemented as an EVM smart contract. It could have been any smart contract system, or it could be implemented its own purpose built state machine. EVM smart contract is chosen purely for convenience. Once the contract is deployed, everyone has equal access to the identity system. Anyone can register an entry in the UserRegistry contract. Each entry is equivalent to a user. No one other than the user owner could make changes to their entry. The identity system is the foundation that many other applications could build on top.
 
-
-
 #### Implementation
+
 - EVM [smart contract](../npm-pkg/contracts-identity) implementation of the UserRegistry
-- Here is a [yaml example](yaml-examples/sample-id.yaml) that 
+- Here is a [yaml example](yaml-examples/sample-id.yaml) that
 describes a user
 - Key features
   - Each user is uniquely identified by a 20 bytes ID
@@ -26,7 +25,7 @@ A backend service could leverage Elliptical Curve Digital Signature Algorithm (E
 - Here is a [short introduction](https://jinsnotes.com/2020-12-30-elliptical-curve-cryptography#signing) to ECDSA
 
 #### Data Wallet
-Users could use the identity system to manage and share data without intermediaries. 
+Users could use the identity system to manage and share data without intermediaries.
 
 - See documentation on the [data permission module](./data-permission.md)
-- See how [data blob](../proto/ds/dsdata.proto) is represented 
+- See how [data blob](../proto/ds/dsdata.proto) is represented
