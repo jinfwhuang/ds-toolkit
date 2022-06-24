@@ -29,41 +29,14 @@ func (u *User) addKey(blob *protods.DataBlob, newDataOwner *User) *protods.DataB
 // 2. Add an entry to "Secrets"
 // 3. Encrypt data with AES key
 func (u *User) createDataBlob(data []byte) (*protods.DataBlob, error) {
-	//HiddenDataKey creation
-	dataKey := encrypt.GenAes128Key()
-
-	ephemeralPrivKey, err := ethereum.GenerateKey()
+	hiddenDataKey, AESKey, err := u.generateHiddenKey(data)
 	if err != nil {
-		return nil, errors.New("creation of ephemeral private key failed")
+		return nil, err
 	}
-	sharedSecretX, sharedSecretY := ephemeralPrivKey.PublicKey.Add(
-		u.privkey.X,
-		u.privkey.Y,
-		ephemeralPrivKey.PublicKey.X,
-		ephemeralPrivKey.PublicKey.Y,
-	)
-
-	sharedSecret := elliptic.Marshal(ethereum.S256(), sharedSecretX, sharedSecretY)
-	sharedSecretHash := sha256.Sum256(sharedSecret)
-
-	iv := encrypt.GenCBCIv()
-
-	encryptedHiddenKey, err := encrypt.Encrypt(sharedSecretHash[:], iv, dataKey)
-	if err != nil {
-		return nil, errors.New("signing failed")
-	}
-
-	hiddenDataKey := protods.SharedKey{
-		Pubkey:          ethereum.CompressPubkey(&u.privkey.PublicKey),
-		EphemeralPubkey: ethereum.CompressPubkey(&ephemeralPrivKey.PublicKey),
-		EncryptedKey:    encryptedHiddenKey,
-		Iv:              iv,
-	}
-
-	//DataBlob creation
 	dataLen := len(data)
+	ivData := encrypt.GenCBCIv()
 
-	encryptedData, err := encrypt.Encrypt(dataKey, iv, data)
+	encryptedData, err := encrypt.Encrypt(AESKey, ivData, data)
 	if err != nil {
 		return nil, errors.New("encryption of data with data key failed")
 	}
@@ -72,11 +45,45 @@ func (u *User) createDataBlob(data []byte) (*protods.DataBlob, error) {
 
 	dataBlob := protods.DataBlob{
 		DataLen:           uint64(dataLen),
-		Iv:                iv,
+		Iv:                ivData,
 		EncryptedDataHash: encryptedDataHash[:],
 		EncryptedData:     encryptedData,
-		Secrets:           []*protods.SharedKey{&hiddenDataKey},
+		Keys:              []*protods.HiddenDataKey{hiddenDataKey},
 	}
 
 	return &dataBlob, nil
+}
+
+func (u *User) generateHiddenKey(data []byte) (*protods.HiddenDataKey, []byte, error) {
+	//HiddenDataKey creation
+	dataAESKey := encrypt.GenAes128Key()
+
+	ephemeralPrivKey, err := ethereum.GenerateKey()
+	if err != nil {
+		return nil, nil, errors.New("creation of ephemeral private key failed")
+	}
+	sharedSecretX, sharedSecretY := ephemeralPrivKey.PublicKey.ScalarMult(
+		ephemeralPrivKey.PublicKey.X,
+		ephemeralPrivKey.PublicKey.Y,
+		u.privkey.D.Bytes(),
+	)
+
+	sharedSecret := elliptic.Marshal(ethereum.S256(), sharedSecretX, sharedSecretY)
+	sharedSecretHash := sha256.Sum256(sharedSecret)
+
+	ivKey := encrypt.GenCBCIv()
+
+	encryptedHiddenKey, err := encrypt.Encrypt(sharedSecretHash[:], ivKey, dataAESKey)
+	if err != nil {
+		return nil, nil, errors.New("signing failed")
+	}
+
+	hiddenSharedKey := &protods.HiddenDataKey{
+		Pubkey:           ethereum.CompressPubkey(&u.privkey.PublicKey),
+		EphemeralPubkey:  ethereum.CompressPubkey(&ephemeralPrivKey.PublicKey),
+		EncryptedDataKey: encryptedHiddenKey,
+		Iv:               ivKey,
+	}
+
+	return hiddenSharedKey, dataAESKey, nil
 }

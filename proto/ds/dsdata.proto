@@ -24,8 +24,8 @@ message HiddenDataKey {
   bytes ephemeralPubkey = 2;
 
   // SharedSecret = privkey * ephemeral_privkey * Generator = privkey * ephemeralPubkey
-  // encryptedHiddenKey = AES_ENCRYPT(key=sha256(SharedSecret)[:128], iv=iv, data=data_key)
-  bytes encryptedHiddenKey = 10; // AES_128 encryption
+  // encryptedDataKey = AES_ENCRYPT(key=sha256(SharedSecret)[:128], iv=iv, data=data_key)
+  bytes encryptedDataKey = 10; // AES_128 encryption
   bytes iv = 11; // 16 bytes
 }
 
