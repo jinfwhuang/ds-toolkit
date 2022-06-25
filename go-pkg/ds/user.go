@@ -2,6 +2,7 @@ package ds
 
 import (
 	"crypto/ecdsa"
+
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/sirupsen/logrus"
@@ -12,10 +13,10 @@ const (
 )
 
 type User struct {
-	Userid common.Address
-	Name string
+	Userid  common.Address
+	Name    string
 	privkey *ecdsa.PrivateKey
-	pubkey *ecdsa.PublicKey
+	pubkey  *ecdsa.PublicKey
 }
 
 func (u *User) getRegistryPubkeys() []Pubkey {
@@ -39,8 +40,6 @@ func (u *User) getPubkey() *ecdsa.PublicKey {
 func (u *User) getPubkeyBytes() []byte {
 	return crypto.FromECDSAPub(&u.privkey.PublicKey)
 }
-
-
 
 // The produced signature is in the [R || S || V] format where V is 0 or 1.
 func (u *User) Sign(data []byte) (sig []byte, err error) {
@@ -67,4 +66,3 @@ func (u *User) VerifySignature(data []byte, sig []byte) bool {
 	panic(NotImplemented)
 
 }
-

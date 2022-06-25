@@ -29,14 +29,14 @@ func (u *User) addKey(blob *protods.DataBlob, newDataOwner *User) *protods.DataB
 // 2. Add an entry to "Secrets"
 // 3. Encrypt data with AES key
 func (u *User) createDataBlob(data []byte) (*protods.DataBlob, error) {
-	hiddenDataKey, AESKey, err := u.generateHiddenKey(data)
+	hiddenDataKey, AESKey, err := u.generateHiddenKey()
 	if err != nil {
 		return nil, err
 	}
 	dataLen := len(data)
-	ivData := encrypt.GenCBCIv()
+	iv := encrypt.GenCBCIv()
 
-	encryptedData, err := encrypt.Encrypt(AESKey, ivData, data)
+	encryptedData, err := encrypt.Encrypt(AESKey, iv, data)
 	if err != nil {
 		return nil, errors.New("encryption of data with data key failed")
 	}
@@ -45,7 +45,7 @@ func (u *User) createDataBlob(data []byte) (*protods.DataBlob, error) {
 
 	dataBlob := protods.DataBlob{
 		DataLen:           uint64(dataLen),
-		Iv:                ivData,
+		Iv:                iv,
 		EncryptedDataHash: encryptedDataHash[:],
 		EncryptedData:     encryptedData,
 		Keys:              []*protods.HiddenDataKey{hiddenDataKey},
@@ -54,7 +54,7 @@ func (u *User) createDataBlob(data []byte) (*protods.DataBlob, error) {
 	return &dataBlob, nil
 }
 
-func (u *User) generateHiddenKey(data []byte) (*protods.HiddenDataKey, []byte, error) {
+func (u *User) generateHiddenKey() (*protods.HiddenDataKey, []byte, error) {
 	//HiddenDataKey creation
 	dataAESKey := encrypt.GenAes128Key()
 
@@ -71,9 +71,9 @@ func (u *User) generateHiddenKey(data []byte) (*protods.HiddenDataKey, []byte, e
 	sharedSecret := elliptic.Marshal(ethereum.S256(), sharedSecretX, sharedSecretY)
 	sharedSecretHash := sha256.Sum256(sharedSecret)
 
-	ivKey := encrypt.GenCBCIv()
+	iv := encrypt.GenCBCIv()
 
-	encryptedHiddenKey, err := encrypt.Encrypt(sharedSecretHash[:], ivKey, dataAESKey)
+	encryptedHiddenKey, err := encrypt.Encrypt(sharedSecretHash[:], iv, dataAESKey)
 	if err != nil {
 		return nil, nil, errors.New("signing failed")
 	}
@@ -82,7 +82,7 @@ func (u *User) generateHiddenKey(data []byte) (*protods.HiddenDataKey, []byte, e
 		Pubkey:           ethereum.CompressPubkey(&u.privkey.PublicKey),
 		EphemeralPubkey:  ethereum.CompressPubkey(&ephemeralPrivKey.PublicKey),
 		EncryptedDataKey: encryptedHiddenKey,
-		Iv:               ivKey,
+		Iv:               iv,
 	}
 
 	return hiddenSharedKey, dataAESKey, nil
