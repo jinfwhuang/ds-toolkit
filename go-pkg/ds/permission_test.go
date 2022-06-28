@@ -26,7 +26,7 @@ func TestCreateDataBlob(t *testing.T) {
 }
 
 func TestExtractData(t *testing.T) {
-	data := []byte("testtesttesttes")
+	data := []byte("test")
 	user := createTestUser()
 	compressedPubKeyBytes := ethereum.CompressPubkey(user.pubkey)
 	dataBlob, err := createDataBlob(data, compressedPubKeyBytes)
@@ -37,4 +37,19 @@ func TestExtractData(t *testing.T) {
 	decryptedData, err := user.extractData(dataBlob)
 	assert.NoError(t, err)
 	assert.True(t, reflect.DeepEqual(data, decryptedData))
+}
+
+func TestCheckPerm(t *testing.T) {
+	data := []byte("test")
+	user := createTestUser()
+	compressedPubKeyBytes := ethereum.CompressPubkey(user.pubkey)
+	dataBlob, err := createDataBlob(data, compressedPubKeyBytes)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 16, len(dataBlob.EncryptedData))
+
+	assert.True(t, user.checkPerm(dataBlob))
+
+	user2 := createTestUser()
+	assert.False(t, user2.checkPerm(dataBlob))
 }

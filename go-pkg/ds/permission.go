@@ -11,7 +11,9 @@ import (
 
 // Do I have permission to the DataBlob
 func (u *User) checkPerm(data *protods.DataBlob) bool {
-	panic("not implemented")
+	pubKey := ethereum.CompressPubkey(u.pubkey)
+	_, err := findUserKey(data.Keys, pubKey)
+	return err == nil
 }
 
 // Get the decrypted data in EncryptedData
