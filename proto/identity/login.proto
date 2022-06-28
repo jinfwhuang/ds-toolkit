@@ -12,7 +12,7 @@ service Identity {
   rpc RequestLogin(LoginMessage) returns (LoginMessage) {
     option (google.api.http) = {
       post: "/identity/login-req",
-    };
+    };            
   }
   rpc Login(LoginMessage) returns (LoginResp) {
     option (google.api.http) = {
@@ -21,6 +21,25 @@ service Identity {
   }
 
   rpc Debug(google.protobuf.Empty) returns (LoginMessage) {
+    option (google.api.http) = {
+      get: "/identity/debug"
+    };
+  }
+}
+
+service UserRegistryLogin {
+  rpc RequestLogin(UserLogin) returns (UserLogin) {
+    option (google.api.http) = {
+      post: "/identity/login-req",
+    };            
+  }
+  rpc Login(UserLogin) returns (LoginResp) {
+    option (google.api.http) = {
+        post: "/identity/login"
+    };
+  }
+
+  rpc Debug(google.protobuf.Empty) returns (UserLogin) {
     option (google.api.http) = {
       get: "/identity/debug"
     };
@@ -37,4 +56,12 @@ message LoginMessage {
   bytes pubKey = 1;
   string unsignedMsg = 2;
   bytes signature = 3;
+}
+
+message UserLogin {
+  string userName = 1;
+  bytes pubKey = 2;
+  int64 pubKeyId = 3;
+  string unsignedMsg = 4;
+  bytes signature = 5;
 }
