@@ -2,10 +2,12 @@ package ds
 
 import (
 	"log"
+	"reflect"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
+	ethereum "github.com/ethereum/go-ethereum/crypto"
+	"github.com/jinfwhuang/ds-toolkit/go-pkg/encrypt"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,8 +15,8 @@ func init() {
 	log.SetFlags(log.Llongfile)
 }
 
-func createUser() *User {
-	privKey, err := crypto.GenerateKey()
+func createTestUser() *User {
+	privKey, err := ethereum.GenerateKey()
 	if err != nil {
 		panic("Could not generate ecdsa private key")
 	}
@@ -31,17 +33,23 @@ func createUser() *User {
 
 func TestCreateDataBlob(t *testing.T) {
 	data := []byte("test")
-	user := createUser()
-	dataBlob, err := user.createDataBlob(data)
+	user := createTestUser()
+	compressedPubKeyBytes := ethereum.CompressPubkey(user.pubkey)
+	dataBlob, err := createDataBlob(data, compressedPubKeyBytes)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 16, len(dataBlob.EncryptedData))
 }
 
 func TestGenerateHiddenKey(t *testing.T) {
-	user := createUser()
-	hiddenDataKey, _, err := user.generateHiddenKey()
+	user := createTestUser()
+	dataKey := encrypt.GenAes128Key()
+	hiddenDataKey, err := generateHiddenDataKey(dataKey, ethereum.CompressPubkey(user.pubkey))
 	assert.NoError(t, err)
 
 	assert.Equal(t, 32, len(hiddenDataKey.EncryptedDataKey))
+
+	recoveredKey, err := recoverHiddenDataKey(hiddenDataKey, user.privkey.D.Bytes())
+	assert.NoError(t, err)
+	assert.True(t, reflect.DeepEqual(dataKey, recoveredKey))
 }

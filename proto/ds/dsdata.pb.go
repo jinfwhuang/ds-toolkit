@@ -109,6 +109,7 @@ type HiddenDataKey struct {
 	unknownFields protoimpl.UnknownFields
 
 	Pubkey          []byte `protobuf:"bytes,1,opt,name=pubkey,proto3" json:"pubkey,omitempty"`
+	// The pubkey is stored in compressed form (33 bytes)
 	EphemeralPubkey []byte `protobuf:"bytes,2,opt,name=ephemeralPubkey,proto3" json:"ephemeralPubkey,omitempty"`
 	// SharedSecret = privkey * ephemeral_privkey * Generator = privkey * ephemeralPubkey
 	// encryptedDataKey = AES_ENCRYPT(key=sha256(SharedSecret)[:128], iv=iv, data=data_key)
