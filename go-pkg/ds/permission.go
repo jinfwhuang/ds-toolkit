@@ -40,8 +40,25 @@ func (u *User) extractData(data *protods.DataBlob) ([]byte, error) {
 }
 
 // User add key to an existing Blob and creat a new DataBlob
-func (u *User) addKey(blob *protods.DataBlob, newDataOwner *User) *protods.DataBlob {
-	panic("not implemented")
+func (u *User) addKey(blob *protods.DataBlob, newDataOwner *User) (*protods.DataBlob, error) {
+	pubKey := ethereum.CompressPubkey(u.pubkey)
+	userKey, err := findUserKey(blob.Keys, pubKey)
+	if err != nil {
+		return nil, err
+	}
+	dataKey, err := recoverHiddenDataKey(userKey, u.privkey.D.Bytes())
+	if err != nil {
+		return nil, err
+	}
+
+	newKey, err := generateHiddenDataKey(dataKey, ethereum.CompressPubkey(newDataOwner.pubkey))
+	if err != nil {
+		return nil, err
+	}
+
+	blob.Keys = append(blob.Keys, newKey)
+
+	return blob, nil
 }
 
 // 1. Generate an AES-key

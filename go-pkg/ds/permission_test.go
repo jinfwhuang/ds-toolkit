@@ -13,8 +13,6 @@ func init() {
 	log.SetFlags(log.Llongfile)
 }
 
-//TODO: Add more complete testing (end to end flow) once the full permission package is implemented
-
 func TestCreateDataBlob(t *testing.T) {
 	data := []byte("test")
 	user := createTestUser()
@@ -52,4 +50,27 @@ func TestCheckPerm(t *testing.T) {
 
 	user2 := createTestUser()
 	assert.False(t, user2.checkPerm(dataBlob))
+}
+
+func TestAddKey(t *testing.T) {
+	data := []byte("test")
+	user := createTestUser()
+	compressedPubKeyBytes := ethereum.CompressPubkey(user.pubkey)
+	dataBlob, err := createDataBlob(data, compressedPubKeyBytes)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 16, len(dataBlob.EncryptedData))
+
+	user2 := createTestUser()
+
+	assert.False(t, user2.checkPerm(dataBlob))
+	_, err = user2.extractData(dataBlob)
+	assert.Error(t, err)
+
+	user.addKey(dataBlob, user2)
+
+	assert.True(t, user2.checkPerm(dataBlob))
+	decryptedData, err := user2.extractData(dataBlob)
+	assert.NoError(t, err)
+	assert.True(t, reflect.DeepEqual(data, decryptedData))
 }
