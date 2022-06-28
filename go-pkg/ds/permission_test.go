@@ -2,6 +2,7 @@ package ds
 
 import (
 	"log"
+	"reflect"
 	"testing"
 
 	ethereum "github.com/ethereum/go-ethereum/crypto"
@@ -22,4 +23,18 @@ func TestCreateDataBlob(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, 16, len(dataBlob.EncryptedData))
+}
+
+func TestExtractData(t *testing.T) {
+	data := []byte("testtesttesttes")
+	user := createTestUser()
+	compressedPubKeyBytes := ethereum.CompressPubkey(user.pubkey)
+	dataBlob, err := createDataBlob(data, compressedPubKeyBytes)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 16, len(dataBlob.EncryptedData))
+
+	decryptedData, err := user.extractData(dataBlob)
+	assert.NoError(t, err)
+	assert.True(t, reflect.DeepEqual(data, decryptedData))
 }

@@ -15,8 +15,26 @@ func (u *User) checkPerm(data *protods.DataBlob) bool {
 }
 
 // Get the decrypted data in EncryptedData
-func (u *User) extractData(data *protods.DataBlob) []byte {
-	panic("not implemented")
+func (u *User) extractData(data *protods.DataBlob) ([]byte, error) {
+	pubKey := ethereum.CompressPubkey(u.pubkey)
+	userKey, err := findUserKey(data.Keys, pubKey)
+	if err != nil {
+		return nil, err
+	}
+	dataKey, err := recoverHiddenDataKey(userKey, u.privkey.D.Bytes())
+	if err != nil {
+		return nil, err
+	}
+
+	decryptedData, err := encrypt.Decrypt(dataKey, data.Iv, data.EncryptedData)
+	if err != nil {
+		return nil, errors.New("failed to decrypt data")
+	}
+
+	// AES blocks are padded, we need to get rid of the padding
+	unpaddedDecryptedData := decryptedData[:(len(decryptedData) - int(decryptedData[len(decryptedData)-1]))]
+
+	return unpaddedDecryptedData, nil
 }
 
 // User add key to an existing Blob and creat a new DataBlob

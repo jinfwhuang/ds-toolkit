@@ -3,6 +3,7 @@ package ds
 import (
 	"crypto/sha256"
 	"errors"
+	"reflect"
 
 	ethereum "github.com/ethereum/go-ethereum/crypto"
 	"github.com/jinfwhuang/ds-toolkit/go-pkg/encrypt"
@@ -72,4 +73,13 @@ func recoverHiddenDataKey(hiddenSharedKey *protods.HiddenDataKey, privKey []byte
 	}
 
 	return hiddenKey[:16], nil
+}
+
+func findUserKey(keys []*protods.HiddenDataKey, pubKey []byte) (*protods.HiddenDataKey, error) {
+	for _, k := range keys {
+		if reflect.DeepEqual(k.Pubkey, pubKey) {
+			return k, nil
+		}
+	}
+	return nil, errors.New("could not find public key")
 }
