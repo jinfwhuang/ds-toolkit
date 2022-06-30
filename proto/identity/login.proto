@@ -30,18 +30,18 @@ service Identity {
 service UserRegistryLogin {
   rpc RequestLogin(UserLogin) returns (UserLogin) {
     option (google.api.http) = {
-      post: "/identity/login-req",
+      post: "/userregistry/login-req",
     };            
   }
   rpc Login(UserLogin) returns (LoginResp) {
     option (google.api.http) = {
-        post: "/identity/login"
+        post: "/userregistry/login"
     };
   }
 
   rpc Debug(google.protobuf.Empty) returns (UserLogin) {
     option (google.api.http) = {
-      get: "/identity/debug"
+      get: "/userregistry/debug"
     };
   }
 
