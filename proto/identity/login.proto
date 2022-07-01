@@ -38,3 +38,21 @@ message LoginMessage {
   string unsignedMsg = 2;
   bytes signature = 3;
 }
+
+// Login Service
+service UserRegistryLogin {
+  rpc ListAllUsers(google.protobuf.Empty) returns (UserList) {
+    option (google.api.http) = {
+      get: "/userregistry/listallusers"
+    };  
+  }
+}
+
+message User {
+  string userName = 1;
+  bytes pubKey = 2;
+}
+
+message UserList {
+  repeated User users = 1;
+}
