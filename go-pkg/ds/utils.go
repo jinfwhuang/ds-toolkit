@@ -83,3 +83,7 @@ func findUserKey(keys []*protods.HiddenDataKey, pubKey []byte) (*protods.HiddenD
 	}
 	return nil, errors.New("could not find public key")
 }
+
+func removeBlockCipherPadding(data []byte) []byte {
+	return data[:(len(data) - int(data[len(data)-1]))]
+}

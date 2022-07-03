@@ -5,7 +5,6 @@ import (
 	"reflect"
 	"testing"
 
-	ethereum "github.com/ethereum/go-ethereum/crypto"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,9 +14,8 @@ func init() {
 
 func TestCreateDataBlob(t *testing.T) {
 	data := []byte("test")
-	user := createTestUser()
-	compressedPubKeyBytes := ethereum.CompressPubkey(user.pubkey)
-	dataBlob, err := createDataBlob(data, compressedPubKeyBytes)
+	alice := createTestUser()
+	dataBlob, err := createDataBlob(data, alice.pubkey)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 16, len(dataBlob.EncryptedData))
@@ -25,52 +23,51 @@ func TestCreateDataBlob(t *testing.T) {
 
 func TestExtractData(t *testing.T) {
 	data := []byte("test")
-	user := createTestUser()
-	compressedPubKeyBytes := ethereum.CompressPubkey(user.pubkey)
-	dataBlob, err := createDataBlob(data, compressedPubKeyBytes)
+	alice := createTestUser()
+	dataBlob, err := createDataBlob(data, alice.pubkey)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 16, len(dataBlob.EncryptedData))
 
-	decryptedData, err := user.extractData(dataBlob)
+	decryptedData, err := extractData(dataBlob, alice.privkey)
 	assert.NoError(t, err)
 	assert.True(t, reflect.DeepEqual(data, decryptedData))
 }
 
 func TestCheckPerm(t *testing.T) {
 	data := []byte("test")
-	user := createTestUser()
-	compressedPubKeyBytes := ethereum.CompressPubkey(user.pubkey)
-	dataBlob, err := createDataBlob(data, compressedPubKeyBytes)
+	alice := createTestUser()
+	dataBlob, err := createDataBlob(data, alice.pubkey)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 16, len(dataBlob.EncryptedData))
 
-	assert.True(t, user.checkPerm(dataBlob))
+	assert.True(t, checkPerm(dataBlob, alice.pubkey))
 
-	user2 := createTestUser()
-	assert.False(t, user2.checkPerm(dataBlob))
+	bob := createTestUser()
+	assert.False(t, checkPerm(dataBlob, bob.pubkey))
 }
 
 func TestAddKey(t *testing.T) {
 	data := []byte("test")
-	user := createTestUser()
-	compressedPubKeyBytes := ethereum.CompressPubkey(user.pubkey)
-	dataBlob, err := createDataBlob(data, compressedPubKeyBytes)
+	alice := createTestUser()
+	dataBlob, err := createDataBlob(data, alice.pubkey)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 16, len(dataBlob.EncryptedData))
 
-	user2 := createTestUser()
+	bob := createTestUser()
 
-	assert.False(t, user2.checkPerm(dataBlob))
-	_, err = user2.extractData(dataBlob)
-	assert.Error(t, err)
+	assert.False(t, checkPerm(dataBlob, bob.pubkey))
+	_, err = extractData(dataBlob, bob.privkey)
+	assert.ErrorContains(t, err, "could not find public key")
 
-	user.addKey(dataBlob, user2)
+	dataBlob, err = addKey(dataBlob, bob.pubkey, alice.privkey)
+	assert.NoError(t, err)
 
-	assert.True(t, user2.checkPerm(dataBlob))
-	decryptedData, err := user2.extractData(dataBlob)
+	assert.True(t, checkPerm(dataBlob, bob.pubkey))
+	decryptedData, err := extractData(dataBlob, bob.privkey)
 	assert.NoError(t, err)
 	assert.True(t, reflect.DeepEqual(data, decryptedData))
+	assert.False(t, reflect.DeepEqual([]byte{4, 2}, decryptedData))
 }

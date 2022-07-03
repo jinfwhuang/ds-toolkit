@@ -1,8 +1,8 @@
 package ds
 
 import (
+	"crypto/ecdsa"
 	"errors"
-	"fmt"
 
 	ethereum "github.com/ethereum/go-ethereum/crypto"
 	"github.com/jinfwhuang/ds-toolkit/go-pkg/encrypt"
@@ -10,20 +10,20 @@ import (
 )
 
 // Do I have permission to the DataBlob
-func (u *User) checkPerm(data *protods.DataBlob) bool {
-	pubKey := ethereum.CompressPubkey(u.pubkey)
-	_, err := findUserKey(data.Keys, pubKey)
+func checkPerm(data *protods.DataBlob, pubKey *ecdsa.PublicKey) bool {
+	pubKeyBytes := ethereum.CompressPubkey(pubKey)
+	_, err := findUserKey(data.Keys, pubKeyBytes)
 	return err == nil
 }
 
 // Get the decrypted data in EncryptedData
-func (u *User) extractData(data *protods.DataBlob) ([]byte, error) {
-	pubKey := ethereum.CompressPubkey(u.pubkey)
-	userKey, err := findUserKey(data.Keys, pubKey)
+func extractData(data *protods.DataBlob, privKey *ecdsa.PrivateKey) ([]byte, error) {
+	pubKeyBytes := ethereum.CompressPubkey(&privKey.PublicKey)
+	userKey, err := findUserKey(data.Keys, pubKeyBytes)
 	if err != nil {
 		return nil, err
 	}
-	dataKey, err := recoverHiddenDataKey(userKey, u.privkey.D.Bytes())
+	dataKey, err := recoverHiddenDataKey(userKey, privKey.D.Bytes())
 	if err != nil {
 		return nil, err
 	}
@@ -34,29 +34,30 @@ func (u *User) extractData(data *protods.DataBlob) ([]byte, error) {
 	}
 
 	// AES blocks are padded, we need to get rid of the padding
-	unpaddedDecryptedData := decryptedData[:(len(decryptedData) - int(decryptedData[len(decryptedData)-1]))]
+	unpaddedDecryptedData := removeBlockCipherPadding(decryptedData)
 
 	return unpaddedDecryptedData, nil
 }
 
 // User add key to an existing Blob and creat a new DataBlob
-func (u *User) addKey(blob *protods.DataBlob, newDataOwner *User) (*protods.DataBlob, error) {
-	pubKey := ethereum.CompressPubkey(u.pubkey)
-	userKey, err := findUserKey(blob.Keys, pubKey)
+func addKey(blob *protods.DataBlob, newPubKey *ecdsa.PublicKey, privKey *ecdsa.PrivateKey) (*protods.DataBlob, error) {
+	pubKeyBytes := ethereum.CompressPubkey(&privKey.PublicKey)
+	userKey, err := findUserKey(blob.Keys, pubKeyBytes)
 	if err != nil {
 		return nil, err
 	}
-	dataKey, err := recoverHiddenDataKey(userKey, u.privkey.D.Bytes())
-	if err != nil {
-		return nil, err
-	}
-
-	newKey, err := generateHiddenDataKey(dataKey, ethereum.CompressPubkey(newDataOwner.pubkey))
+	dataKey, err := recoverHiddenDataKey(userKey, privKey.D.Bytes())
 	if err != nil {
 		return nil, err
 	}
 
-	blob.Keys = append(blob.Keys, newKey)
+	newPubKeyBytes := ethereum.CompressPubkey(newPubKey)
+	newDataKey, err := generateHiddenDataKey(dataKey, newPubKeyBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	blob.Keys = append(blob.Keys, newDataKey)
 
 	return blob, nil
 }
@@ -64,12 +65,10 @@ func (u *User) addKey(blob *protods.DataBlob, newDataOwner *User) (*protods.Data
 // 1. Generate an AES-key
 // 2. Add an entry to "Secrets"
 // 3. Encrypt data with AES key
-func createDataBlob(data []byte, pubKey []byte) (*protods.DataBlob, error) {
-	if len(pubKey) != 33 {
-		return nil, fmt.Errorf("incorrect length %v, public key has to be compressed secp256k1 key", len(pubKey))
-	}
+func createDataBlob(data []byte, pubKey *ecdsa.PublicKey) (*protods.DataBlob, error) {
 	dataKey := encrypt.GenAes128Key()
-	hiddenDataKey, err := generateHiddenDataKey(dataKey, pubKey[:])
+	pubKeyBytes := ethereum.CompressPubkey(pubKey)
+	hiddenDataKey, err := generateHiddenDataKey(dataKey, pubKeyBytes)
 	if err != nil {
 		return nil, err
 	}
