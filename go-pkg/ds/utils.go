@@ -1,9 +1,9 @@
 package ds
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"errors"
-	"reflect"
 
 	ethereum "github.com/ethereum/go-ethereum/crypto"
 	"github.com/jinfwhuang/ds-toolkit/go-pkg/encrypt"
@@ -77,13 +77,9 @@ func recoverHiddenDataKey(hiddenSharedKey *protods.HiddenDataKey, privKey []byte
 
 func findUserKey(keys []*protods.HiddenDataKey, pubKey []byte) (*protods.HiddenDataKey, error) {
 	for _, k := range keys {
-		if reflect.DeepEqual(k.Pubkey, pubKey) {
+		if bytes.Equal(k.Pubkey, pubKey) {
 			return k, nil
 		}
 	}
 	return nil, errors.New("could not find public key")
-}
-
-func removeBlockCipherPadding(data []byte) []byte {
-	return data[:(len(data) - int(data[len(data)-1]))]
 }

@@ -34,7 +34,7 @@ func extractData(data *protods.DataBlob, privKey *ecdsa.PrivateKey) ([]byte, err
 	}
 
 	// AES blocks are padded, we need to get rid of the padding
-	unpaddedDecryptedData := removeBlockCipherPadding(decryptedData)
+	unpaddedDecryptedData := decryptedData[:data.DataLen]
 
 	return unpaddedDecryptedData, nil
 }
@@ -65,7 +65,7 @@ func addKey(blob *protods.DataBlob, newPubKey *ecdsa.PublicKey, privKey *ecdsa.P
 // 1. Generate an AES-key
 // 2. Add an entry to "Secrets"
 // 3. Encrypt data with AES key
-func createDataBlob(data []byte, pubKey *ecdsa.PublicKey) (*protods.DataBlob, error) {
+func CreateDataBlob(data []byte, pubKey *ecdsa.PublicKey) (*protods.DataBlob, error) {
 	dataKey := encrypt.GenAes128Key()
 	pubKeyBytes := ethereum.CompressPubkey(pubKey)
 	hiddenDataKey, err := generateHiddenDataKey(dataKey, pubKeyBytes)

@@ -1,8 +1,8 @@
 package ds
 
 import (
+	"bytes"
 	"log"
-	"reflect"
 	"testing"
 
 	ethereum "github.com/ethereum/go-ethereum/crypto"
@@ -15,14 +15,14 @@ func init() {
 }
 
 func TestGenerateHiddenKey(t *testing.T) {
-	user := createTestUser()
+	alice := createTestUser("Alice")
 	dataKey := encrypt.GenAes128Key()
-	hiddenDataKey, err := generateHiddenDataKey(dataKey, ethereum.CompressPubkey(user.pubkey))
+	hiddenDataKey, err := generateHiddenDataKey(dataKey, ethereum.CompressPubkey(alice.pubkey))
 	assert.NoError(t, err)
 
 	assert.Equal(t, 32, len(hiddenDataKey.EncryptedDataKey))
 
-	recoveredKey, err := recoverHiddenDataKey(hiddenDataKey, user.privkey.D.Bytes())
+	recoveredKey, err := recoverHiddenDataKey(hiddenDataKey, alice.privkey.D.Bytes())
 	assert.NoError(t, err)
-	assert.True(t, reflect.DeepEqual(dataKey, recoveredKey))
+	assert.True(t, bytes.Equal(dataKey, recoveredKey))
 }

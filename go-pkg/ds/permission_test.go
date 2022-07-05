@@ -1,8 +1,8 @@
 package ds
 
 import (
+	"bytes"
 	"log"
-	"reflect"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -14,15 +14,15 @@ func init() {
 	log.SetFlags(log.Llongfile)
 }
 
-func createTestUser() *User {
+func createTestUser(name string) *User {
 	privKey, err := ethereum.GenerateKey()
 	if err != nil {
 		panic("Could not generate ecdsa private key")
 	}
 
 	return &User{
-		Userid:  common.HexToAddress("0x29e4Af06632c0eAA6e5b8377d1561E0950B7E963"),
-		Name:    "Alice",
+		Userid:  common.BigToAddress(privKey.D),
+		Name:    name,
 		privkey: privKey,
 		pubkey:  &privKey.PublicKey,
 	}
@@ -30,8 +30,8 @@ func createTestUser() *User {
 
 func TestCreateDataBlob(t *testing.T) {
 	data := []byte("test")
-	alice := createTestUser()
-	dataBlob, err := createDataBlob(data, alice.pubkey)
+	alice := createTestUser("Alice")
+	dataBlob, err := CreateDataBlob(data, alice.pubkey)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 16, len(dataBlob.EncryptedData))
@@ -39,40 +39,40 @@ func TestCreateDataBlob(t *testing.T) {
 
 func TestExtractData(t *testing.T) {
 	data := []byte("test")
-	alice := createTestUser()
-	dataBlob, err := createDataBlob(data, alice.pubkey)
+	alice := createTestUser("Alice")
+	dataBlob, err := CreateDataBlob(data, alice.pubkey)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 16, len(dataBlob.EncryptedData))
 
 	decryptedData, err := extractData(dataBlob, alice.privkey)
 	assert.NoError(t, err)
-	assert.True(t, reflect.DeepEqual(data, decryptedData))
+	assert.True(t, bytes.Equal(data, decryptedData))
 }
 
 func TestCheckPerm(t *testing.T) {
 	data := []byte("test")
-	alice := createTestUser()
-	dataBlob, err := createDataBlob(data, alice.pubkey)
+	alice := createTestUser("Alice")
+	dataBlob, err := CreateDataBlob(data, alice.pubkey)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 16, len(dataBlob.EncryptedData))
 
 	assert.True(t, checkPerm(dataBlob, alice.pubkey))
 
-	bob := createTestUser()
+	bob := createTestUser("Bob")
 	assert.False(t, checkPerm(dataBlob, bob.pubkey))
 }
 
 func TestAddKey(t *testing.T) {
 	data := []byte("test")
-	alice := createTestUser()
-	dataBlob, err := createDataBlob(data, alice.pubkey)
+	alice := createTestUser("Alice")
+	dataBlob, err := CreateDataBlob(data, alice.pubkey)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 16, len(dataBlob.EncryptedData))
 
-	bob := createTestUser()
+	bob := createTestUser("Bob")
 
 	assert.False(t, checkPerm(dataBlob, bob.pubkey))
 	_, err = extractData(dataBlob, bob.privkey)
@@ -84,6 +84,6 @@ func TestAddKey(t *testing.T) {
 	assert.True(t, checkPerm(dataBlob, bob.pubkey))
 	decryptedData, err := extractData(dataBlob, bob.privkey)
 	assert.NoError(t, err)
-	assert.True(t, reflect.DeepEqual(data, decryptedData))
-	assert.False(t, reflect.DeepEqual([]byte{4, 2}, decryptedData))
+	assert.True(t, bytes.Equal(data, decryptedData))
+	assert.False(t, bytes.Equal([]byte{4, 2}, decryptedData))
 }
