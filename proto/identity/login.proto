@@ -43,14 +43,30 @@ message LoginMessage {
 service UserRegistryLogin {
   rpc ListAllUsers(google.protobuf.Empty) returns (UserList) {
     option (google.api.http) = {
-      get: "/userregistry/listallusers"
+      get: "/user-registry/list-all-users"
     };  
+  }
+  rpc AddUser(User) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+        post: "/user-registry/add-user"
+    };
+  }
+  rpc GetUserByPubKey(User) returns (User) {
+    option (google.api.http) = {
+        post: "/user-registry/get-user-by-pubkey"
+    };
+  }
+  rpc GetUserByUserName(User) returns (User) {
+    option (google.api.http) = {
+        post: "/user-registry/get-user-by-username"
+    };
   }
 }
 
 message User {
   string userName = 1;
   bytes pubKey = 2;
+  string privKey = 3;
 }
 
 message UserList {

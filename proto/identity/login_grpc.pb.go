@@ -182,6 +182,9 @@ var Identity_ServiceDesc = grpc.ServiceDesc{
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserRegistryLoginClient interface {
 	ListAllUsers(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*UserList, error)
+	AddUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetUserByPubKey(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
+	GetUserByUserName(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 }
 
 type userRegistryLoginClient struct {
@@ -201,11 +204,41 @@ func (c *userRegistryLoginClient) ListAllUsers(ctx context.Context, in *emptypb.
 	return out, nil
 }
 
+func (c *userRegistryLoginClient) AddUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/AddUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userRegistryLoginClient) GetUserByPubKey(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/GetUserByPubKey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userRegistryLoginClient) GetUserByUserName(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/GetUserByUserName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserRegistryLoginServer is the server API for UserRegistryLogin service.
 // All implementations must embed UnimplementedUserRegistryLoginServer
 // for forward compatibility
 type UserRegistryLoginServer interface {
 	ListAllUsers(context.Context, *emptypb.Empty) (*UserList, error)
+	AddUser(context.Context, *User) (*emptypb.Empty, error)
+	GetUserByPubKey(context.Context, *User) (*User, error)
+	GetUserByUserName(context.Context, *User) (*User, error)
 	mustEmbedUnimplementedUserRegistryLoginServer()
 }
 
@@ -215,6 +248,15 @@ type UnimplementedUserRegistryLoginServer struct {
 
 func (UnimplementedUserRegistryLoginServer) ListAllUsers(context.Context, *emptypb.Empty) (*UserList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListAllUsers not implemented")
+}
+func (UnimplementedUserRegistryLoginServer) AddUser(context.Context, *User) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
+}
+func (UnimplementedUserRegistryLoginServer) GetUserByPubKey(context.Context, *User) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByPubKey not implemented")
+}
+func (UnimplementedUserRegistryLoginServer) GetUserByUserName(context.Context, *User) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByUserName not implemented")
 }
 func (UnimplementedUserRegistryLoginServer) mustEmbedUnimplementedUserRegistryLoginServer() {}
 
@@ -247,6 +289,60 @@ func _UserRegistryLogin_ListAllUsers_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserRegistryLogin_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserRegistryLoginServer).AddUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/AddUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserRegistryLoginServer).AddUser(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserRegistryLogin_GetUserByPubKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserRegistryLoginServer).GetUserByPubKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/GetUserByPubKey",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserRegistryLoginServer).GetUserByPubKey(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserRegistryLogin_GetUserByUserName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserRegistryLoginServer).GetUserByUserName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/GetUserByUserName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserRegistryLoginServer).GetUserByUserName(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserRegistryLogin_ServiceDesc is the grpc.ServiceDesc for UserRegistryLogin service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -257,6 +353,18 @@ var UserRegistryLogin_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListAllUsers",
 			Handler:    _UserRegistryLogin_ListAllUsers_Handler,
+		},
+		{
+			MethodName: "AddUser",
+			Handler:    _UserRegistryLogin_AddUser_Handler,
+		},
+		{
+			MethodName: "GetUserByPubKey",
+			Handler:    _UserRegistryLogin_GetUserByPubKey_Handler,
+		},
+		{
+			MethodName: "GetUserByUserName",
+			Handler:    _UserRegistryLogin_GetUserByUserName_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
