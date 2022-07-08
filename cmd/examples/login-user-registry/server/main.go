@@ -216,29 +216,29 @@ func (s *UserRegistryServer) AddUser(ctx context.Context, user *protoId.User) (*
 	return &emptypb.Empty{}, nil
 }
 
-// Retrieves user using pubkey and returns error if not found
-func (s *UserRegistryServer) GetUserByPubKey(ctx context.Context, user *protoId.User) (*protoId.User, error) {
-	if len(user.PubKey) == 0 {
+// GetUserByPubKey retrieves user using pubkey and returns error if not found.
+func (s *UserRegistryServer) GetUserByPubKey(ctx context.Context, pubKey *protoId.PubKey) (*protoId.User, error) {
+	if len(pubKey.PubKey) == 0 {
 		return nil, errors.New("Public Key not specified")
 	}
 
 	for _, u := range s.userList {
-		if bytes.Compare(u.PubKey, user.PubKey) == 0 {
-			return user, nil
+		if bytes.Compare(u.PubKey, pubKey.PubKey) == 0 {
+			return u, nil
 		}
 	}
 	return nil, errors.New("User with public key not found")
 }
 
-// Retrieves user using username and returns error if not found
-func (s *UserRegistryServer) GetUserByUserName(ctx context.Context, user *protoId.User) (*protoId.User, error) {
-	if len(user.UserName) == 0 {
+// GetUserByUserName retrieves user using username and returns error if not found.
+func (s *UserRegistryServer) GetUserByUserName(ctx context.Context, userName *protoId.UserName) (*protoId.User, error) {
+	if len(userName.UserName) == 0 {
 		return nil, errors.New("Username not specified")
 	}
 
 	for _, u := range s.userList {
-		if u.UserName == user.UserName {
-			return user, nil
+		if u.UserName == userName.UserName {
+			return u, nil
 		}
 	}
 	return nil, errors.New("User with username not found")

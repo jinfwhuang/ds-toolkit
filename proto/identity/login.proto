@@ -51,12 +51,12 @@ service UserRegistryLogin {
         post: "/user-registry/add-user"
     };
   }
-  rpc GetUserByPubKey(User) returns (User) {
+  rpc GetUserByPubKey(PubKey) returns (User) {
     option (google.api.http) = {
         post: "/user-registry/get-user-by-pubkey"
     };
   }
-  rpc GetUserByUserName(User) returns (User) {
+  rpc GetUserByUserName(UserName) returns (User) {
     option (google.api.http) = {
         post: "/user-registry/get-user-by-username"
     };
@@ -71,4 +71,12 @@ message User {
 
 message UserList {
   repeated User users = 1;
+}
+
+message UserName {
+  string userName = 1;
+}
+
+message PubKey {
+  bytes pubKey = 1;
 }

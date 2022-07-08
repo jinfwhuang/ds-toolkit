@@ -183,8 +183,8 @@ var Identity_ServiceDesc = grpc.ServiceDesc{
 type UserRegistryLoginClient interface {
 	ListAllUsers(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*UserList, error)
 	AddUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetUserByPubKey(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
-	GetUserByUserName(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
+	GetUserByPubKey(ctx context.Context, in *PubKey, opts ...grpc.CallOption) (*User, error)
+	GetUserByUserName(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*User, error)
 }
 
 type userRegistryLoginClient struct {
@@ -213,7 +213,7 @@ func (c *userRegistryLoginClient) AddUser(ctx context.Context, in *User, opts ..
 	return out, nil
 }
 
-func (c *userRegistryLoginClient) GetUserByPubKey(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+func (c *userRegistryLoginClient) GetUserByPubKey(ctx context.Context, in *PubKey, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/GetUserByPubKey", in, out, opts...)
 	if err != nil {
@@ -222,7 +222,7 @@ func (c *userRegistryLoginClient) GetUserByPubKey(ctx context.Context, in *User,
 	return out, nil
 }
 
-func (c *userRegistryLoginClient) GetUserByUserName(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+func (c *userRegistryLoginClient) GetUserByUserName(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/GetUserByUserName", in, out, opts...)
 	if err != nil {
@@ -237,8 +237,8 @@ func (c *userRegistryLoginClient) GetUserByUserName(ctx context.Context, in *Use
 type UserRegistryLoginServer interface {
 	ListAllUsers(context.Context, *emptypb.Empty) (*UserList, error)
 	AddUser(context.Context, *User) (*emptypb.Empty, error)
-	GetUserByPubKey(context.Context, *User) (*User, error)
-	GetUserByUserName(context.Context, *User) (*User, error)
+	GetUserByPubKey(context.Context, *PubKey) (*User, error)
+	GetUserByUserName(context.Context, *UserName) (*User, error)
 	mustEmbedUnimplementedUserRegistryLoginServer()
 }
 
@@ -252,10 +252,10 @@ func (UnimplementedUserRegistryLoginServer) ListAllUsers(context.Context, *empty
 func (UnimplementedUserRegistryLoginServer) AddUser(context.Context, *User) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
 }
-func (UnimplementedUserRegistryLoginServer) GetUserByPubKey(context.Context, *User) (*User, error) {
+func (UnimplementedUserRegistryLoginServer) GetUserByPubKey(context.Context, *PubKey) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByPubKey not implemented")
 }
-func (UnimplementedUserRegistryLoginServer) GetUserByUserName(context.Context, *User) (*User, error) {
+func (UnimplementedUserRegistryLoginServer) GetUserByUserName(context.Context, *UserName) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByUserName not implemented")
 }
 func (UnimplementedUserRegistryLoginServer) mustEmbedUnimplementedUserRegistryLoginServer() {}
@@ -308,7 +308,7 @@ func _UserRegistryLogin_AddUser_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _UserRegistryLogin_GetUserByPubKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(User)
+	in := new(PubKey)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -320,13 +320,13 @@ func _UserRegistryLogin_GetUserByPubKey_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/GetUserByPubKey",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserRegistryLoginServer).GetUserByPubKey(ctx, req.(*User))
+		return srv.(UserRegistryLoginServer).GetUserByPubKey(ctx, req.(*PubKey))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _UserRegistryLogin_GetUserByUserName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(User)
+	in := new(UserName)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -338,7 +338,7 @@ func _UserRegistryLogin_GetUserByUserName_Handler(srv interface{}, ctx context.C
 		FullMethod: "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/GetUserByUserName",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserRegistryLoginServer).GetUserByUserName(ctx, req.(*User))
+		return srv.(UserRegistryLoginServer).GetUserByUserName(ctx, req.(*UserName))
 	}
 	return interceptor(ctx, in, info, handler)
 }

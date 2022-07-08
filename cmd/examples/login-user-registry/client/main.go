@@ -91,11 +91,13 @@ func start(cliCtx *cli.Context) error {
 	// The following is for testing.
 	privkey, err := ecdsa_util.RecoverPrivkey("0x12de257b783b96ce90012a6c45f3ce61216dd60f22159d2f5cb9e17f3126bbe5")
 	pubkey := crypto.FromECDSAPub(&privkey.PublicKey)
-	user := &protoId.User{
+	userName := &protoId.UserName{
 		UserName: "jinhuang001",
-		PubKey:   pubkey,
 	}
-	debug(ctx, userRegistryClient, user)
+	pubKey := &protoId.PubKey{
+		PubKey: pubkey,
+	}
+	debug(ctx, userRegistryClient, userName, pubKey)
 
 	return nil
 }
@@ -115,14 +117,14 @@ func addUser(ctx context.Context, userRegistryClient protoId.UserRegistryLoginCl
 	userRegistryClient.AddUser(ctx, user)
 }
 
-func debug(ctx context.Context, userRegistryClient protoId.UserRegistryLoginClient, user *protoId.User) {
-	u, err := userRegistryClient.GetUserByPubKey(ctx, user)
+func debug(ctx context.Context, userRegistryClient protoId.UserRegistryLoginClient, userName *protoId.UserName, pubKey *protoId.PubKey) {
+	u, err := userRegistryClient.GetUserByPubKey(ctx, pubKey)
 	if err != nil {
 		logrus.Fatalf("Failed to call GetUserByPubKey: %v", err)
 	}
 	logrus.Printf("Username: %s, pubkey=0x%x\n", u.UserName, u.PubKey)
 
-	u, err = userRegistryClient.GetUserByUserName(ctx, user)
+	u, err = userRegistryClient.GetUserByUserName(ctx, userName)
 	if err != nil {
 		logrus.Fatalf("Failed to call GetUserByUserName: %v", err)
 	}
