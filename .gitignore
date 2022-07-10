@@ -60,3 +60,4 @@ web-build/
 
 # Env
 *.env
+.vscode/
