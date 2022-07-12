@@ -29,7 +29,7 @@ service Identity {
 }
 
 message LoginResp {
-  bytes pubKey = 1;
+  bytes pubKey = 1; //do we need this??
   string status = 2;
 }
 
@@ -61,12 +61,24 @@ service UserRegistryLogin {
         post: "/user-registry/get-user-by-username"
     };
   }
+  rpc RequestLogin(UserName) returns (User){
+    option (google.api.http) = {
+      post: "/user-registry/request-login"
+    };
+  }
+  rpc Login(User) returns (LoginResp){
+    option (google.api.http) = {
+      post: "/user-registry/login"
+    };
+  }
 }
 
 message User {
   string userName = 1;
   bytes pubKey = 2;
   string privKey = 3;
+  string unsignedMsg = 4;
+  bytes signature = 5;
 }
 
 message UserList {

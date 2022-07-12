@@ -3,12 +3,14 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"log"
 	"math/big"
 	"net"
 	"os"
+	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -21,6 +23,7 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/types/known/emptypb"
 
+	"github.com/jinfwhuang/ds-toolkit/go-pkg/bytesutil"
 	cmd_utils "github.com/jinfwhuang/ds-toolkit/go-pkg/cmd-utils"
 	eth_ds "github.com/jinfwhuang/ds-toolkit/go-pkg/ds"
 	ecdsa_util "github.com/jinfwhuang/ds-toolkit/go-pkg/ecdsa-util"
@@ -31,6 +34,9 @@ const (
 	OwnerAddr    = "0xaABcEa31ac2c76B5d11ad579d26A671D4F20171B"
 	OwnerPrivkey = "0x8b88ac23aa273fb6c8b4c6783f883d157ad01d425abee25df014d7528c5c6452"
 	ChainID      = 1337
+	SignInMsgFmt = "Sign this message to prove you have access to the public key. " +
+		"pubkey=%s rand-string=%s timestamp= %d"
+	SignatureLength = 65
 )
 
 var (
@@ -102,9 +108,10 @@ func start(cliCtx *cli.Context) error {
 type UserRegistryServer struct {
 	protoId.UnimplementedUserRegistryLoginServer
 
-	userRegistry *eth_ds.UserRegistry
-	ethConn      *ethclient.Client
-	userList     []*protoId.User
+	userRegistry  *eth_ds.UserRegistry
+	ethConn       *ethclient.Client
+	userList      []*protoId.User
+	loginMsgStore map[string]string
 }
 
 func NewUserRegistryServer(ethAddr, contractAddr string) *UserRegistryServer {
@@ -120,8 +127,9 @@ func NewUserRegistryServer(ethAddr, contractAddr string) *UserRegistryServer {
 	}
 
 	return &UserRegistryServer{
-		userRegistry: userRegistry,
-		ethConn:      ethconn,
+		userRegistry:  userRegistry,
+		ethConn:       ethconn,
+		loginMsgStore: make(map[string]string),
 	}
 }
 
@@ -242,4 +250,59 @@ func (s *UserRegistryServer) GetUserByUserName(ctx context.Context, userName *pr
 		}
 	}
 	return nil, errors.New("User with username not found")
+}
+
+func GenerateSignInMessage(key []byte) string {
+	keyB16 := base64.StdEncoding.EncodeToString(key)
+	randStr := base64.StdEncoding.EncodeToString(bytesutil.RandBytes(17))
+	t := time.Now().UnixMilli()
+	return fmt.Sprintf(SignInMsgFmt, keyB16, randStr, t)
+}
+
+// RequestLogin returns user with specified username with the sign-in message.
+func (s *UserRegistryServer) RequestLogin(ctx context.Context, userName *protoId.UserName) (*protoId.User, error) {
+	user, err := s.GetUserByUserName(ctx, userName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Generating sign-in message
+	pubKey := user.PubKey
+	signInMsg := GenerateSignInMessage(pubKey)
+	user.UnsignedMsg = signInMsg
+	pubkey := base64.StdEncoding.EncodeToString(pubKey)
+
+	// Storing the unsigned message and associated pubKey
+	s.loginMsgStore[pubkey] = signInMsg
+
+	return user, nil
+}
+
+func (s *UserRegistryServer) Login(ctx context.Context, user *protoId.User) (*protoId.LoginResp, error) {
+	pubkey := user.PubKey
+	addr, err := ecdsa_util.ToAddress(pubkey)
+	if err != nil {
+		return nil, err
+	}
+
+	// Retrieve the unsigned message
+	pubkeyStr := base64.StdEncoding.EncodeToString(pubkey)
+	unSignMsg := []byte(s.loginMsgStore[pubkeyStr])
+	msgHash := crypto.Keccak256Hash(unSignMsg)
+	digestHash := msgHash.Bytes()
+
+	// Validate the signature
+	sigWithoutID := user.Signature[:SignatureLength-1] // remove recovery id
+	validated := crypto.VerifySignature(pubkey, digestHash, sigWithoutID)
+	status := "failed"
+	if validated {
+		status = "ok"
+		delete(s.loginMsgStore, pubkeyStr) // Remove the message from store
+		logrus.Infof("login successful: address=%s", addr.Hex())
+	}
+
+	return &protoId.LoginResp{
+		PubKey: user.PubKey,
+		Status: status,
+	}, nil
 }

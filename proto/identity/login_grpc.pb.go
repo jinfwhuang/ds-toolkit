@@ -185,6 +185,8 @@ type UserRegistryLoginClient interface {
 	AddUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetUserByPubKey(ctx context.Context, in *PubKey, opts ...grpc.CallOption) (*User, error)
 	GetUserByUserName(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*User, error)
+	RequestLogin(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*User, error)
+	Login(ctx context.Context, in *User, opts ...grpc.CallOption) (*LoginResp, error)
 }
 
 type userRegistryLoginClient struct {
@@ -231,6 +233,24 @@ func (c *userRegistryLoginClient) GetUserByUserName(ctx context.Context, in *Use
 	return out, nil
 }
 
+func (c *userRegistryLoginClient) RequestLogin(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/RequestLogin", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userRegistryLoginClient) Login(ctx context.Context, in *User, opts ...grpc.CallOption) (*LoginResp, error) {
+	out := new(LoginResp)
+	err := c.cc.Invoke(ctx, "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserRegistryLoginServer is the server API for UserRegistryLogin service.
 // All implementations must embed UnimplementedUserRegistryLoginServer
 // for forward compatibility
@@ -239,6 +259,8 @@ type UserRegistryLoginServer interface {
 	AddUser(context.Context, *User) (*emptypb.Empty, error)
 	GetUserByPubKey(context.Context, *PubKey) (*User, error)
 	GetUserByUserName(context.Context, *UserName) (*User, error)
+	RequestLogin(context.Context, *UserName) (*User, error)
+	Login(context.Context, *User) (*LoginResp, error)
 	mustEmbedUnimplementedUserRegistryLoginServer()
 }
 
@@ -257,6 +279,12 @@ func (UnimplementedUserRegistryLoginServer) GetUserByPubKey(context.Context, *Pu
 }
 func (UnimplementedUserRegistryLoginServer) GetUserByUserName(context.Context, *UserName) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByUserName not implemented")
+}
+func (UnimplementedUserRegistryLoginServer) RequestLogin(context.Context, *UserName) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RequestLogin not implemented")
+}
+func (UnimplementedUserRegistryLoginServer) Login(context.Context, *User) (*LoginResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
 func (UnimplementedUserRegistryLoginServer) mustEmbedUnimplementedUserRegistryLoginServer() {}
 
@@ -343,6 +371,42 @@ func _UserRegistryLogin_GetUserByUserName_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserRegistryLogin_RequestLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserName)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserRegistryLoginServer).RequestLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/RequestLogin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserRegistryLoginServer).RequestLogin(ctx, req.(*UserName))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserRegistryLogin_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserRegistryLoginServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/jinfwhuang.dstoolkit.identity.UserRegistryLogin/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserRegistryLoginServer).Login(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserRegistryLogin_ServiceDesc is the grpc.ServiceDesc for UserRegistryLogin service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -365,6 +429,14 @@ var UserRegistryLogin_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserByUserName",
 			Handler:    _UserRegistryLogin_GetUserByUserName_Handler,
+		},
+		{
+			MethodName: "RequestLogin",
+			Handler:    _UserRegistryLogin_RequestLogin_Handler,
+		},
+		{
+			MethodName: "Login",
+			Handler:    _UserRegistryLogin_Login_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

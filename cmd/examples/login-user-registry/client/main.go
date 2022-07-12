@@ -88,16 +88,19 @@ func start(cliCtx *cli.Context) error {
 		return err
 	}
 
-	// The following is for testing.
-	privkey, err := ecdsa_util.RecoverPrivkey("0x12de257b783b96ce90012a6c45f3ce61216dd60f22159d2f5cb9e17f3126bbe5")
+	// The following is for testing Get functions.
+	privkey, err := ecdsa_util.RecoverPrivkey(testPrivkeyHex)
 	pubkey := crypto.FromECDSAPub(&privkey.PublicKey)
 	userName := &protoId.UserName{
-		UserName: "jinhuang001",
+		UserName: testUserName,
 	}
 	pubKey := &protoId.PubKey{
 		PubKey: pubkey,
 	}
 	debug(ctx, userRegistryClient, userName, pubKey)
+
+	// The following is for testing the login flow.
+	loginFlow(ctx, userRegistryClient, userName, testPrivkeyHex)
 
 	return nil
 }
@@ -115,6 +118,36 @@ func listAllUsers(ctx context.Context, userRegistryClient protoId.UserRegistryLo
 
 func addUser(ctx context.Context, userRegistryClient protoId.UserRegistryLoginClient, user *protoId.User) {
 	userRegistryClient.AddUser(ctx, user)
+}
+
+func loginFlow(ctx context.Context, userRegistryClient protoId.UserRegistryLoginClient, userName *protoId.UserName, privkeyHex string) {
+	privateKey, err := ecdsa_util.RecoverPrivkey(privkeyHex)
+	logrus.Info("recovered ", privateKey)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	// Step 1: Request login
+	loginInfo, err := userRegistryClient.RequestLogin(ctx, userName)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	logrus.Info("Server requested login client to sign: ", loginInfo.UnsignedMsg)
+
+	// Step 2: Sign message
+	unsignedMsg := []byte(loginInfo.UnsignedMsg)
+	msgHash := crypto.Keccak256Hash(unsignedMsg)
+	digestHash := msgHash.Bytes()
+	sig, err := crypto.Sign(digestHash, privateKey)
+	if err != nil {
+		logrus.Fatal(sig)
+	}
+
+	// Submit signed msg
+	loginInfo.Signature = sig
+	loginResp, err := userRegistryClient.Login(ctx, loginInfo)
+	logrus.Info("status=", loginResp.Status)
+
 }
 
 func debug(ctx context.Context, userRegistryClient protoId.UserRegistryLoginClient, userName *protoId.UserName, pubKey *protoId.PubKey) {
