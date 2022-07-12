@@ -29,7 +29,7 @@ service Identity {
 }
 
 message LoginResp {
-  bytes pubKey = 1; //do we need this??
+  bytes pubKey = 1; 
   string status = 2;
 }
 
