@@ -1,53 +1,69 @@
 package main
 
 import (
-	"encoding/base64"
-	"flag"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/jinfwhuang/ds-toolkit/go-pkg/bytesutil"
+	"encoding/hex"
+	"encoding/json"
+	"io/ioutil"
 	"log"
-	"os"
+	"path/filepath"
+	"runtime"
 
-	"github.com/jinfwhuang/ds-toolkit/go-pkg/cmd-utils"
-	"github.com/urfave/cli/v2"
-)
-
-var AppFlags = []cli.Flag{
-	cmd_utils.GrpcPort,
-	cmd_utils.LogLevel,
-}
-
-var (
-	privateKey = flag.String("private_key", os.Getenv("PRIVATE_KEY"), "A secp256k1 private key in hex form, prefixed with 0x")
+	ethereum "github.com/ethereum/go-ethereum/crypto"
+	"github.com/jinfwhuang/ds-toolkit/go-pkg/ds"
+	protods "github.com/jinfwhuang/ds-toolkit/proto/ds"
 )
 
 const (
 	// secp256k1 keys
-	user1PrivkeyHex = "0x12de257b783b96ce90012a6c45f3ce61216dd60f22159d2f5cb9e17f3126bbe5"
-
-fdasf
+	testPrivkeyHex = "12de257b783b96ce90012a6c45f3ce61216dd60f22159d2f5cb9e17f3126bbe5"
+	testPubkeyHex  = "0237dcc127cd98c4080fbb82f148e4bb4281153276acfa718b3366b74c4a1039bb"
 )
 
-func init() {
-	log.SetFlags(log.Llongfile)
+func fileInRuntimeDir(file string) string {
+	_, filename, _, _ := runtime.Caller(0)
+	return filepath.Dir(filename) + file
 }
 
 func main() {
-	//ctx := context.Background()
-	flag.Parse()
-	if *privateKey == "" {
-		*privateKey = user1PrivkeyHex
+	alicePrivateKey, err := ethereum.HexToECDSA(testPrivkeyHex)
+	if err != nil {
+		panic(err)
+	}
+	bobPublicKeyHex, err := hex.DecodeString(testPubkeyHex)
+	if err != nil {
+		panic(err)
+	}
+	bobPublicKey, err := ethereum.DecompressPubkey(bobPublicKeyHex)
+	if err != nil {
+		panic(err)
 	}
 
-	log.Println("fff")
-	b := bytesutil.RandBytes(64)
-	log.Println(hexutil.Encode(b))
-	log.Println(base64.StdEncoding.EncodeToString(b))
+	blobBytes, err := ioutil.ReadFile(fileInRuntimeDir("/data_blob.json"))
+	if err != nil {
+		panic("could not find blob file")
+	}
+	var dataBlob protods.DataBlob
+	err = json.Unmarshal(blobBytes, &dataBlob)
+	if err != nil {
+		panic(err)
+	}
 
-	log.Println(hexutil.Encode(bytesutil.RandBytes(64)))
-	log.Println(base64.StdEncoding.EncodeToString(bytesutil.RandBytes(64)))
+	newDataBlob, err := ds.AddKey(&dataBlob, bobPublicKey, alicePrivateKey)
+	if err != nil {
+		panic(err)
+	}
+	newDataBlobJson, err := json.Marshal(newDataBlob)
+	if err != nil {
+		panic(err)
+	}
+	err = ioutil.WriteFile(fileInRuntimeDir("/new_data_blob.json"), newDataBlobJson, 0644)
+	if err != nil {
+		log.Fatal("could not create data file")
+	}
 
+	retrievedData, err := ds.ExtractData(newDataBlob, alicePrivateKey)
+	if err != nil {
+		panic(err)
+	}
+	println(string(retrievedData))
 }
-
-
-
