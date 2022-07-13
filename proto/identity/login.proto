@@ -29,7 +29,7 @@ service Identity {
 }
 
 message LoginResp {
-  bytes pubKey = 1;
+  bytes pubKey = 1; 
   string status = 2;
 }
 
@@ -37,4 +37,58 @@ message LoginMessage {
   bytes pubKey = 1;
   string unsignedMsg = 2;
   bytes signature = 3;
+}
+
+// Login Service
+service UserRegistryLogin {
+  rpc ListAllUsers(google.protobuf.Empty) returns (UserList) {
+    option (google.api.http) = {
+      get: "/user-registry/list-all-users"
+    };  
+  }
+  rpc AddUser(User) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+        post: "/user-registry/add-user"
+    };
+  }
+  rpc GetUserByPubKey(PubKey) returns (User) {
+    option (google.api.http) = {
+        post: "/user-registry/get-user-by-pubkey"
+    };
+  }
+  rpc GetUserByUserName(UserName) returns (User) {
+    option (google.api.http) = {
+        post: "/user-registry/get-user-by-username"
+    };
+  }
+  rpc RequestLogin(UserName) returns (User){
+    option (google.api.http) = {
+      post: "/user-registry/request-login"
+    };
+  }
+  rpc Login(User) returns (LoginResp){
+    option (google.api.http) = {
+      post: "/user-registry/login"
+    };
+  }
+}
+
+message User {
+  string userName = 1;
+  bytes pubKey = 2;
+  string privKey = 3;
+  string unsignedMsg = 4;
+  bytes signature = 5;
+}
+
+message UserList {
+  repeated User users = 1;
+}
+
+message UserName {
+  string userName = 1;
+}
+
+message PubKey {
+  bytes pubKey = 1;
 }

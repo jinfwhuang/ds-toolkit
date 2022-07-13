@@ -12,6 +12,36 @@ const (
 	NotImplemented = "not implemented"
 )
 
+type KeyType uint8
+
+const (
+	Secp25661 = iota + 1
+	Bls12381
+)
+
+func (e KeyType) String() string {
+	return [...]string{
+		"Secp25661",
+		"Bls12381",
+	}[e-1]
+}
+
+type KeyStatus uint8
+
+const (
+	Admin = iota + 1
+	Active
+	Cancel
+)
+
+func (e KeyStatus) String() string {
+	return [...]string{
+		"Admin",
+		"Active",
+		"Cancel",
+	}[e-1]
+}
+
 type User struct {
 	Userid  common.Address
 	Name    string
