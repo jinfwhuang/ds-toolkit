@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package main
 
 import (
@@ -95,3 +96,26 @@ func fileInRuntimeDir(file string) string {
 	_, filename, _, _ := runtime.Caller(0)
 	return filepath.Dir(filename) + file
 }
+||||||| parent of 032b42b (arweave test)
+=======
+package main
+
+import (
+	"github.com/jinfwhuang/ds-toolkit/experimental/dsn/arweave"
+)
+
+func main() {
+
+}
+
+func arweaveExample() {
+	id, _ := arweave.Write([]byte("123"))
+	println(id)
+
+	ret, err := arweave.Read("IUYBL-mW7OpG7Em_kwIpucrg43Br64nGbeMM01yja4w")
+	println(string(ret))
+	if err != nil {
+		println(err.Error())
+	}
+}
+>>>>>>> 032b42b (arweave test)

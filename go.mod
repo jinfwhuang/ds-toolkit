@@ -39,8 +39,14 @@ require (
 	github.com/gballet/go-libpcsclite v0.0.0-20190607065134-2772fd86a8ff // indirect
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
+<<<<<<< HEAD
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+||||||| parent of 032b42b (arweave test)
+	github.com/go-stack/stack v1.8.0 // indirect
+=======
+	github.com/go-stack/stack v1.8.1 // indirect
+>>>>>>> 032b42b (arweave test)
 	github.com/golang-jwt/jwt/v4 v4.3.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
@@ -61,7 +67,12 @@ require (
 	github.com/influxdata/influxdb-client-go/v2 v2.4.0 // indirect
 	github.com/influxdata/line-protocol v0.0.0-20210311194329-9aa0e372d097 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
+<<<<<<< HEAD
 	github.com/json-iterator/go v1.1.12 // indirect
+||||||| parent of 032b42b (arweave test)
+	github.com/julienschmidt/httprouter v1.3.0 // indirect
+=======
+>>>>>>> 032b42b (arweave test)
 	github.com/matryer/moq v0.2.7 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
@@ -80,8 +91,13 @@ require (
 	github.com/rs/cors v1.7.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
+<<<<<<< HEAD
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/spacemonkeygo/monkit/v3 v3.0.17 // indirect
+||||||| parent of 032b42b (arweave test)
+=======
+	github.com/shopspring/decimal v1.2.0 // indirect
+>>>>>>> 032b42b (arweave test)
 	github.com/spf13/cobra v1.3.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/status-im/keycard-go v0.0.0-20190316090335-8537d3370df4 // indirect
@@ -92,8 +108,14 @@ require (
 	github.com/vektah/gqlparser/v2 v2.4.2 // indirect
 	github.com/vivint/infectious v0.0.0-20200605153912-25a574ae18a3 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
+<<<<<<< HEAD
 	github.com/zeebo/errs v1.3.0 // indirect
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
+||||||| parent of 032b42b (arweave test)
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
+=======
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
+>>>>>>> 032b42b (arweave test)
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
