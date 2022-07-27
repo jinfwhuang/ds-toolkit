@@ -27,7 +27,7 @@ type DataBlob struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Keys              []*HiddenDataKey `protobuf:"bytes,1,rep,name=keys,proto3" json:"keys,omitempty"`
+	HiddenDataKeys              []*HiddenDataKey `protobuf:"bytes,1,rep,name=hiddenDataKeys,proto3" json:"hiddenDataKeys,omitempty"`
 	DataLen           uint64           `protobuf:"varint,10,opt,name=dataLen,proto3" json:"dataLen,omitempty"`                    // EncryptedData might be padded
 	Iv                []byte           `protobuf:"bytes,12,opt,name=iv,proto3" json:"iv,omitempty"`                               // 16 bytes
 	EncryptedDataHash []byte           `protobuf:"bytes,11,opt,name=encryptedDataHash,proto3" json:"encryptedDataHash,omitempty"` // To check data integrity
@@ -70,7 +70,7 @@ func (*DataBlob) Descriptor() ([]byte, []int) {
 
 func (x *DataBlob) GetKeys() []*HiddenDataKey {
 	if x != nil {
-		return x.Keys
+		return x.HiddenDataKeys
 	}
 	return nil
 }
@@ -228,7 +228,7 @@ var file_proto_ds_dsdata_proto_goTypes = []interface{}{
 	(*HiddenDataKey)(nil), // 1: jinfwhuang.dstoolkit.ds.HiddenDataKey
 }
 var file_proto_ds_dsdata_proto_depIdxs = []int32{
-	1, // 0: jinfwhuang.dstoolkit.ds.DataBlob.keys:type_name -> jinfwhuang.dstoolkit.ds.HiddenDataKey
+	1, // 0: jinfwhuang.dstoolkit.ds.DataBlob.hiddenDataKeys:type_name -> jinfwhuang.dstoolkit.ds.HiddenDataKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

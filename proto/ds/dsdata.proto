@@ -8,7 +8,7 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/jinfwhuang/ds-toolkit/proto/ds";
 
 message DataBlob {
-  repeated HiddenDataKey keys  = 1;
+  repeated HiddenDataKey hiddenDataKeys = 1;
 
   uint64 dataLen = 10; // EncryptedData might be padded
   bytes iv = 12; // 16 bytes
@@ -29,4 +29,3 @@ message HiddenDataKey {
   bytes encryptedDataKey = 10; // AES_128 encryption
   bytes iv = 11; // 16 bytes
 }
-

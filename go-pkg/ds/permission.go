@@ -9,15 +9,15 @@ import (
 	protods "github.com/jinfwhuang/ds-toolkit/proto/ds"
 )
 
-// Do I have permission to the DataBlob
-func checkPerm(data *protods.DataBlob, pubKey *ecdsa.PublicKey) bool {
+// Does user have permission to the DataBlob
+func CheckPerm(data *protods.DataBlob, pubKey *ecdsa.PublicKey) bool {
 	pubKeyBytes := ethereum.CompressPubkey(pubKey)
 	_, err := findUserKey(data.Keys, pubKeyBytes)
 	return err == nil
 }
 
-// Get the decrypted data in EncryptedData
-func extractData(data *protods.DataBlob, privKey *ecdsa.PrivateKey) ([]byte, error) {
+// Get the decrypted data in DataBlob
+func ExtractData(data *protods.DataBlob, privKey *ecdsa.PrivateKey) ([]byte, error) {
 	pubKeyBytes := ethereum.CompressPubkey(&privKey.PublicKey)
 	userKey, err := findUserKey(data.Keys, pubKeyBytes)
 	if err != nil {
@@ -39,8 +39,8 @@ func extractData(data *protods.DataBlob, privKey *ecdsa.PrivateKey) ([]byte, err
 	return unpaddedDecryptedData, nil
 }
 
-// User add key to an existing Blob and creat a new DataBlob
-func addKey(blob *protods.DataBlob, newPubKey *ecdsa.PublicKey, privKey *ecdsa.PrivateKey) (*protods.DataBlob, error) {
+// Add key to an existing DataBlob and create a new DataBlob
+func AddKey(blob *protods.DataBlob, newPubKey *ecdsa.PublicKey, privKey *ecdsa.PrivateKey) (*protods.DataBlob, error) {
 	pubKeyBytes := ethereum.CompressPubkey(&privKey.PublicKey)
 	userKey, err := findUserKey(blob.Keys, pubKeyBytes)
 	if err != nil {
