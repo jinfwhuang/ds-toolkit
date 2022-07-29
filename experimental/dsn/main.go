@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/jinfwhuang/ds-toolkit/experimental/dsn/arweave"
+	estuary "github.com/jinfwhuang/ds-toolkit/experimental/dsn/filecoin-estuary"
 )
 
 func main() {
@@ -17,4 +18,9 @@ func arweaveExample() {
 	if err != nil {
 		println(err.Error())
 	}
+}
+
+func estuaryExample() {
+	err, _ := estuary.Write([]byte("123"))
+	println(err)
 }

@@ -19,31 +19,31 @@ const (
 func Write(data []byte) (string, error) {
 	wallet, err := newWallet(arNode)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
-	filePath := fileInRuntimeDir("/data_blob.json")
+	filePath := fileInRuntimeDir("/test_blob.json")
 	bigData, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	tags := []types.Tag{{Name: "Content-Type", Value: "application/pdf"}, {Name: "goar", Value: "testdata"}}
 	tx, err := assemblyDataTx(bigData, wallet, tags)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	fmt.Printf("txHash: %v", tx.ID)
 
 	// uploader Transaction
 	uploader, err := goar.CreateUploader(wallet.Client, tx, nil)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	uploader.Once()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	return tx.ID, nil
