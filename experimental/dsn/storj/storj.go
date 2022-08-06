@@ -35,7 +35,7 @@ func Write(key string, data []byte) error {
 		return fmt.Errorf("could not ensure bucket: %v", err)
 	}
 
-	// Intitiate the upload of our Object to the specified bucket and key.
+	// Intitiate the upload of the Object to the specified bucket and key.
 	upload, err := project.UploadObject(context.Background(), myBucket, key, nil)
 	if err != nil {
 		return fmt.Errorf("could not initiate upload: %v", err)
@@ -71,14 +71,14 @@ func Read(key string) ([]byte, error) {
 	}
 
 	defer project.Close()
-	// Initiate a download of the same object again
+	// Initiate a download.
 	download, err := project.DownloadObject(context.Background(), myBucket, key, nil)
 	if err != nil {
 		return nil, fmt.Errorf("could not open object: %v", err)
 	}
 	defer download.Close()
 
-	// Read everything from the download stream
+	// Read everything from the download stream.
 	receivedContents, err := ioutil.ReadAll(download)
 	if err != nil {
 		return nil, fmt.Errorf("could not read data: %v", err)
