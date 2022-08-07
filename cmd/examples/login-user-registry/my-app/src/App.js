@@ -26,16 +26,17 @@ function App() {
   const [privKeyHex, setPrivKeyHex] = useState("")
   const [message, setMessage] = useState("")
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [userList, setUserList] = useState([])
 
   useEffect(() => {
     client.listAllUsers(empty, {}, (err, response) => {
-      console.log(response.getUsersList())
+      getUserList(response.getUsersList())
       if (err) {
         console.log(err)
       }
       
     })
-  });
+  }, []);
 
   function openModal() {
     setIsOpen(true);
@@ -56,6 +57,10 @@ function App() {
 
   const getMessage = (message) => {
     setMessage(message)
+  }
+
+  const getUserList = (list) => {
+    setUserList(list)
   }
 
   const empty = new google_protobuf_empty_pb.Empty;
@@ -83,14 +88,27 @@ function App() {
     openModal()
   }
 
+  const getUsers = async (event) => {
+
+    var response = await client.listAllUsers(empty, {})
+    var responseList = response.getUsersList()
+    var userNameList = []
+    for (var i = 0; i < responseList.length; i++) {
+      userNameList.push(" " + String(i + 1) + ". " + responseList[i].getUsername() + " ")
+    }
+    await getUserList(userNameList)
+
+  }
 
   return ( 
     <div className="App">
       <h1>Welcome</h1>
       <div className="User-Name-Wrapper">
+        <div className="User-Name-Text">Username </div>
         <input type="text" className="User-Name" placeholder="Username" onChange={getName}/>
       </div>
       <div className="Priv-Key-Wrapper">
+        <div className="Priv-Key-Text">Private Key </div>
         <input type="text" className="Priv-Key" placeholder="Private Key" onChange={getPrivKey}/>
       </div>
       <div className="Login-Button-Wrapper">
@@ -101,7 +119,6 @@ function App() {
             className="Login-Button">
         Login
         </button>
-        
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -114,8 +131,19 @@ function App() {
         <button className="Close" onClick={closeModal}>close</button>
       </div>
       </Modal>
-   
+      </div>
 
+      <div className="Users-Button-Wrapper">
+        <button
+            type="submit"
+            value="Submit"
+            onClick={getUsers}
+            className="Users-Button">
+        View Users
+        </button>  
+        <div className="User-List">
+          {userList}
+          </div>
       </div>
     </div>
   );

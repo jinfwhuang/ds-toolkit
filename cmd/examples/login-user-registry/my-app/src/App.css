@@ -35,7 +35,12 @@
 
 .Priv-Key-Wrapper {
   text-align: center;
-  height: 40px;
+  height: 50px;
+}
+
+.User-Name-Text {
+  display: inline-block;
+  padding: 10px;
 }
 
 .User-Name {
@@ -44,6 +49,10 @@
   width: 200px;
 }
 
+.Priv-Key-Text {
+  display: inline-block;
+  padding: 7px;
+}
 .Priv-Key {
   display: inline-block;
   height: 20px;
@@ -62,6 +71,23 @@
   border-radius: 5px;
   background-color: #86cffc;
   border-color: #86cffc;
+}
+.Users-Button {
+  display: inline-block;
+  height: 30px;
+  width: 100px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: #86cffc;
+  border-color: #86cffc;
+}
+.Users-Button-Wrapper{
+  text-align: center;
+  padding: 20px;
+}
+
+.User-List {
+  padding: 10px;
 }
 
 .Message {
