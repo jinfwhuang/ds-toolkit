@@ -4,12 +4,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-
 var (
 	GrpcPort = &cli.IntFlag{
 		Name:  "grpc-port",
 		Usage: "TODO: xxx",
-		Value: 4000,
+		Value: 9090,
 	}
 	LogLevel = &cli.StringFlag{
 		Name:  "log-level",
@@ -22,5 +21,3 @@ var (
 		Value: true,
 	}
 )
-
-

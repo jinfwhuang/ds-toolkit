@@ -1,0 +1,116 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.User-Name-Wrapper {
+  text-align: center;
+  height: 40px;
+}
+
+.Priv-Key-Wrapper {
+  text-align: center;
+  height: 50px;
+}
+
+.User-Name-Text {
+  display: inline-block;
+  padding: 10px;
+}
+
+.User-Name {
+  display: inline-block;
+  height: 20px;
+  width: 200px;
+}
+
+.Priv-Key-Text {
+  display: inline-block;
+  padding: 7px;
+}
+.Priv-Key {
+  display: inline-block;
+  height: 20px;
+  width: 200px;
+}
+
+.Login-Button-Wrapper {
+  text-align: center;
+}
+
+.Login-Button {
+  display: inline-block;
+  height: 30px;
+  width: 70px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: #86cffc;
+  border-color: #86cffc;
+}
+.Users-Button {
+  display: inline-block;
+  height: 30px;
+  width: 100px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: #86cffc;
+  border-color: #86cffc;
+}
+.Users-Button-Wrapper{
+  text-align: center;
+  padding: 20px;
+}
+
+.User-List {
+  padding: 10px;
+}
+
+.Message {
+  height: 40px;
+}
+
+.Close-Wrapper {
+  text-align: center;
+}
+
+.Close {
+  display: inline-block;
+  border-radius: 5px;
+  background-color: #86cffc;
+  border-color: #86cffc;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
