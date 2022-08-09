@@ -8,8 +8,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
-	"path/filepath"
-	"runtime"
 )
 
 const (
@@ -27,10 +25,9 @@ const (
 // > -H "Accept: application/json" \
 // > -H "Content-Type: multipart/form-data" \
 // > -F "data=@{FULL_FILE_PATH_DO_NOT_REMOVE_@}"
-func Write(data []byte) (string, error) {
+func Write(dataPath string) (string, error) {
 	client := &http.Client{}
-	payloadDir := fileInRuntimeDir("/test_blob.json")
-	b, _, err := createMultipartFormData("data", payloadDir)
+	b, _, err := createMultipartFormData("data", dataPath)
 	if err != nil {
 		return "", err
 	}
@@ -61,11 +58,6 @@ func Write(data []byte) (string, error) {
 // Not implemented as writing does not work.
 func Read(id string) ([]byte, error) {
 	return nil, nil
-}
-
-func fileInRuntimeDir(file string) string {
-	_, filename, _, _ := runtime.Caller(0)
-	return filepath.Dir(filename) + file
 }
 
 func createMultipartFormData(fieldName, fileName string) (bytes.Buffer, *multipart.Writer, error) {

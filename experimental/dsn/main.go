@@ -33,7 +33,8 @@ func arweaveExample() {
 }
 
 func estuaryExample() {
-	resp, err := estuary.Write(data)
+	dataPath := fileInRuntimeDir("/test_blob.json")
+	resp, err := estuary.Write(dataPath)
 	if err != nil {
 		println(err.Error())
 	}
