@@ -11,7 +11,7 @@ const (
 	// Used for local development, see https://developers.ceramic.network/build/cli/api/ for more.
 	// nodeUrl = "http://0.0.0.0:7007"
 	nodeUrl = "https://ceramic-clay.3boxlabs.com"
-	didKey  = "YOUR_DID_KEY_CREATED_USING_GLAZE_OR_JS_CLIENT"
+	didKey  = "z6MktZfz7GLQjVVN8247Fc5oHSH1qh2agrgYyuPuUKHs5PeC"
 )
 
 type AnchorProof struct {

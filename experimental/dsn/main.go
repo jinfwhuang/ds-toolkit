@@ -1,9 +1,13 @@
 package main
 
 import (
+	"path/filepath"
+	"runtime"
+
 	"github.com/jinfwhuang/ds-toolkit/experimental/dsn/arweave"
 	"github.com/jinfwhuang/ds-toolkit/experimental/dsn/ceramic"
 	estuary "github.com/jinfwhuang/ds-toolkit/experimental/dsn/filecoin-estuary"
+	"github.com/jinfwhuang/ds-toolkit/experimental/dsn/sia"
 	"github.com/jinfwhuang/ds-toolkit/experimental/dsn/storj"
 )
 
@@ -71,4 +75,24 @@ func ceramicExample() {
 	if err != nil {
 		println(err.Error())
 	}
+}
+
+func siaExample() {
+	siaDir := "example/testfileGo"
+	err := sia.Write(fileInRuntimeDir("/test_file"), siaDir)
+	if err != nil {
+		println(err.Error())
+	}
+
+	// Most likely Read will fail, as Sia block mine time is ~10 minutes.
+	retr, err := sia.Read(siaDir)
+	if err != nil {
+		println(err.Error())
+	}
+	println(retr)
+}
+
+func fileInRuntimeDir(file string) string {
+	_, filename, _, _ := runtime.Caller(0)
+	return filepath.Dir(filename) + file
 }
