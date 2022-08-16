@@ -3,9 +3,6 @@ package arweave
 import (
 	"crypto/sha256"
 	"fmt"
-	"io/ioutil"
-	"path/filepath"
-	"runtime"
 
 	"github.com/everFinance/goar"
 	"github.com/everFinance/goar/types"
@@ -16,20 +13,14 @@ const (
 	arNode = "https://arweave.net"
 )
 
-func Write(data []byte) (string, error) {
-	wallet, err := newWallet(arNode)
-	if err != nil {
-		return "", err
-	}
-
-	filePath := fileInRuntimeDir("/test_blob.json")
-	bigData, err := ioutil.ReadFile(filePath)
+func Write(data []byte, walletPath string) (string, error) {
+	wallet, err := newWallet(walletPath, arNode)
 	if err != nil {
 		return "", err
 	}
 
 	tags := []types.Tag{{Name: "Content-Type", Value: "application/pdf"}, {Name: "goar", Value: "testdata"}}
-	tx, err := assemblyDataTx(bigData, wallet, tags)
+	tx, err := assemblyDataTx(data, wallet, tags)
 	if err != nil {
 		return "", err
 	}
@@ -54,13 +45,8 @@ func Read(id string) ([]byte, error) {
 	return arCli.GetTransactionData(id)
 }
 
-func newWallet(clientUrl string) (*goar.Wallet, error) {
-	return goar.NewWalletFromPath(fileInRuntimeDir("/wallet.json"), clientUrl)
-}
-
-func fileInRuntimeDir(file string) string {
-	_, filename, _, _ := runtime.Caller(0)
-	return filepath.Dir(filename) + file
+func newWallet(walletPath string, clientUrl string) (*goar.Wallet, error) {
+	return goar.NewWalletFromPath(walletPath, clientUrl)
 }
 
 func assemblyDataTx(bigData []byte, wallet *goar.Wallet, tags []types.Tag) (*types.Transaction, error) {
