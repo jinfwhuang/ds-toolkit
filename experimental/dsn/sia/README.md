@@ -2,7 +2,7 @@
 
 ## Summary
 
-Sia had really thorough and well writen documentation. Unfortunately there weren't available SDKs, only GUI and HTTP client. The HTTP client worked quite well, GUI as well. The biggest drawback is that you have to spin up own node, as there are no public nodes provided. The current size of the chain is ~37 GB. After downloading the chain, an api password is saved on your machine, which is used for authentication.
+Sia had really thorough and well writen documentation. Unfortunately there weren't available SDKs, only GUI and HTTP client. The HTTP client worked quite well, GUI as well. The biggest drawback is that you have to spin up own node, as there are no nodes for public use provided. The current size of the chain is ~37 GB. After downloading the chain, an api password is saved on your machine, which is used for authentication.
 
 Useful links:
 
