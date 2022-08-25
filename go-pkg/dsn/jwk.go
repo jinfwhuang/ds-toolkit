@@ -8,6 +8,7 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
+// Generate byte representation of a JSON Web Key.
 func GenerateJWK() ([]byte, error) {
 	privatekey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
@@ -16,6 +17,7 @@ func GenerateJWK() ([]byte, error) {
 	return RSAToJWK(privatekey)
 }
 
+// Convert RSA keypair to a JSON Web Key.
 func RSAToJWK(privatekey *rsa.PrivateKey) ([]byte, error) {
 	jwkKey, err := jwk.FromRaw(privatekey)
 	if err != nil {

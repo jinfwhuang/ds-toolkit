@@ -13,6 +13,7 @@ const (
 	arNode = "https://arweave.net"
 )
 
+// Generate RSA keys and an Arweave wallet.
 func GenerateWallet() (*goar.Wallet, error) {
 	jwk, err := GenerateJWK()
 	if err != nil {
@@ -21,14 +22,17 @@ func GenerateWallet() (*goar.Wallet, error) {
 	return goar.NewWallet(jwk, arNode)
 }
 
+// Generate an Arweave wallet using pre-existing byte representation of a JSON Web Key (JWK).
 func GenerateWalletFromJWK(jwk []byte) (*goar.Wallet, error) {
 	return goar.NewWallet(jwk, arNode)
 }
 
+// Generate an Arweave wallet from JWK in a file. The format can be verified with test_wallet.json.
 func GenerateWalletFromPath(path string) (*goar.Wallet, error) {
 	return goar.NewWalletFromPath(path, arNode)
 }
 
+// Write data to the Arweave protocol using an Arweave wallet.
 func Write(data []byte, wallet *goar.Wallet) (string, error) {
 	tags := []types.Tag{{Name: "Content-Type", Value: "application/pdf"}, {Name: "goar", Value: "testdata"}}
 	tx, err := assemblyDataTx(data, wallet, tags)
@@ -50,6 +54,7 @@ func Write(data []byte, wallet *goar.Wallet) (string, error) {
 	return tx.ID, nil
 }
 
+// Read data from the Arweave protocol using an id, retrieved by the result of Write([]byte, *goar.Wallet).
 func Read(id string) ([]byte, error) {
 	arCli := goar.NewClient(arNode)
 	return arCli.GetTransactionData(id)
