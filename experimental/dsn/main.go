@@ -19,7 +19,7 @@ func main() {
 }
 
 func arweaveExample() {
-	id, err := arweave.Write(data, fileInRuntimeDir("./arweave/wallet.json"))
+	id, err := arweave.Write(data, fileInRuntimeDir("/arweave/wallet.json"))
 	if err != nil {
 		println(err.Error())
 	}
