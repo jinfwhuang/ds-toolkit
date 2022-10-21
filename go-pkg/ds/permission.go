@@ -12,14 +12,14 @@ import (
 // Does user have permission to the DataBlob
 func CheckPerm(data *protods.DataBlob, pubKey *ecdsa.PublicKey) bool {
 	pubKeyBytes := ethereum.CompressPubkey(pubKey)
-	_, err := findUserKey(data.Keys, pubKeyBytes)
+	_, err := findUserKey(data.HiddenDataKeys, pubKeyBytes)
 	return err == nil
 }
 
 // Get the decrypted data in DataBlob
 func ExtractData(data *protods.DataBlob, privKey *ecdsa.PrivateKey) ([]byte, error) {
 	pubKeyBytes := ethereum.CompressPubkey(&privKey.PublicKey)
-	userKey, err := findUserKey(data.Keys, pubKeyBytes)
+	userKey, err := findUserKey(data.HiddenDataKeys, pubKeyBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func ExtractData(data *protods.DataBlob, privKey *ecdsa.PrivateKey) ([]byte, err
 // Add key to an existing DataBlob and create a new DataBlob
 func AddKey(blob *protods.DataBlob, newPubKey *ecdsa.PublicKey, privKey *ecdsa.PrivateKey) (*protods.DataBlob, error) {
 	pubKeyBytes := ethereum.CompressPubkey(&privKey.PublicKey)
-	userKey, err := findUserKey(blob.Keys, pubKeyBytes)
+	userKey, err := findUserKey(blob.HiddenDataKeys, pubKeyBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func AddKey(blob *protods.DataBlob, newPubKey *ecdsa.PublicKey, privKey *ecdsa.P
 		return nil, err
 	}
 
-	blob.Keys = append(blob.Keys, newDataKey)
+	blob.HiddenDataKeys = append(blob.HiddenDataKeys, newDataKey)
 
 	return blob, nil
 }
@@ -87,7 +87,7 @@ func CreateDataBlob(data []byte, pubKey *ecdsa.PublicKey) (*protods.DataBlob, er
 		Iv:                iv,
 		EncryptedDataHash: encryptedDataHash[:],
 		EncryptedData:     encryptedData,
-		Keys:              []*protods.HiddenDataKey{hiddenDataKey},
+		HiddenDataKeys:    []*protods.HiddenDataKey{hiddenDataKey},
 	}
 
 	return &dataBlob, nil
