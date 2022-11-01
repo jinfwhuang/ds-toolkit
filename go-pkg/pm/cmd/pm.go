@@ -3,12 +3,14 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"time"
 
 	"github.com/urfave/cli/v2"
 
 	"github.com/jinfwhuang/ds-toolkit/go-pkg/ds"
+	"github.com/jinfwhuang/ds-toolkit/go-pkg/dsn"
 	ecdsa_util "github.com/jinfwhuang/ds-toolkit/go-pkg/ecdsa-util"
 	protods "github.com/jinfwhuang/ds-toolkit/proto/ds"
 )
@@ -82,7 +84,7 @@ func main() {
 
 					println(string(res))
 
-					return err
+					return nil
 				},
 			},
 			{
@@ -137,7 +139,99 @@ func main() {
 
 					println(string(decryptedPassword))
 
-					return err
+					return nil
+				},
+			},
+			{
+				Name:        "uploadPassword",
+				Usage:       "Upload password to Arweave DSN using encrypted password blob and JWK",
+				Description: "Upload password to Arweave DSN using encrypted password blob and JWK",
+				ArgsUsage:   "",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:    "passwordBlob",
+						Aliases: []string{"p", "pass", "blob"},
+						Value:   "",
+						Usage:   "Password blob to dencrypt in string format",
+					},
+					&cli.StringFlag{
+						Name:    "wallet",
+						Aliases: []string{"w"},
+						Value:   "",
+						Usage:   "Arweave wallet in JWK format",
+					},
+				},
+				SkipFlagParsing: false,
+				HideHelp:        false,
+				Hidden:          false,
+				HelpName:        "",
+				Action: func(c *cli.Context) error {
+					stringBlob := c.String("passwordBlob")
+					walletString := c.String("wallet")
+					if stringBlob == "" {
+						return errors.New("no password provided")
+					}
+					if walletString == "" {
+						return errors.New("no JWK provided")
+					}
+
+					wallet, err := dsn.GenerateWalletFromJWK([]byte(walletString))
+					if err != nil {
+						return errors.New("could not recover wallet from JWK")
+					}
+
+					var blob protods.DataBlob
+					err = json.Unmarshal([]byte(stringBlob), &blob)
+					if err != nil {
+						return errors.New("could not unmarshal password blob to JSON")
+					}
+
+					blobBytes, err := json.Marshal(&blob)
+					if err != nil {
+						return errors.New("could not marshal password blob from JSON")
+					}
+
+					txId, err := dsn.Write(blobBytes, wallet)
+					if err != nil {
+						return errors.New("could not upload to Arweave")
+					}
+
+					fmt.Printf("Transaction ID: %v", txId)
+
+					return nil
+				},
+			},
+			{
+				Name:        "retrievePassword",
+				Usage:       "Retrieve password from Arweave DSN using transaction ID",
+				Description: "Retrieve password from Arweave DSN using transaction ID",
+				ArgsUsage:   "",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:    "transactionID",
+						Aliases: []string{"tx", "id", "txid", "txId", "txID"},
+						Value:   "",
+						Usage:   "Transaction ID on Arweave",
+					},
+				},
+				SkipFlagParsing: false,
+				HideHelp:        false,
+				Hidden:          false,
+				HelpName:        "",
+				Action: func(c *cli.Context) error {
+					id := c.String("txID")
+					if id == "" {
+						return errors.New("no transaction ID provided")
+					}
+
+					tx, err := dsn.Read(id)
+					if err != nil {
+						return errors.New("could not read Arweave transaction")
+					}
+
+					println(string(tx))
+
+					return nil
 				},
 			},
 		},
