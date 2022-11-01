@@ -46,7 +46,7 @@ func Write(data []byte, wallet *goar.Wallet) (string, error) {
 		return "", err
 	}
 
-	uploader.Once()
+	err = uploader.Once()
 	if err != nil {
 		return "", err
 	}
@@ -57,7 +57,11 @@ func Write(data []byte, wallet *goar.Wallet) (string, error) {
 // Read data from the Arweave protocol using an id, retrieved by the result of Write([]byte, *goar.Wallet).
 func Read(id string) ([]byte, error) {
 	arCli := goar.NewClient(arNode)
-	return arCli.GetTransactionData(id)
+	txDataEncoded, err := arCli.GetTransactionData(id)
+	if err != nil {
+		return nil, err
+	}
+	return utils.Base64Decode(string(txDataEncoded))
 }
 
 func assemblyDataTx(bigData []byte, wallet *goar.Wallet, tags []types.Tag) (*types.Transaction, error) {
