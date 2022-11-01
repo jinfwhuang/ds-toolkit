@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"time"
 
@@ -57,35 +56,7 @@ func main() {
 				HideHelp:        false,
 				Hidden:          false,
 				HelpName:        "",
-				Action: func(c *cli.Context) error {
-					password := c.String("password")
-					keyHex := c.String("key")
-					if password == "" {
-						return errors.New("no password provided")
-					}
-					if keyHex == "" {
-						return errors.New("no public key provided")
-					}
-
-					key, err := ecdsa_util.RecoverPubkey(keyHex)
-					if err != nil {
-						return errors.New("could not recover ecdsa public key from hex")
-					}
-
-					dataBlob, err := ds.CreateDataBlob([]byte(password), key)
-					if err != nil {
-						return errors.New("could not encrypt password")
-					}
-
-					res, err := json.Marshal(dataBlob)
-					if err != nil {
-						return errors.New("could not marshal encrypted password to JSON")
-					}
-
-					println(string(res))
-
-					return nil
-				},
+				Action:          encryptPassword,
 			},
 			{
 				Name:        "decryptPassword",
@@ -110,37 +81,7 @@ func main() {
 				HideHelp:        false,
 				Hidden:          false,
 				HelpName:        "",
-				Action: func(c *cli.Context) error {
-					stringBlob := c.String("passwordBlob")
-					keyHex := c.String("key")
-					if stringBlob == "" {
-						return errors.New("no password provided")
-					}
-					if keyHex == "" {
-						return errors.New("no private key provided")
-					}
-
-					key, err := ecdsa_util.RecoverPrivkey(keyHex)
-					if err != nil {
-						return errors.New("could not recover ecdsa private key from HEX")
-					}
-
-					var blob protods.DataBlob
-					err = json.Unmarshal([]byte(stringBlob), &blob)
-					if err != nil {
-						return errors.New("could not unmarshal password blob to JSON")
-					}
-
-					decryptedPassword, err := ds.ExtractData(&blob, key)
-					if err != nil {
-						println(err.Error())
-						return errors.New("could not decrypt password blob")
-					}
-
-					println(string(decryptedPassword))
-
-					return nil
-				},
+				Action:          decryptPassword,
 			},
 			{
 				Name:        "uploadPassword",
@@ -165,41 +106,7 @@ func main() {
 				HideHelp:        false,
 				Hidden:          false,
 				HelpName:        "",
-				Action: func(c *cli.Context) error {
-					stringBlob := c.String("passwordBlob")
-					walletString := c.String("wallet")
-					if stringBlob == "" {
-						return errors.New("no password provided")
-					}
-					if walletString == "" {
-						return errors.New("no JWK provided")
-					}
-
-					wallet, err := dsn.GenerateWalletFromJWK([]byte(walletString))
-					if err != nil {
-						return errors.New("could not recover wallet from JWK")
-					}
-
-					var blob protods.DataBlob
-					err = json.Unmarshal([]byte(stringBlob), &blob)
-					if err != nil {
-						return errors.New("could not unmarshal password blob to JSON")
-					}
-
-					blobBytes, err := json.Marshal(&blob)
-					if err != nil {
-						return errors.New("could not marshal password blob from JSON")
-					}
-
-					txId, err := dsn.Write(blobBytes, wallet)
-					if err != nil {
-						return errors.New("could not upload to Arweave")
-					}
-
-					fmt.Printf("Transaction ID: %v", txId)
-
-					return nil
-				},
+				Action:          uploadPassword,
 			},
 			{
 				Name:        "retrievePassword",
@@ -218,21 +125,7 @@ func main() {
 				HideHelp:        false,
 				Hidden:          false,
 				HelpName:        "",
-				Action: func(c *cli.Context) error {
-					id := c.String("txID")
-					if id == "" {
-						return errors.New("no transaction ID provided")
-					}
-
-					tx, err := dsn.Read(id)
-					if err != nil {
-						return errors.New("could not read Arweave transaction")
-					}
-
-					println(string(tx))
-
-					return nil
-				},
+				Action:          retrievePassword,
 			},
 		},
 	}
@@ -242,4 +135,118 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func encryptPassword(c *cli.Context) error {
+	password := c.String("password")
+	keyHex := c.String("key")
+	if password == "" {
+		return errors.New("no password provided")
+	}
+	if keyHex == "" {
+		return errors.New("no public key provided")
+	}
+
+	key, err := ecdsa_util.RecoverPubkey(keyHex)
+	if err != nil {
+		return errors.New("could not recover ecdsa public key from hex")
+	}
+
+	dataBlob, err := ds.CreateDataBlob([]byte(password), key)
+	if err != nil {
+		return errors.New("could not encrypt password")
+	}
+
+	res, err := json.Marshal(dataBlob)
+	if err != nil {
+		return errors.New("could not marshal encrypted password to JSON")
+	}
+
+	println(string(res))
+
+	return nil
+}
+
+func decryptPassword(c *cli.Context) error {
+	stringBlob := c.String("passwordBlob")
+	keyHex := c.String("key")
+	if stringBlob == "" {
+		return errors.New("no password provided")
+	}
+	if keyHex == "" {
+		return errors.New("no private key provided")
+	}
+
+	key, err := ecdsa_util.RecoverPrivkey(keyHex)
+	if err != nil {
+		return errors.New("could not recover ecdsa private key from HEX")
+	}
+
+	var blob protods.DataBlob
+	err = json.Unmarshal([]byte(stringBlob), &blob)
+	if err != nil {
+		return errors.New("could not unmarshal password blob to JSON")
+	}
+
+	decryptedPassword, err := ds.ExtractData(&blob, key)
+	if err != nil {
+		println(err.Error())
+		return errors.New("could not decrypt password blob")
+	}
+
+	println(string(decryptedPassword))
+
+	return nil
+}
+
+func uploadPassword(c *cli.Context) error {
+	stringBlob := c.String("passwordBlob")
+	walletString := c.String("wallet")
+	if stringBlob == "" {
+		return errors.New("no password provided")
+	}
+	if walletString == "" {
+		return errors.New("no JWK provided")
+	}
+
+	wallet, err := dsn.GenerateWalletFromJWK([]byte(walletString))
+	if err != nil {
+		return errors.New("could not recover wallet from JWK")
+	}
+
+	var blob protods.DataBlob
+	err = json.Unmarshal([]byte(stringBlob), &blob)
+	if err != nil {
+		return errors.New("could not unmarshal password blob to JSON")
+	}
+
+	blobBytes, err := json.Marshal(&blob)
+	if err != nil {
+		return errors.New("could not marshal password blob from JSON")
+	}
+
+	txId, err := dsn.Write(blobBytes, wallet)
+	if err != nil {
+		return errors.New("could not upload to Arweave")
+	}
+
+	println(txId)
+
+	return nil
+}
+
+func retrievePassword(c *cli.Context) error {
+	id := c.String("txID")
+	if id == "" {
+		return errors.New("no transaction ID provided")
+	}
+
+	tx, err := dsn.Read(id)
+	if err != nil {
+		return errors.New("could not read Arweave transaction")
+	}
+
+	println(string(tx))
+
+	return nil
 }
